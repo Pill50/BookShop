@@ -130,7 +130,7 @@ model Orders {
   address       String
   recieverPhone String
   note          String
-  status        String
+  status        OrderStatus
   amount        Float
   totalPrice    Float
   createdAt     DateTime       @default(now())
@@ -169,6 +169,13 @@ model Book_Categories {
 enum Role {
   CUSTOMER
   ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  SHIPPED
+  CANCELED
 }
 
 enum Gender {

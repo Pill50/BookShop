@@ -4,6 +4,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -12,8 +13,9 @@ import { AuthModule } from './auth/auth.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
     }),
-    PrismaModule,
     AuthModule,
+    PrismaModule,
+    MailerModule,
   ],
 })
 export class AppModule {}

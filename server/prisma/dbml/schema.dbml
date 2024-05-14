@@ -105,7 +105,7 @@ Table orders {
   address String [not null]
   recieverPhone String [not null]
   note String [not null]
-  status String [not null]
+  status OrderStatus [not null]
   amount Float [not null]
   totalPrice Float [not null]
   createdAt DateTime [default: `now()`, not null]
@@ -141,6 +141,13 @@ Table book_categories {
 Enum Role {
   CUSTOMER
   ADMIN
+}
+
+Enum OrderStatus {
+  PENDING
+  COMPLETED
+  SHIPPED
+  CANCELED
 }
 
 Enum Gender {
