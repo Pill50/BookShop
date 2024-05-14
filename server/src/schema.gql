@@ -1,0 +1,13 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Query {
+  getMe: User!
+}
+
+type User {
+  displayName: String!
+  email: String!
+  id: String!
+}
