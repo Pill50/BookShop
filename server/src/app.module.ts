@@ -5,6 +5,8 @@ import { join } from 'path';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { MailerModule } from './mailer/mailer.module';
+import { UserModule } from './user/user.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { MailerModule } from './mailer/mailer.module';
     AuthModule,
     PrismaModule,
     MailerModule,
+    UserModule,
+    CloudinaryModule,
   ],
 })
 export class AppModule {}

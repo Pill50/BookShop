@@ -11,21 +11,31 @@ import { Payload } from '../../auth/types/payload.type';
 import { JwtError } from 'src/common/errors/jwtError.enum';
 import { Status } from '../../auth/types/status.enum';
 import { GqlExecutionContext } from '@nestjs/graphql';
+
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private prisma: PrismaService,
   ) {}
+
   async canActivate(context: ExecutionContext) {
-    const ctx = GqlExecutionContext.create(context);
-    const request = ctx.getContext().request;
+    const isGraphQLContext =
+      !!GqlExecutionContext.create(context).getContext().req;
+
+    let request;
+    if (isGraphQLContext) {
+      request = GqlExecutionContext.create(context).getContext().req;
+    } else {
+      request = context.switchToHttp().getRequest();
+    }
 
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
       throw new UnauthorizedException();
     }
+
     try {
       const payload: Payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
@@ -35,14 +45,7 @@ export class JwtAuthGuard implements CanActivate {
       const user = await this.prisma.users.findUnique({
         where: { id: payload.id },
         select: {
-          id: true,
-          displayName: true,
-          address: true,
-          phone: true,
-          gender: true,
-          avatar: true,
           status: true,
-          role: true,
         },
       });
 
@@ -55,7 +58,9 @@ export class JwtAuthGuard implements CanActivate {
       if (user.status === Status.BLOCKED) {
         throw new UnauthorizedException(AuthError.USER_BLOCKED);
       }
+
       request.user = payload;
+
       return true;
     } catch (error) {
       if (error.name === JwtError.TOKEN_EXPIRED_ERROR) {

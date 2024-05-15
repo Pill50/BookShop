@@ -5,6 +5,7 @@ import { json, urlencoded } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
   app.enableCors({});
   app.useGlobalPipes(
     new ValidationPipe({
@@ -29,6 +30,7 @@ async function bootstrap() {
   );
   app.use(json({ limit: '6mb' }));
   app.use(urlencoded({ extended: true, limit: '6mb' }));
-  await app.listen(3000);
+
+  await app.listen(8080);
 }
 bootstrap();

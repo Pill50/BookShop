@@ -102,6 +102,7 @@ model Feedbacks {
   bookId    String
   user      Users    @relation(fields: [userId], references: [id])
   userId    String
+  rating    Int      @default(1)
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
