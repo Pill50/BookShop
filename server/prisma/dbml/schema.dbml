@@ -36,6 +36,7 @@ Table books {
   publisherId String [not null]
   feedbacks feedbacks [not null]
   OrderDetails order_details [not null]
+  promotions promotion [not null]
   thumbnail String [not null]
   title String [not null]
   slug String [not null]
@@ -61,17 +62,17 @@ Table categories {
 Table publishers {
   id String [pk]
   name String [not null]
+  books books [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  books books [not null]
 }
 
 Table authors {
   id String [pk]
   name String [not null]
+  books books [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  books books [not null]
 }
 
 Table feedbacks {
@@ -104,12 +105,23 @@ Table orders {
   recieverName String [not null]
   address String [not null]
   recieverPhone String [not null]
-  note String [not null]
+  note String
   status OrderStatus [not null]
   amount Float [not null]
   totalPrice Float [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+}
+
+Table promotion {
+  id Int [pk, increment]
+  type PromotionType [not null]
+  startDate DateTime
+  endDate DateTime
+  bookId String [not null]
+  book books [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateddAt DateTime [default: `now()`, not null]
 }
 
 Table order_details {
@@ -156,6 +168,11 @@ Enum Gender {
   ANOTHER
 }
 
+Enum PromotionType {
+  SALE
+  POPULAR
+}
+
 Ref: books.authorId > authors.id
 
 Ref: books.publisherId > publishers.id
@@ -167,6 +184,8 @@ Ref: feedbacks.userId > users.id
 Ref: orders.userId > users.id
 
 Ref: orders.shipperId > shippers.id
+
+Ref: promotion.bookId > books.id
 
 Ref: order_details.orderId > orders.id
 

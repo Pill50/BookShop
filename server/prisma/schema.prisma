@@ -48,6 +48,7 @@ model Books {
   publisherId  String
   feedbacks    Feedbacks[]
   OrderDetails OrderDetails[]
+  promotions   Promotion[]
   thumbnail    String
   title        String
   slug         String
@@ -78,9 +79,9 @@ model Categories {
 model Publishers {
   id        String   @id @default(uuid())
   name      String
+  books     Books[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  books     Books[]
 
   @@map(name: "publishers")
 }
@@ -88,9 +89,9 @@ model Publishers {
 model Authors {
   id        String   @id @default(uuid())
   name      String
+  books     Books[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  books     Books[]
 
   @@map(name: "authors")
 }
@@ -129,7 +130,7 @@ model Orders {
   recieverName  String
   address       String
   recieverPhone String
-  note          String
+  note          String?
   status        OrderStatus
   amount        Float
   totalPrice    Float
@@ -137,6 +138,19 @@ model Orders {
   updatedAt     DateTime       @updatedAt
 
   @@map(name: "orders")
+}
+
+model Promotion {
+  id         Int           @id @default(autoincrement())
+  type       PromotionType
+  startDate  DateTime?
+  endDate    DateTime?
+  bookId     String
+  book       Books         @relation(fields: [bookId], references: [id])
+  createdAt  DateTime      @default(now())
+  updateddAt DateTime      @default(now())
+
+  @@map(name: "promotion")
 }
 
 model OrderDetails {
@@ -182,4 +196,9 @@ enum Gender {
   MALE
   FEMALE
   ANOTHER
+}
+
+enum PromotionType {
+  SALE
+  POPULAR
 }
