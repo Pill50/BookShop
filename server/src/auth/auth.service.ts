@@ -81,8 +81,8 @@ export class AuthService {
       }
 
       const payload: Payload = {
-        email: user.email,
         id: user.id,
+        email: user.email,
         role: user.role as Role,
         displayName: user.displayName,
         avatar: user.avatar,
@@ -104,7 +104,9 @@ export class AuthService {
 
       return {
         ...tokens,
-        ...payload,
+        user: {
+          ...payload,
+        },
       };
     } catch (err) {
       throw new HttpException(err?.message, HttpStatus.BAD_REQUEST);
@@ -167,60 +169,6 @@ export class AuthService {
       }
     } catch (err) {
       throw new HttpException(err?.message, HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  async resendConfirmation(resendConfirmationDto: ConfirmEmailDto) {
-    try {
-      const { email } = resendConfirmationDto;
-      const user = await this.prismaService.users.findUnique({
-        where: {
-          email: email,
-        },
-        select: {
-          email: true,
-          id: true,
-          displayName: true,
-          status: true,
-          authId: true,
-        },
-      });
-      if (!user) {
-        throw new HttpException(
-          AuthError.USER_EMAIL_NOT_FOUND,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      if (user.authId !== null) {
-        throw new HttpException(
-          AuthError.USER_OAUTH_LOGIN,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      if (user.status === Status.ACTIVE) {
-        throw new HttpException(
-          AuthError.USER_ALREADY_ACTIVATED,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      if (user.status === Status.BLOCKED) {
-        throw new HttpException(AuthError.USER_BLOCKED, HttpStatus.BAD_REQUEST);
-      }
-      const confirmToken = await this.generateUserIdToken(user.id);
-      await this.updateConfirmToken(user.id, confirmToken);
-      const sendMailOptions: sendMailOptions = {
-        to: user.email,
-        subject: '[TVPBookShop Email Confirmation]',
-        displayName: user.displayName,
-        token: confirmToken,
-        type: 'confirm',
-      };
-      await this.mailerService.sendMail(sendMailOptions);
-      return {
-        message: 'Confirmation email sent successfully',
-      };
-    } catch (err) {
-      return exceptionHandler(err);
     }
   }
 
@@ -462,9 +410,7 @@ export class AuthService {
         type: 'reset',
       };
       await this.mailerService.sendMail(sendMailOptions);
-      return {
-        message: 'Reset password link sent successfully',
-      };
+      return 'Reset password link sent successfully';
     } catch (err) {
       return exceptionHandler(err);
     }
@@ -544,6 +490,9 @@ export class AuthService {
           displayName: updatedUser.displayName,
           avatar: updatedUser.avatar,
           role: updatedUser.role,
+          address: updatedUser.address,
+          phone: updatedUser.phone,
+          gender: updatedUser.gender,
           status: updatedUser.status,
         },
       };
@@ -599,9 +548,7 @@ export class AuthService {
           password: hashedPassword,
         },
       });
-      return {
-        message: 'Password changed successfully',
-      };
+      return 'Password changed successfully';
     } catch (err) {
       return exceptionHandler(err);
     }

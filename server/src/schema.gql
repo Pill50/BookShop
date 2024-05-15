@@ -2,20 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AuthResponse {
+  accessToken: String!
+  refreshToken: String!
+  user: User!
+}
+
 input ChangePasswordDto {
   confirmPassword: String!
   newPassword: String!
   oldPassword: String!
-}
-
-input ConfirmEmailDto {
-  email: String!
-}
-
-type ConfirmEmailResponse {
-  accessToken: String!
-  refreshToken: String!
-  user: User!
 }
 
 """
@@ -32,29 +28,22 @@ input LoginDto {
   password: String!
 }
 
-type LoginResponse {
-  accessToken: String!
-  refreshToken: String!
-  user: User!
-}
-
 type LogoutResponse {
   accessToken: String!
   refreshToken: String!
 }
 
 type Mutation {
-  changePassword(changePasswordInput: ChangePasswordDto!): User!
+  changePassword(changePasswordInput: ChangePasswordDto!): String!
   checkValid(tokenInput: TokenDto!): Boolean!
-  confirmEmail(tokenInput: TokenDto!): ConfirmEmailResponse!
-  forgotPassword(forgotPasswordInput: ForgotPasswordDto!): Boolean!
-  login(loginInput: LoginDto!): LoginResponse!
+  confirmEmail(tokenInput: TokenDto!): AuthResponse!
+  forgotPassword(forgotPasswordInput: ForgotPasswordDto!): String!
+  login(loginInput: LoginDto!): AuthResponse!
   logout: LogoutResponse!
-  oauth(oauthInput: OAuthDto!): User!
+  oauth(oauthInput: OAuthDto!): AuthResponse!
   refreshTokens(refreshTokensInput: RefreshTokensDto!): Tokens!
   register(registerInput: RegisterDto!): Boolean!
-  resendConfirmation(confirmEmailInput: ConfirmEmailDto!): String!
-  resetPassword(resetPasswordInput: ResetPasswordDto!): User!
+  resetPassword(resetPasswordInput: ResetPasswordDto!): AuthResponse!
 }
 
 input OAuthDto {

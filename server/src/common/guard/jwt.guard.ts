@@ -36,6 +36,11 @@ export class JwtAuthGuard implements CanActivate {
         where: { id: payload.id },
         select: {
           id: true,
+          displayName: true,
+          address: true,
+          phone: true,
+          gender: true,
+          avatar: true,
           status: true,
           role: true,
         },

@@ -13,11 +13,7 @@ import { User } from './entities/User.entity';
 import { Payload } from './types';
 import { GetCurrentUser } from 'src/common/decorators/getCurrentUser.decorator';
 import { Tokens } from './entities/Token.entity';
-import {
-  ConfirmEmailResponse,
-  LoginResponse,
-  LogoutResponse,
-} from './entities/Response.entity';
+import { AuthResponse, LogoutResponse } from './entities/Response.entity';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/common/guard/jwt.guard';
 
@@ -25,31 +21,24 @@ import { JwtAuthGuard } from 'src/common/guard/jwt.guard';
 export class AuthResolver {
   constructor(private authService: AuthService) {}
 
-  @Mutation(() => User)
-  async oauth(@Args('oauthInput') oauthDto: OAuthDto) {
-    return this.authService.OAuth(oauthDto);
+  @Mutation(() => AuthResponse)
+  async oauth(@Args('oauthInput') oauthInput: OAuthDto) {
+    return this.authService.OAuth(oauthInput);
   }
 
   @Mutation(() => Boolean)
-  async register(@Args('registerInput') registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
+  async register(@Args('registerInput') registerInput: RegisterDto) {
+    return this.authService.register(registerInput);
   }
 
-  @Mutation(() => ConfirmEmailResponse)
+  @Mutation(() => AuthResponse)
   async confirmEmail(@Args('tokenInput') tokenInput: TokenDto) {
     return this.authService.confirmEmail(tokenInput);
   }
 
-  @Mutation(() => String)
-  async resendConfirmation(
-    @Args('confirmEmailInput') confirmEmailDto: ConfirmEmailDto,
-  ) {
-    return this.authService.resendConfirmation(confirmEmailDto);
-  }
-
-  @Mutation(() => LoginResponse)
-  async login(@Args('loginInput') loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+  @Mutation(() => AuthResponse)
+  async login(@Args('loginInput') loginInput: LoginDto) {
+    return this.authService.login(loginInput);
   }
 
   @Mutation(() => LogoutResponse)
@@ -59,38 +48,39 @@ export class AuthResolver {
   }
 
   @Query(() => User)
+  @UseGuards(JwtAuthGuard)
   async getMe(@GetCurrentUser() user: Payload) {
     return user;
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => String)
   async forgotPassword(
-    @Args('forgotPasswordInput') forgotPasswordDto: ForgotPasswordDto,
+    @Args('forgotPasswordInput') forgotPasswordInput: ForgotPasswordDto,
   ) {
-    await this.authService.forgotPassword(forgotPasswordDto);
-    return true;
+    return this.authService.forgotPassword(forgotPasswordInput);
   }
 
-  @Mutation(() => User)
+  @Mutation(() => AuthResponse)
   async resetPassword(
-    @Args('resetPasswordInput') resetPasswordDto: ResetPasswordDto,
+    @Args('resetPasswordInput') resetPasswordInput: ResetPasswordDto,
   ) {
-    return this.authService.resetPassword(resetPasswordDto);
+    return this.authService.resetPassword(resetPasswordInput);
   }
 
-  @Mutation(() => User)
+  @Mutation(() => String)
+  @UseGuards(JwtAuthGuard)
   async changePassword(
-    @GetCurrentUser('id') userId: string,
-    @Args('changePasswordInput') changePasswordDto: ChangePasswordDto,
+    @GetCurrentUser('id') id: string,
+    @Args('changePasswordInput') changePasswordInput: ChangePasswordDto,
   ) {
-    return this.authService.changePassword(changePasswordDto, userId);
+    return this.authService.changePassword(changePasswordInput, id);
   }
 
   @Mutation(() => Tokens)
   async refreshTokens(
-    @Args('refreshTokensInput') refreshTokensDto: RefreshTokensDto,
+    @Args('refreshTokensInput') refreshTokensInput: RefreshTokensDto,
   ): Promise<Tokens> {
-    return this.authService.refreshTokens(refreshTokensDto);
+    return this.authService.refreshTokens(refreshTokensInput);
   }
 
   @Mutation(() => Boolean)

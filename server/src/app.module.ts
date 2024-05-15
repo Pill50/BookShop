@@ -14,6 +14,7 @@ import { MailerModule } from './mailer/mailer.module';
       context: ({ req }) => {
         return { request: req };
       },
+      fieldResolverEnhancers: ['interceptors'],
       sortSchema: true,
     }),
     AuthModule,
