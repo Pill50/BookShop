@@ -104,7 +104,7 @@ export class AuthService {
 
       return {
         ...tokens,
-        user: payload,
+        ...payload,
       };
     } catch (err) {
       throw new HttpException(err?.message, HttpStatus.BAD_REQUEST);
@@ -163,7 +163,7 @@ export class AuthService {
         };
 
         await this.mailerService.sendMail(sendMailOptions);
-        return null;
+        return true;
       }
     } catch (err) {
       throw new HttpException(err?.message, HttpStatus.BAD_REQUEST);
@@ -287,14 +287,7 @@ export class AuthService {
       );
       return {
         ...tokens,
-        user: {
-          id: updatedUser.id,
-          email: updatedUser.email,
-          displayName: updatedUser.displayName,
-          avatar: updatedUser.avatar,
-          role: updatedUser.role,
-          status: updatedUser.status,
-        },
+        user: updatedUser,
       };
     } catch (err) {
       return exceptionHandler(err);
