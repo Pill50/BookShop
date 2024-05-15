@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+  <link href="/css/app.css" rel="stylesheet" />
+  <title>{{#if viewData.title}}{{ viewData.title }}{{else}}Online Store{{/if}}</title>
+</head>
+<body>
+  {{> _header}}
+  {{> _navbar}}
+  <div class="container my-4">
+    {{> content}}
+  </div>
+  {{> _footer}}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+</body>
+</html>
