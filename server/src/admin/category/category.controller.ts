@@ -9,6 +9,8 @@ import {
   Post,
   Put,
   Render,
+  Req,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -21,6 +23,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Role } from '@prisma/client';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { RolesGuard } from 'src/common/guard/role.guard';
+import { Response } from 'express';
 
 @Controller('admin/category')
 export class CategoryController {
@@ -42,41 +45,49 @@ export class CategoryController {
 
   @Get('/update/:id')
   @Render('category/update')
-  async renderUpdateCategory() {
-    const categoryList = await this.categoryService.getAllCategories();
-    return { categoryList };
+  async renderUpdateCategory(@Param('id') id: string) {
+    const category = await this.categoryService.getCategoryById(id);
+    return { category };
   }
 
   @Post('/create')
   @HttpCode(HttpStatus.CREATED)
   @ResponseMessage('Create category successfully')
-  // @Roles(Role.ADMIN)
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  async createCategory(@Body() category: CategoryDto) {
-    console.log(category);
-    // return this.categoryService.createCategory(category);
+  @UseInterceptors(FileInterceptor('file'))
+  async createCategory(
+    @Req() req,
+    @Res() res: Response,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const newCategory = await this.categoryService.createCategory(
+      req.body.title,
+    );
+    if (newCategory) {
+      await this.categoryService.uploadThumbnail(file, newCategory.id);
+    }
+
+    res.redirect('/admin/category');
   }
 
-  @Put('/update/:id')
+  @Post('/update/:id')
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Update category successfully')
-  @Roles(Role.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @UseInterceptors(FileInterceptor('thumbnail'))
+  @UseInterceptors(FileInterceptor('file'))
   async updateCategory(
     @Param('id') id: string,
-    @UploadedFile() thumbnail: Express.Multer.File,
-    @Body() category: CategoryDto,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body,
+    @Res() res: Response,
   ) {
-    return this.categoryService.updateCategory(id, category, thumbnail);
+    await this.categoryService.updateCategory(id, body.title, file);
+    res.redirect('/admin/category');
   }
 
-  @Delete('/delete/:id')
+  @Get('/delete/:id')
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Delete category successfully')
-  @Roles(Role.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  async deleteCategory(@Param('id') id: string) {
-    return this.categoryService.deleteCategory(id);
+  async deleteCategory(@Param('id') id: string, @Res() res: Response) {
+    await this.categoryService.deleteCategory(id);
+    res.redirect('/admin/category');
   }
 }

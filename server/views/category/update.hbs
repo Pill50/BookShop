@@ -1,0 +1,30 @@
+{{#> app}}
+  {{#*inline "content"}}
+  <div class="container px-20 min-h-[calc(100vh-180px)]">
+    <h1 class="font-bold text-2xl text-blue-500 text-center mb-2">UPDATE CATEGORY</h1>
+    
+    <form class="max-w-sm mx-auto shadow-lg p-3 rounded-md" method="POST" action="/admin/category/update/{{category.id}}">
+        <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+        <div class="flex mb-2">
+            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6.2V5h11v1.2M8 5v14m-3 0h6m2-6.8V11h8v1.2M17 11v8m-1.5 0h3"/>
+                </svg>
+            </span>
+            <input type="text" id="title" name="title" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Bonnie Green" value="{{category.title}}">
+        </div>
+        <div class="">
+            <img src={{category.thumbnail}}>
+            <label for="file" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Thumbnail</label>
+            <div class="flex mb-2">
+                <input name="file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="thumbnail" type="file" value="{{category.thumbnail}}">
+            </div>
+        </div>
+        <div class="w-full flex justify-end gap-2">
+            <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+        </div>
+    </form>
+
+  </div>
+  {{/inline}}
+{{/app}}

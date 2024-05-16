@@ -20,11 +20,24 @@ export class CategoryService {
     }
   }
 
-  async createCategory(categoryData: CategoryDto) {
+  async getCategoryById(id: string) {
+    try {
+      const category = await this.prismaService.categories.findUnique({
+        where: {
+          id: id,
+        },
+      });
+      return category;
+    } catch (error) {
+      throw exceptionHandler(error);
+    }
+  }
+
+  async createCategory(title: string) {
     try {
       const isExistedCategory = await this.prismaService.categories.findFirst({
         where: {
-          title: categoryData.title,
+          title: title,
         },
       });
 
@@ -37,7 +50,7 @@ export class CategoryService {
 
       const newCategory = await this.prismaService.categories.create({
         data: {
-          title: categoryData.title,
+          title: title,
           thumbnail: process.env.DEFAULT_CATEGORY_IMAGE,
         },
       });
@@ -50,15 +63,14 @@ export class CategoryService {
 
   async updateCategory(
     id: string,
-    categoryData: CategoryDto,
+    title: string,
     thumbnail: Express.Multer.File,
   ) {
     try {
       let url;
-
       const isExistedCategory = await this.prismaService.categories.findFirst({
         where: {
-          title: categoryData.title,
+          title,
         },
       });
 
@@ -82,6 +94,8 @@ export class CategoryService {
         } else {
           url = process.env.DEFAULT_CATEGORY_IMAGE;
         }
+      } else if (isExistedCategory.thumbnail) {
+        url = isExistedCategory.thumbnail;
       } else url = process.env.DEFAULT_CATEGORY_IMAGE;
 
       const updatedCategory = await this.prismaService.categories.update({
@@ -89,7 +103,7 @@ export class CategoryService {
           id: id,
         },
         data: {
-          title: categoryData.title,
+          title: title,
           thumbnail: url,
         },
       });

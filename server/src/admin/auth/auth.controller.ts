@@ -54,7 +54,7 @@ export class AuthController {
       };
       return response.redirect('/admin/book');
     } else {
-      return response.redirect('/auth/login');
+      return response.redirect('/admin/auth/login');
     }
   }
 
