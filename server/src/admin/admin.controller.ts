@@ -1,15 +1,9 @@
-import { Controller, Get, Render } from '@nestjs/common';
+import { Controller, Get, Render, Req } from '@nestjs/common';
 import { AdminService } from './admin.service';
 
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
-
-  @Get()
-  @Render('home')
-  root() {
-    return { message: 'Hello world!' };
-  }
 
   @Get('/about')
   @Render('about')
@@ -17,16 +11,11 @@ export class AdminController {
     return { message: 'About page' };
   }
 
+  // BOOK
   @Get('/book')
   @Render('book/manageBook')
   manageBookPage() {
     return { message: 'About page' };
-  }
-
-  @Get('/category')
-  @Render('category/manageCategory')
-  manageCategoryPage() {
-    return { message: 'Category page' };
   }
 
   @Get('/feedback')
