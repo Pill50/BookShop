@@ -1,0 +1,82 @@
+{{#> app}}
+  {{#*inline "content"}}
+  <div class="container py-4 min-h-[calc(100vh-180px)] px-3">
+    <h1 class="font-bold text-2xl text-blue-500 text-center mb-2">MANAGE PROMOTION PAGE</h1>
+    {{!-- STATISTIC --}}
+    <div class="flex justify-center gap-3 my-3">
+      <div class="shadow-md p-6 bg-red-50 text-center w-[250px]">
+        <h2 class="font-bold text-xl uppercase text-red-600">Total Promotion</h2>
+        <p class="font-semibold text-xl">200</p>
+      </div>
+      <div class="shadow-md p-6 bg-green-50 text-center w-[250px]">
+        <h2 class="font-bold text-xl uppercase text-green-600">On Sale</h2>
+        <p class="font-semibold text-xl">100</p>
+        <p>Expired: <span>50</span></p>
+      </div>
+      <div class="shadow-md p-6 bg-yellow-50 text-center w-[250px]">
+        <h2 class="font-bold text-xl uppercase text-yellow-600">Popular</h2>
+        <p class="font-semibold text-xl">100</p>
+        <p>Expired: <span>50</span></p>
+      </div>
+    </div>
+    {{!-- ACTION --}}
+    <div class="flex justify-between mb-3">
+      <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Create new</button>
+      {{!-- TAB --}}
+      <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
+          <ul class="flex flex-wrap -mb-px">
+              <li class="me-2">
+                  <a href="#" class="inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500" aria-current="page">All</a>
+              </li>
+              <li class="me-2">
+                  <a href="#" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">On Sale</a>
+              </li>
+              <li class="me-2">
+                  <a href="#" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">Popular</a>
+              </li>
+          </ul>
+      </div>
+
+    </div>
+    {{!-- ITEMS --}}
+    <div class="grid grid-cols-3 md:grid-cols-4 gap-4">
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg" alt="">
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg" alt="">
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg" alt="">
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg" alt="">
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg" alt="">
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-5.jpg" alt="">
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-6.jpg" alt="">
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-7.jpg" alt="">
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-8.jpg" alt="">
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-9.jpg" alt="">
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-10.jpg" alt="">
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-11.jpg" alt="">
+        </div>
+    </div>
+  </div>
+  {{/inline}}
+{{/app}}

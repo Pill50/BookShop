@@ -16,10 +16,4 @@ export class AdminController {
   manageFeedbackPage() {
     return { message: 'Feedback page' };
   }
-
-  @Get('/promotion')
-  @Render('Promotion/managePromotion')
-  managePromotionPage() {
-    return { message: 'Promotion page' };
-  }
 }

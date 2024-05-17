@@ -115,14 +115,14 @@ Table orders {
 }
 
 Table promotion {
-  id Int [pk, increment]
+  id String [pk]
   type PromotionType [not null]
   startDate DateTime
   endDate DateTime
   bookId String [not null]
   book books [not null]
   createdAt DateTime [default: `now()`, not null]
-  updateddAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
 }
 
 Table order_details {
