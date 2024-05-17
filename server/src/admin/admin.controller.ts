@@ -11,13 +11,6 @@ export class AdminController {
     return { message: 'About page' };
   }
 
-  // BOOK
-  @Get('/book')
-  @Render('book/manageBook')
-  manageBookPage() {
-    return { message: 'About page' };
-  }
-
   @Get('/feedback')
   @Render('feedback/manageFeedback')
   manageFeedbackPage() {

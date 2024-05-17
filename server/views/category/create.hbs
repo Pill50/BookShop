@@ -1,6 +1,6 @@
 {{#> app}}
   {{#*inline "content"}}
-  <div class="container px-20 min-h-[calc(100vh-180px)]">
+  <div class="container px-20 py-4 min-h-[calc(100vh-180px)]">
     <h1 class="font-bold text-2xl text-blue-500 text-center mb-2">CREATE NEW CATEGORY</h1>
     
     <form class="max-w-sm mx-auto shadow-lg p-3 rounded-md" method="POST" action="/admin/category/create" enctype="multipart/form-data">
@@ -21,7 +21,6 @@
             <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
         </div>
     </form>
-
   </div>
   {{/inline}}
 {{/app}}

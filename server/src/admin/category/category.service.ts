@@ -67,19 +67,12 @@ export class CategoryService {
     thumbnail: Express.Multer.File,
   ) {
     try {
-      let url;
+      let url = '';
       const isExistedCategory = await this.prismaService.categories.findFirst({
         where: {
-          title,
+          id,
         },
       });
-
-      if (isExistedCategory) {
-        throw new HttpException(
-          CategoryError.CATEGORY_IS_EXISTED,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
 
       if (thumbnail) {
         if (thumbnail.size > parseInt(process.env.MAX_FILE_SIZE)) {
@@ -94,7 +87,7 @@ export class CategoryService {
         } else {
           url = process.env.DEFAULT_CATEGORY_IMAGE;
         }
-      } else if (isExistedCategory.thumbnail) {
+      } else if (isExistedCategory && isExistedCategory.thumbnail) {
         url = isExistedCategory.thumbnail;
       } else url = process.env.DEFAULT_CATEGORY_IMAGE;
 

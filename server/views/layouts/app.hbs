@@ -9,12 +9,19 @@
   <title>{{#if viewData.title}}{{ viewData.title }}{{else}}Online Store{{/if}}</title>
 </head>
 <body>
-  {{> _navbar}}
-  {{> _header}}
-    <div class="mt-16 container mx-auto min-h-[calc(100vh - '80px')]">
-      {{> content}}
+  {{!-- {{> _navbar}} --}}
+  <div class="">
+    <div class="sidebar">
+      {{> _sidebar}}
     </div>
-  {{> _footer}}
+    <div class='sm:ml-64'>
+      <div class=''>
+        {{> _header}}
+        {{> content}}
+      </div>
+      {{> _footer}}
+    </div>
+  </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 </body>
 </html>

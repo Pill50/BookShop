@@ -1,15 +1,15 @@
 {{#> app}}
   {{#*inline "content"}}
-  <div class="container px-20 min-h-[calc(100vh-180px)]">
+  <div class="container py-4 min-h-[calc(100vh-180px)]">
     <h1 class="font-bold text-2xl text-blue-500 text-center mb-2">MANAGE CATEGORY PAGE</h1>
-    <div class="overflow-x-auto flex flex-col items-center">
+    <div class="overflow-x-auto p-4">
         <div class="my-2">
             <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" onclick="window.location.href='/admin/category/create'">
                 Create new
             </button>
         </div>
         <div class="">
-            <table class="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 shadow-md sm:rounded-lg">
+            <table class="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 shadow-md sm:rounded-lg w-full">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">
@@ -38,7 +38,7 @@
                         <td class="px-6 py-4">
                             <img src={{thumbnail}} alt={{title}} class="w-10 h-10 object-cover">
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-4 flex flex-wrap">
                             <a class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" href="/admin/category/update/{{id}}">Edit</a>
                             
                             <a class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800" href="/admin/category/delete/{{id}}">Delete</a>

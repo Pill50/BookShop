@@ -8,11 +8,11 @@ import * as hbsUtils from 'hbs-utils';
 import * as bodyParser from 'body-parser';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as session from 'express-session';
+import { isCategorySelected } from './utils/helper';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // app.setGlobalPrefix('api');
   app.enableCors({});
   app.useGlobalPipes(
     new ValidationPipe({
@@ -43,6 +43,7 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   hbs.registerPartials(join(__dirname, '..', 'views', 'layouts'));
   hbs.registerPartials(join(__dirname, '..', 'views', 'partials'));
+  hbs.registerHelper('isCategorySelected', isCategorySelected);
   hbsUtilsInstance.registerWatchedPartials(
     join(__dirname, '..', 'views', 'layouts'),
   );
@@ -70,13 +71,13 @@ async function bootstrap() {
   });
 
   app.use('/admin', function (req: any, res, next) {
-    if (
-      !req.session.user &&
-      !req.url.startsWith('/auth') &&
-      req.session.user?.role !== 'ADMIN'
-    ) {
-      return res.redirect('/admin/auth/login');
-    }
+    // if (
+    //   !req.session.user &&
+    //   !req.url.startsWith('/auth') &&
+    //   req.session.user?.role !== 'ADMIN'
+    // ) {
+    //   return res.redirect('/admin/auth/login');
+    // }
     next();
   });
 

@@ -1,28 +1,17 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
-  HttpCode,
-  HttpStatus,
   Param,
   Post,
-  Put,
   Render,
   Req,
   Res,
   UploadedFile,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { ResponseMessage } from 'src/common/decorators/responseMessage.decorator';
-import { CategoryDto } from './dto/category.dto';
-import { JwtAuthGuard } from 'src/common/guard/jwt.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Role } from '@prisma/client';
-import { Roles } from 'src/common/decorators/role.decorator';
-import { RolesGuard } from 'src/common/guard/role.guard';
 import { Response } from 'express';
 
 @Controller('admin/category')
@@ -51,8 +40,6 @@ export class CategoryController {
   }
 
   @Post('/create')
-  @HttpCode(HttpStatus.CREATED)
-  @ResponseMessage('Create category successfully')
   @UseInterceptors(FileInterceptor('file'))
   async createCategory(
     @Req() req,
@@ -70,8 +57,6 @@ export class CategoryController {
   }
 
   @Post('/update/:id')
-  @HttpCode(HttpStatus.OK)
-  @ResponseMessage('Update category successfully')
   @UseInterceptors(FileInterceptor('file'))
   async updateCategory(
     @Param('id') id: string,
@@ -84,8 +69,6 @@ export class CategoryController {
   }
 
   @Get('/delete/:id')
-  @HttpCode(HttpStatus.OK)
-  @ResponseMessage('Delete category successfully')
   async deleteCategory(@Param('id') id: string, @Res() res: Response) {
     await this.categoryService.deleteCategory(id);
     res.redirect('/admin/category');
