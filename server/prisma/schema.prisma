@@ -128,9 +128,9 @@ model Orders {
   orderDetail   OrderDetails[]
   shipper       Shippers       @relation(fields: [shipperId], references: [id])
   shipperId     String
-  recieverName  String
+  receiverName  String
   address       String
-  recieverPhone String
+  receiverPhone String
   note          String?
   status        OrderStatus
   amount        Float

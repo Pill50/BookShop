@@ -17,12 +17,6 @@ export class AdminController {
     return { message: 'Feedback page' };
   }
 
-  @Get('/order')
-  @Render('order/manageOrder')
-  manageOrderPage() {
-    return { message: 'Order page' };
-  }
-
   @Get('/promotion')
   @Render('Promotion/managePromotion')
   managePromotionPage() {

@@ -8,7 +8,7 @@ import * as hbsUtils from 'hbs-utils';
 import * as bodyParser from 'body-parser';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as session from 'express-session';
-import { isCategorySelected } from './utils/helper';
+import { isCategorySelected, getStatusColorClass } from './utils/helper';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -44,6 +44,8 @@ async function bootstrap() {
   hbs.registerPartials(join(__dirname, '..', 'views', 'layouts'));
   hbs.registerPartials(join(__dirname, '..', 'views', 'partials'));
   hbs.registerHelper('isCategorySelected', isCategorySelected);
+  hbs.registerHelper('getStatusColorClass', getStatusColorClass);
+
   hbsUtilsInstance.registerWatchedPartials(
     join(__dirname, '..', 'views', 'layouts'),
   );

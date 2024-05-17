@@ -1,40 +1,40 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Render,
-  Res,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
-import { GetCurrentUser, ResponseMessage } from 'src/common/decorators';
-import { ResTransformInterceptor } from 'src/common/interceptors/response.interceptor';
+import { Controller, Get, Param, Query, Render, Res } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { JwtAuthGuard } from 'src/common/guard/jwt.guard';
-import { OrderDto } from './dto/order.dto';
+import { OrderStatus } from '@prisma/client';
+import { Response } from 'express';
 
 @Controller('admin/order')
 export class OrderController {
   constructor(private orderService: OrderService) {}
 
-  @Get('/')
-  @Render('book/index')
+  @Get('')
+  @Render('order/index')
   async renderAllOrders(@Res() res: Response) {
     const orders = await this.orderService.getAllOrders();
     return { orders };
   }
 
-  @Post('/create')
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
-  @ResponseMessage('Create order successfully')
-  async createOrder(
-    @GetCurrentUser('id') userId: string,
-    @Body() orderData: OrderDto,
+  @Get('/:id')
+  @Render('order/order_detail')
+  async renderOrderById(@Param('id') id: string, @Res() res: Response) {
+    const order = await this.orderService.getOrderById(id);
+    console.log(order);
+    const totalBook = order.orderDetail.reduce(
+      (acc, orderItem) => acc + orderItem.amount,
+      0,
+    );
+    return { order, totalBook };
+  }
+
+  @Get('/update-status/:id')
+  async updateStatusOrder(
+    @Query('status') status: OrderStatus,
+    @Param('id') id: string,
+    @Res() res: Response,
   ) {
-    return await this.orderService.createOrder(userId, orderData);
+    const response = await this.orderService.updateStatus(id, status);
+    if (response) {
+      res.redirect('/admin/order');
+    }
   }
 }

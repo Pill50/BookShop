@@ -103,9 +103,9 @@ Table orders {
   orderDetail order_details [not null]
   shipper shippers [not null]
   shipperId String [not null]
-  recieverName String [not null]
+  receiverName String [not null]
   address String [not null]
-  recieverPhone String [not null]
+  receiverPhone String [not null]
   note String
   status OrderStatus [not null]
   amount Float [not null]
