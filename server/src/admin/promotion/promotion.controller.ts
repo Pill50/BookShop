@@ -11,6 +11,8 @@ import {
 } from '@nestjs/common';
 import { PromotionService } from './promotion.service';
 import { PromotionType } from '@prisma/client';
+import { PromotionDto } from './dto/promotion.dto';
+import { Response } from 'express';
 
 @Controller('admin/promotion')
 export class PromotionController {
@@ -28,6 +30,30 @@ export class PromotionController {
     }
     promotions = await this.promotionService.getAllPromotions();
     return { promotions };
+  }
+
+  @Get('/create')
+  @Render('promotion/create')
+  async renderCreatePromotion() {}
+
+  @Post('/create')
+  async createPromotion(
+    @Query('bookId') bookId: string,
+    @Body() body: PromotionDto,
+    @Res() res: Response,
+  ) {
+    const data: PromotionDto = {
+      type: body.type,
+      startDate: new Date(body.startDate).toISOString(),
+      endDate: new Date(body.startDate).toISOString(),
+    };
+    const promotion = await this.promotionService.createNewPromotion(
+      bookId,
+      data,
+    );
+    if (promotion) {
+      res.redirect(`/admin/book/${bookId}`);
+    }
   }
 
   @Get('/update/:id')

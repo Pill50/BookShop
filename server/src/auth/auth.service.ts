@@ -109,7 +109,8 @@ export class AuthService {
         },
       };
     } catch (err) {
-      throw new HttpException(err?.message, HttpStatus.BAD_REQUEST);
+      throw new Error(err.message);
+      // throw new HttpException(err?.message, HttpStatus.BAD_REQUEST);
     }
   }
 

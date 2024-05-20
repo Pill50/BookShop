@@ -46,6 +46,13 @@ export class BookController {
     return { bookList };
   }
 
+  @Get('/:id')
+  @Render('book/book-detail')
+  async renderBookDetail(@Param('id') id: string) {
+    const book = await this.bookService.getBookById(id);
+    return { book };
+  }
+
   @Get('/create')
   @Render('book/create')
   async renderCreateBook() {

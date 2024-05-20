@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PromotionType } from '@prisma/client';
 import { exceptionHandler } from 'src/common/errors';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { PromotionDto } from './dto/promotion.dto';
 
 @Injectable()
 export class PromotionService {
@@ -42,19 +43,14 @@ export class PromotionService {
     }
   }
 
-  async createNewPromotion(
-    bookId: string,
-    type: PromotionType,
-    startDate: string,
-    endDate: string,
-  ) {
+  async createNewPromotion(bookId: string, data: PromotionDto) {
     try {
       const promotion = await this.prismaService.promotions.create({
         data: {
           bookId,
-          type,
-          startDate,
-          endDate,
+          type: data.type,
+          startDate: data.startDate,
+          endDate: data.endDate,
         },
       });
       return promotion;

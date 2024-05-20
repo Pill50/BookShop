@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { exceptionHandler } from 'src/common/errors';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { OrderDto } from './dto/order.dto';
 import { OrderStatus } from '@prisma/client';
 
 @Injectable()

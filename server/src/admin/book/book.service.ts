@@ -217,6 +217,13 @@ export class BookService {
               },
             },
           },
+          promotions: {
+            select: {
+              type: true,
+              startDate: true,
+              endDate: true,
+            },
+          },
           feedbacks: {
             include: {
               user: {
@@ -426,12 +433,11 @@ export class BookService {
           const thumbnail_upload =
             await this.cloudinaryService.uploadFile(thumbnail);
           url = thumbnail_upload.secure_url;
-        } 
-        else {
+        } else {
           url = process.env.DEFAULT_CATEGORY_IMAGE;
         }
-      } else if(isExistedBook && isExistedBook.thumbnail) {
-        url = isExistedBook.thumbnail
+      } else if (isExistedBook && isExistedBook.thumbnail) {
+        url = isExistedBook.thumbnail;
       } else {
         url = process.env.DEFAULT_CATEGORY_IMAGE;
       }
