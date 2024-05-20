@@ -128,8 +128,13 @@
                       Shipper: 
                       <span class="font-normal">{{order.shipper.companyName}}</span>
                     </p>
-                    <button type="button" class="text-black bg-gray-300 hover:bg-gray-800 hover:text-white focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800" onclick="window.location.href='/admin/order/update-status/{{order.id}}?status=CANCELED'">Cancel Order</button>
-                    <button type="button" class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800" onclick="window.location.href='/admin/order/update-status/{{order.id}}?status=SHIPPED'">Ship Order</button>
+                    {{#if (eq order.status 'PENDING')}}
+                      <button type="button" class="text-black bg-gray-300 hover:bg-gray-800 hover:text-white focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800" onclick="window.location.href='/admin/order/update-status/{{order.id}}?status=CANCELED'">Cancel Order</button>
+                      <button type="button" class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800" onclick="window.location.href='/admin/order/update-status/{{order.id}}?status=SHIPPED'">Ship Order</button>
+                    {{else if (eq order.status 'SHIPPED')}}
+                      <button type="button" class="text-black bg-gray-300 hover:bg-gray-800 hover:text-white focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800" onclick="window.location.href='/admin/order/update-status/{{order.id}}?status=COMPLETED'">Complete Order</button>
+                      <button type="button" class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800" onclick="window.location.href='/admin/order/update-status/{{order.id}}?status=CANCELED'">Cancel Order</button>
+                    {{/if}}
                   </div>
               </div>
           </div>

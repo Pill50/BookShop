@@ -56,7 +56,7 @@
                         <td class="px-6 py-4">
                             <img src={{thumbnail}} alt={{title}} class="w-20 h-20 object-cover rounded-md">
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-4 font-bold">
                             {{title}}
                         </td>
                         <td class="px-6 py-4">
@@ -80,10 +80,13 @@
                         <td class="px-6 py-4">
                             {{categories}}
                         </td>
-                        <td class="px-6 py-4 flex flex-wrap">
-                            <a class="text-blue-500 underline p-2" href="/admin/book/update/{{id}}">Edit</a>
-                            
-                            <a class="text-blue-500 underline p-2" href="/admin/book/delete/{{id}}">Delete</a>
+                        <td class="flex items-center py-8">
+                            <a class="text-blue-500 underline p-2" href="/admin/book/update/{{id}}">
+                                <img src="/img/icon/edit.svg" alt="Edit">
+                            </a>
+                            <a class="text-blue-500 underline p-2" href="/admin/book/delete/{{id}}">
+                                <img src="/img/icon/delete.svg" alt="Delete">
+                            </a>
                         </td>
                     </tr>
                     {{/each}}

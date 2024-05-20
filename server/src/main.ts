@@ -12,6 +12,7 @@ import {
   isCategorySelected,
   getStatusColorClass,
   formatDate,
+  eq,
 } from './utils/helper';
 
 async function bootstrap() {
@@ -50,6 +51,7 @@ async function bootstrap() {
   hbs.registerHelper('isCategorySelected', isCategorySelected);
   hbs.registerHelper('getStatusColorClass', getStatusColorClass);
   hbs.registerHelper('formatDate', formatDate);
+  hbs.registerHelper('eq', eq);
 
   hbsUtilsInstance.registerWatchedPartials(
     join(__dirname, '..', 'views', 'layouts'),

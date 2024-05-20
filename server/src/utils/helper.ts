@@ -33,3 +33,7 @@ export function formatDate(dateString: string): string {
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
+
+export function eq(a: any, b: any) {
+  return a === b;
+}
