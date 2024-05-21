@@ -40,10 +40,11 @@ export class PromotionController {
       previousPage: pageIndex === 1 ? promotionList.totalPage : pageIndex - 1,
     };
 
-    const tab = type ? type : 'ALL';
-    console.log(promotionList);
+    const statistic = await this.promotionService.getStatisticPromotion();
 
-    return { promotionList, pagination, tab };
+    const tab = type ? type : 'ALL';
+
+    return { promotionList, pagination, tab, statistic };
   }
 
   @Get('/create')

@@ -6,17 +6,17 @@
     <div class="flex justify-center gap-3 my-3">
       <div class="shadow-md p-6 bg-red-50 text-center w-[250px]">
         <h2 class="font-bold text-xl uppercase text-red-600">Total Promotion</h2>
-        <p class="font-semibold text-xl">200</p>
+        <p class="font-semibold text-4xl">{{statistic.totalPromotions}}</p>
       </div>
       <div class="shadow-md p-6 bg-green-50 text-center w-[250px]">
         <h2 class="font-bold text-xl uppercase text-green-600">On Sale</h2>
-        <p class="font-semibold text-xl">100</p>
-        <p>Expired: <span>50</span></p>
+        <p class="font-semibold text-4xl">{{statistic.onSale}}</p>
+        <p>Expired: <span>{{statistic.onSaleExpired}}</span></p>
       </div>
       <div class="shadow-md p-6 bg-yellow-50 text-center w-[250px]">
         <h2 class="font-bold text-xl uppercase text-yellow-600">Popular</h2>
-        <p class="font-semibold text-xl">100</p>
-        <p>Expired: <span>50</span></p>
+        <p class="font-semibold text-4xl">{{statistic.popular}}</p>
+        <p>Expired: <span>{{statistic.onPopularExpired}}</span></p>
       </div>
     </div>
     {{!-- ACTION --}}

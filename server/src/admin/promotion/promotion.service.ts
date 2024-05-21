@@ -47,6 +47,50 @@ export class PromotionService {
     }
   }
 
+  async getStatisticPromotion() {
+    try {
+      const onSale = await this.prismaService.promotions.count({
+        where: {
+          type: 'SALE',
+        },
+      });
+
+      const popular = await this.prismaService.promotions.count({
+        where: {
+          type: 'POPULAR',
+        },
+      });
+
+      const onSaleExpired = await this.prismaService.promotions.count({
+        where: {
+          endDate: {
+            lte: new Date(),
+          },
+        },
+      });
+
+      const onPopularExpired = await this.prismaService.promotions.count({
+        where: {
+          endDate: {
+            lte: new Date(),
+          },
+        },
+      });
+
+      const statisticPromotion = {
+        totalPromotions: onSale + popular,
+        onSale,
+        popular,
+        onSaleExpired,
+        onPopularExpired,
+      };
+
+      return statisticPromotion;
+    } catch (error) {
+      throw exceptionHandler(error);
+    }
+  }
+
   async getPromotionById(id: string) {
     try {
       const promotions = await this.prismaService.promotions.findMany({
