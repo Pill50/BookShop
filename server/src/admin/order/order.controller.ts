@@ -9,9 +9,18 @@ export class OrderController {
 
   @Get('')
   @Render('order/index')
-  async renderAllOrders(@Res() res: Response) {
-    const orders = await this.orderService.getAllOrders();
-    return { orders };
+  async renderAllOrders(@Query('page') page: string) {
+    const pageIndex: number = page ? parseInt(page as string, 10) : 1;
+
+    const orderList = await this.orderService.getAllOrders(pageIndex);
+
+    const pagination = {
+      currentPage: pageIndex,
+      nextPage: pageIndex === orderList.totalPage ? 1 : pageIndex + 1,
+      previousPage: pageIndex === 1 ? orderList.totalPage : pageIndex - 1,
+    };
+
+    return { orderList, pagination };
   }
 
   @Get('/:id')

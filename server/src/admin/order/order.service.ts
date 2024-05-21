@@ -7,14 +7,29 @@ import { OrderStatus } from '@prisma/client';
 export class OrderService {
   constructor(private prismaService: PrismaService) {}
 
-  async getAllOrders() {
+  async getAllOrders(pageIndex: number = 1) {
     try {
-      const orders = await this.prismaService.orders.findMany({
-        include: {
-          shipper: true,
-        },
-      });
-      return orders;
+      const take = 10;
+      const skip = (pageIndex - 1) * take;
+
+      const [orders, totalRecord] = await Promise.all([
+        this.prismaService.orders.findMany({
+          skip,
+          take,
+          include: {
+            shipper: true,
+          },
+        }),
+        this.prismaService.orders.count(),
+      ]);
+
+      const totalPage = Math.ceil(totalRecord / take);
+
+      return {
+        orders,
+        totalPage,
+        totalRecord,
+      };
     } catch (error) {
       throw exceptionHandler(error);
     }
