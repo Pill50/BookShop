@@ -13,6 +13,7 @@ import {
   getStatusColorClass,
   formatDate,
   eq,
+  gte,
 } from './utils/helper';
 
 async function bootstrap() {
@@ -52,6 +53,7 @@ async function bootstrap() {
   hbs.registerHelper('getStatusColorClass', getStatusColorClass);
   hbs.registerHelper('formatDate', formatDate);
   hbs.registerHelper('eq', eq);
+  hbs.registerHelper('gte', gte);
 
   hbsUtilsInstance.registerWatchedPartials(
     join(__dirname, '..', 'views', 'layouts'),

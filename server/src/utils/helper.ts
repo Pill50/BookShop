@@ -37,3 +37,7 @@ export function formatDate(dateString: string): string {
 export function eq(a: any, b: any) {
   return a === b;
 }
+
+export function gte(a: any, b: any) {
+  return a >= b;
+}

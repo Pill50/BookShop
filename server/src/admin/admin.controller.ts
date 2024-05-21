@@ -10,10 +10,4 @@ export class AdminController {
   aboutPage() {
     return { message: 'About page' };
   }
-
-  @Get('/feedback')
-  @Render('feedback/manageFeedback')
-  manageFeedbackPage() {
-    return { message: 'Feedback page' };
-  }
 }
