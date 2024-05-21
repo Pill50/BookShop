@@ -63,7 +63,7 @@
                 </thead>
                 <tbody>
                     {{#each bookList.books}}
-                    <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-blue-100 cursor-pointer" onclick="window.location.href='/admin/book/{{this.id}}'">
+                    <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 cursor-pointer" onclick="window.location.href='/admin/book/{{this.id}}'">
                         <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{@index}}
                         </td>
@@ -94,11 +94,11 @@
                         <td class="px-6 py-4">
                             {{categories}}
                         </td>
-                        <td class="flex items-center py-8">
-                            <a class="text-blue-500 underline p-2" href="/admin/book/update/{{id}}">
+                        <td class="flex items-center py-8 z-100">
+                            <a class="text-blue-500 underline p-2 hover:bg-blue-100 hover:rounded-md" href="/admin/book/update/{{id}}">
                                 <img src="/img/icon/edit.svg" alt="Edit">
                             </a>
-                            <a class="text-blue-500 underline p-2" href="/admin/book/delete/{{id}}">
+                            <a class="text-blue-500 underline p-2 hover:bg-red-100 hover:rounded-md" href="/admin/book/delete/{{id}}">
                                 <img src="/img/icon/delete.svg" alt="Delete">
                             </a>
                         </td>
