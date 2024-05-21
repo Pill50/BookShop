@@ -8,23 +8,40 @@ import { PromotionDto } from './dto/promotion.dto';
 export class PromotionService {
   constructor(private prismaService: PrismaService) {}
 
-  async getAllPromotions() {
+  async getAllPromotions(pageIndex: number = 1, type?: PromotionType) {
     try {
-      const promotions = await this.prismaService.promotions.findMany();
-      return promotions;
-    } catch (error) {
-      throw exceptionHandler(error);
-    }
-  }
+      const take = 10;
+      const skip = (pageIndex - 1) * take;
 
-  async getPromotionByType(type: PromotionType) {
-    try {
-      const promotions = await this.prismaService.promotions.findMany({
-        where: {
-          type,
-        },
-      });
-      return promotions;
+      const filter = type ? { type } : {};
+
+      const [promotions, totalRecord] = await Promise.all([
+        this.prismaService.promotions.findMany({
+          skip,
+          take,
+          where: filter,
+          include: {
+            book: {
+              select: {
+                title: true,
+                thumbnail: true,
+                description: true,
+              },
+            },
+          },
+        }),
+        this.prismaService.promotions.count({
+          where: filter,
+        }),
+      ]);
+
+      const totalPage = Math.ceil(totalRecord / take);
+
+      return {
+        promotions,
+        totalPage,
+        totalRecord,
+      };
     } catch (error) {
       throw exceptionHandler(error);
     }

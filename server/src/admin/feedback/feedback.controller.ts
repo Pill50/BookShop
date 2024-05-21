@@ -17,7 +17,6 @@ export class FeedbackController {
       previousPage: pageIndex === 1 ? feedbackList.totalPage : pageIndex - 1,
     };
 
-    console.log('feedbackList', feedbackList);
     return { feedbackList, pagination };
   }
 }

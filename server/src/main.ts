@@ -14,6 +14,7 @@ import {
   formatDate,
   eq,
   gte,
+  getTypePromotion,
 } from './utils/helper';
 
 async function bootstrap() {
@@ -51,6 +52,7 @@ async function bootstrap() {
   hbs.registerPartials(join(__dirname, '..', 'views', 'partials'));
   hbs.registerHelper('isCategorySelected', isCategorySelected);
   hbs.registerHelper('getStatusColorClass', getStatusColorClass);
+  hbs.registerHelper('getTypePromotion', getTypePromotion);
   hbs.registerHelper('formatDate', formatDate);
   hbs.registerHelper('eq', eq);
   hbs.registerHelper('gte', gte);

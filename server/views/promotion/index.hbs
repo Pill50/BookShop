@@ -20,62 +20,54 @@
       </div>
     </div>
     {{!-- ACTION --}}
-    <div class="flex justify-between mb-3">
-      <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Create new</button>
+    <div class="flex justify-between mb-3 items-center">
       {{!-- TAB --}}
-      <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
+      <div class="ml-[50%] translate-x-[-50%] text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
           <ul class="flex flex-wrap -mb-px">
               <li class="me-2">
-                  <a href="#" class="inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500" aria-current="page">All</a>
+                  <a href="/admin/promotion?page={{pagination.currentPage}}" class="{{getTypePromotion this.tab 'ALL'}}">All</a>
               </li>
               <li class="me-2">
-                  <a href="#" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">On Sale</a>
+                  <a href="/admin/promotion?page={{pagination.currentPage}}&type=SALE" class="{{getTypePromotion this.tab 'SALE'}}">On Sale</a>
               </li>
               <li class="me-2">
-                  <a href="#" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">Popular</a>
+                  <a href="/admin/promotion?page={{pagination.currentPage}}&type=POPULAR" class="{{getTypePromotion this.tab 'POPULAR'}}" data-tab="POPULAR">Popular</a>
               </li>
           </ul>
       </div>
-
+      {{!-- PAGINATION --}}
+      <nav class="text-right">
+        <ul class="inline-flex -space-x-px text-sm">
+            <li>
+                <a href="/admin/order?page={{pagination.previousPage}}" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+                </li>
+            <li>
+                <p class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-blue-100 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{{pagination.currentPage}}</p>
+            </li>
+            <li>
+                <a href="/admin/order?page={{pagination.nextPage}}" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
+            </li>
+        </ul>
+        </nav>
     </div>
     {{!-- ITEMS --}}
     <div class="grid grid-cols-3 md:grid-cols-4 gap-4">
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg" alt="">
-        </div>
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg" alt="">
-        </div>
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg" alt="">
-        </div>
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg" alt="">
-        </div>
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg" alt="">
-        </div>
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-5.jpg" alt="">
-        </div>
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-6.jpg" alt="">
-        </div>
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-7.jpg" alt="">
-        </div>
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-8.jpg" alt="">
-        </div>
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-9.jpg" alt="">
-        </div>
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-10.jpg" alt="">
-        </div>
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-11.jpg" alt="">
-        </div>
+        {{#each promotionList.promotions}}
+            <div class="max-w-full bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col">
+                <img class="rounded-t-lg" src="{{book.thumbnail}}" alt="{{book.title}}" />
+                <div class="p-5 flex-grow">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{book.title}}</h5>
+                    <p class="font-normal text-gray-700 dark:text-gray-400 truncate ...">{{book.description}}</p>
+                </div>
+                <div class="p-2 rounded-md bg-red-100 mt-auto mx-4 mb-4">
+                    <p class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        {{type}}
+                    </p>
+                    <p class="font-semibold">Start date: <span class="text-red-600">{{formatDate startDate}}</span></p>
+                    <p class="font-semibold">End date: <span class="text-red-600">{{formatDate endDate}}</span></p>
+                </div>
+            </div>
+        {{/each}}
     </div>
   </div>
   {{/inline}}

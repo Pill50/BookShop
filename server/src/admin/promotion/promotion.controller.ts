@@ -13,6 +13,7 @@ import { PromotionService } from './promotion.service';
 import { PromotionType } from '@prisma/client';
 import { PromotionDto } from './dto/promotion.dto';
 import { Response } from 'express';
+import { FilterPromotionDto } from './dto/filterPromotion.dto';
 
 @Controller('admin/promotion')
 export class PromotionController {
@@ -20,16 +21,29 @@ export class PromotionController {
 
   @Get('')
   @Render('promotion/index')
-  async renderAllPromotions(
-    @Res() res: Response,
-    @Query('type') type: PromotionType,
-  ) {
-    let promotions: any;
-    if (type) {
-      promotions = await this.promotionService.getPromotionByType(type);
-    }
-    promotions = await this.promotionService.getAllPromotions();
-    return { promotions };
+  async renderAllPromotions(@Query() filter: FilterPromotionDto) {
+    const pageIndex: number | 1 = filter.page
+      ? parseInt(filter.page as string, 10)
+      : 1;
+    const type: PromotionType | undefined = filter.type
+      ? filter.type
+      : undefined;
+
+    const promotionList = await this.promotionService.getAllPromotions(
+      pageIndex,
+      type,
+    );
+
+    const pagination = {
+      currentPage: pageIndex,
+      nextPage: pageIndex === promotionList.totalPage ? 1 : pageIndex + 1,
+      previousPage: pageIndex === 1 ? promotionList.totalPage : pageIndex - 1,
+    };
+
+    const tab = type ? type : 'ALL';
+    console.log(promotionList);
+
+    return { promotionList, pagination, tab };
   }
 
   @Get('/create')
