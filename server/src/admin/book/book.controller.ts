@@ -1,8 +1,10 @@
+import { FilterBookDto } from './dto/filterBook.dto';
 import {
   Controller,
   Get,
   Param,
   Post,
+  Query,
   Render,
   Req,
   Res,
@@ -24,26 +26,45 @@ export class BookController {
 
   @Get('/')
   @Render('book/index')
-  async renderAllBooks(@Res() res: Response) {
-    const filterData = {
-      pageIndex: 1,
-      keyword: undefined,
-      publisherId: undefined,
-      categories: undefined,
-      sortByPrice: undefined,
-      sortBySoldAmount: undefined,
-      sortByDate: undefined,
-    };
+  async renderAllBooks(@Res() res: Response, @Query() filter: FilterBookDto) {
+    const pageIndex: number | undefined = filter.page
+      ? parseInt(filter.page as string, 10)
+      : 1;
+    const keyword: string | undefined = filter.keyword
+      ? (filter.keyword as string)
+      : undefined;
+    const publisherId: string[] | undefined = filter.publisherId
+      ? (filter.publisherId.split(',') as string[])
+      : undefined;
+    const categories: string[] | undefined = filter.categories
+      ? (filter.categories.split(',') as string[])
+      : undefined;
+    const sortByPrice: string | undefined = filter.sortByPrice
+      ? (filter.sortByPrice as string)
+      : undefined;
+    const sortBySoldAmount: string | undefined = filter.sortBySoldAmount
+      ? (filter.sortBySoldAmount as string)
+      : undefined;
+    const sortByDate: string | undefined = filter.sortByDate
+      ? (filter.sortByDate as string)
+      : undefined;
+
     const bookList = await this.bookService.getAllBooks(
-      filterData.pageIndex,
-      filterData.keyword,
-      filterData.publisherId,
-      filterData.categories,
-      filterData.sortByPrice,
-      filterData.sortBySoldAmount,
-      filterData.sortByDate,
+      pageIndex,
+      keyword,
+      publisherId,
+      categories,
+      sortByPrice,
+      sortBySoldAmount,
+      sortByDate,
     );
-    return { bookList };
+
+    const pagination = {
+      currentPage: pageIndex,
+      nextPage: pageIndex === bookList.totalPage ? 1 : pageIndex + 1,
+      previousPage: pageIndex === 1 ? bookList.totalPage : pageIndex - 1,
+    };
+    return { bookList, pagination };
   }
 
   @Get('/create')
