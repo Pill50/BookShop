@@ -88,13 +88,13 @@ async function bootstrap() {
   });
 
   app.use('/admin', function (req: any, res, next) {
-    // if (
-    //   !req.session.user &&
-    //   !req.url.startsWith('/auth') &&
-    //   req.session.user?.role !== 'ADMIN'
-    // ) {
-    //   return res.redirect('/admin/auth/login');
-    // }
+    if (
+      !req.session.user &&
+      !req.url.startsWith('/auth') &&
+      req.session.user?.role !== 'ADMIN'
+    ) {
+      return res.redirect('/admin/auth/login');
+    }
     next();
   });
 

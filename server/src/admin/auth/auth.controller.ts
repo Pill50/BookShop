@@ -20,10 +20,6 @@ export class AuthController {
   @Render('auth/login')
   login() {}
 
-  @Get('/register')
-  @Render('auth/register')
-  register() {}
-
   @Post('/store')
   async store(@Res() response: Response, @Req() request: any) {
     const toValidate: string[] = ['email', 'password', 'confirmPassword'];
@@ -50,6 +46,7 @@ export class AuthController {
       request.session.user = {
         id: user.id,
         name: user.displayName,
+        avatar: user.avatar,
         role: user.role,
       };
       return response.redirect('/admin/book');
@@ -60,7 +57,8 @@ export class AuthController {
 
   @Get('/logout')
   @Redirect('/')
-  logout(@Req() request) {
+  logout(@Req() request, @Res() response: Response) {
     request.session.user = null;
+    response.redirect('/admin/auth/login');
   }
 }
