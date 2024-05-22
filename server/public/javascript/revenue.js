@@ -3,7 +3,6 @@ fetch('http://localhost:8080/admin/dashboard/getRevenueChartData', {
 })
   .then((res) => res.json())
   .then((resData) => {
-    console.log(resData.revenueChartData);
     renderChart(resData.revenueChartData);
   })
   .catch((error) => {

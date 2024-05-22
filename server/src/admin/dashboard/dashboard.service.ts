@@ -190,4 +190,52 @@ export class DashboardService {
       throw exceptionHandler(err);
     }
   }
+
+  async getRecentlyOrder() {
+    try {
+      const recentlyOrders = await this.prismaService.orders.findMany({
+        take: 6,
+        where: {
+          status: 'PENDING',
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        include: {
+          user: {
+            select: {
+              displayName: true,
+              avatar: true,
+            },
+          },
+        },
+      });
+
+      return recentlyOrders;
+    } catch (err) {
+      throw exceptionHandler(err);
+    }
+  }
+
+  async getStatistics() {
+    try {
+      const users = await this.prismaService.users.count();
+      const books = await this.prismaService.books.count();
+      const feedbacks = await this.prismaService.feedbacks.count();
+      const categories = await this.prismaService.categories.count();
+      const shippers = await this.prismaService.shippers.count();
+      const promotions = await this.prismaService.promotions.count();
+
+      return {
+        users,
+        books,
+        feedbacks,
+        categories,
+        shippers,
+        promotions,
+      };
+    } catch (err) {
+      throw exceptionHandler(err);
+    }
+  }
 }

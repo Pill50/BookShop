@@ -9,8 +9,9 @@ export class DashboardController {
   @Render('dashboard/index')
   async renderDashboard() {
     const cardStatistic = await this.dashboardService.getStatisticCard();
-
-    return { cardStatistic };
+    const recentlyOrders = await this.dashboardService.getRecentlyOrder();
+    const statistics = await this.dashboardService.getStatistics();
+    return { cardStatistic, recentlyOrders, statistics };
   }
 
   @Get('/getRevenueChartData')
