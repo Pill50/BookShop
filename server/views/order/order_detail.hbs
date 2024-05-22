@@ -8,7 +8,7 @@
             <table class="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 shadow-md sm:rounded-lg w-full">
                 <thead class="text-xs text-blue-700 uppercase bg-blue-50 dark:bg-blue-700 dark:text-blue-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" class="px-6 py-3 rounded-tl-md">
                             Image Info
                         </th>
                         <th scope="col" class="px-3 py-3">
@@ -20,16 +20,16 @@
                         <th scope="col" class="px-3 py-3">
                             Total Price
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" class="px-6 py-3 rounded-tr-md">
                             Order Date
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each order.orderDetail}}
-                    <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-blue-100">
+                    <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-blue-100 ">
                         <td class="px-6 py-4">
-                            <img src="{{this.book.thumbnail}}" alt="{{this.book.title}}">
+                            <img src="{{this.book.thumbnail}}" alt="{{this.book.title}}" class="w-20 h-20 object-cover">
                             <p class="font-semibold max-w-[200px] truncate ...">
                               {{this.book.title}}
                             </p>

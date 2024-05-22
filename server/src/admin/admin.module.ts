@@ -6,6 +6,7 @@ import { OrderModule } from './order/order.module';
 import { PromotionModule } from './promotion/promotion.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { AboutModule } from './about/about.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   controllers: [],
@@ -18,6 +19,7 @@ import { AboutModule } from './about/about.module';
     PromotionModule,
     FeedbackModule,
     AboutModule,
+    DashboardModule,
   ],
 })
 export class AdminModule {}

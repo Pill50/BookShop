@@ -50,6 +50,7 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   hbs.registerPartials(join(__dirname, '..', 'views', 'layouts'));
   hbs.registerPartials(join(__dirname, '..', 'views', 'partials'));
+  hbs.registerPartials(join(__dirname, '..', 'views', 'dashboard'));
   hbs.registerHelper('isCategorySelected', isCategorySelected);
   hbs.registerHelper('getStatusColorClass', getStatusColorClass);
   hbs.registerHelper('getTypePromotion', getTypePromotion);
@@ -62,6 +63,9 @@ async function bootstrap() {
   );
   hbsUtilsInstance.registerWatchedPartials(
     join(__dirname, '..', 'views', 'partials'),
+  );
+  hbsUtilsInstance.registerWatchedPartials(
+    join(__dirname, '..', 'views', 'dashboard'),
   );
   app.setViewEngine('hbs');
 

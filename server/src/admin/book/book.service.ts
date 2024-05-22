@@ -13,13 +13,13 @@ export class BookService {
   ) {}
 
   async getAllBooks(
-    pageIndex: number,
-    keyword: string,
-    publisherId: string[],
-    categories: string[],
-    sortByPrice: string,
-    sortBySoldAmount: string,
-    sortByDate: string,
+    pageIndex: number = 1,
+    keyword?: string,
+    publisherId?: string[],
+    categories?: string[],
+    sortByPrice?: string,
+    sortBySoldAmount?: string,
+    sortByDate?: string,
   ) {
     try {
       // Filter where condition with (keyword, category)
