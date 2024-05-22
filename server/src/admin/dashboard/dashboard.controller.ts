@@ -1,9 +1,5 @@
 import { Controller, Get, Render } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
-import { CategoryService } from '../category/category.service';
-import { FeedbackService } from '../feedback/feedback.service';
-import { OrderService } from '../order/order.service';
-import { BookService } from '../book/book.service';
 
 @Controller('admin/dashboard')
 export class DashboardController {
@@ -11,10 +7,23 @@ export class DashboardController {
 
   @Get('/')
   @Render('dashboard/index')
-  async rendergGetAllCategories() {
+  async renderDashboard() {
     const cardStatistic = await this.dashboardService.getStatisticCard();
 
-    console.log(cardStatistic);
     return { cardStatistic };
+  }
+
+  @Get('/getRevenueChartData')
+  async getRevenueChartData() {
+    const revenueChartData = await this.dashboardService.getRevenueChartData();
+
+    return { revenueChartData };
+  }
+
+  @Get('/getFeedbackPieData')
+  async getFeedbackPieData() {
+    const feedbackPieData = await this.dashboardService.getFeedbackPieData();
+
+    return { feedbackPieData };
   }
 }

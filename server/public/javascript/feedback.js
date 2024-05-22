@@ -1,6 +1,21 @@
-const getChartOptions = () => {
-  return {
-    series: [60, 30, 10],
+fetch('http://localhost:8080/admin/dashboard/getFeedbackPieData', {
+  method: 'GET',
+})
+  .then((res) => res.json())
+  .then((resData) => {
+    renderPieChart(resData.feedbackPieData);
+  })
+  .catch((error) => {
+    console.error('Error fetching data:', error);
+  });
+
+const renderPieChart = (feedbackData) => {
+  const options = {
+    series: [
+      feedbackData.positiveFeedback,
+      feedbackData.goodFeedback,
+      feedbackData.negativeFeedback,
+    ],
     colors: ['#16BDCA', '#9061F9', '#DB4437'],
     chart: {
       height: 420,
@@ -54,15 +69,15 @@ const getChartOptions = () => {
       },
     },
   };
-};
 
-if (
-  document.getElementById('feedback-chart') &&
-  typeof ApexCharts !== 'undefined'
-) {
-  const chart = new ApexCharts(
-    document.getElementById('feedback-chart'),
-    getChartOptions(),
-  );
-  chart.render();
-}
+  if (
+    document.getElementById('feedback-chart') &&
+    typeof ApexCharts !== 'undefined'
+  ) {
+    const chart = new ApexCharts(
+      document.getElementById('feedback-chart'),
+      options,
+    );
+    chart.render();
+  }
+};
