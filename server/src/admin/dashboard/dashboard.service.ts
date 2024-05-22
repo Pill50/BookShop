@@ -238,4 +238,57 @@ export class DashboardService {
       throw exceptionHandler(err);
     }
   }
+
+  async getBestSellerProduct() {
+    try {
+      const books = await this.prismaService.books.findMany({
+        take: 10,
+        where: {
+          isDeleted: false,
+        },
+        orderBy: {
+          soldNumber: 'desc',
+        },
+        include: {
+          author: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+      return books;
+    } catch (err) {
+      throw exceptionHandler(err);
+    }
+  }
+
+  async getNewFeedback() {
+    try {
+      const feedbacks = await this.prismaService.feedbacks.findMany({
+        take: 10,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        include: {
+          user: {
+            select: {
+              displayName: true,
+            },
+          },
+          book: {
+            select: {
+              title: true,
+              thumbnail: true,
+            },
+          },
+        },
+      });
+
+      return feedbacks;
+    } catch (err) {
+      throw exceptionHandler(err);
+    }
+  }
 }

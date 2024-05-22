@@ -11,7 +11,17 @@ export class DashboardController {
     const cardStatistic = await this.dashboardService.getStatisticCard();
     const recentlyOrders = await this.dashboardService.getRecentlyOrder();
     const statistics = await this.dashboardService.getStatistics();
-    return { cardStatistic, recentlyOrders, statistics };
+    const bestSellers = await this.dashboardService.getBestSellerProduct();
+    const newFeedbacks = await this.dashboardService.getNewFeedback();
+
+    console.log(newFeedbacks);
+    return {
+      cardStatistic,
+      recentlyOrders,
+      statistics,
+      bestSellers,
+      newFeedbacks,
+    };
   }
 
   @Get('/getRevenueChartData')
