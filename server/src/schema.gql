@@ -1,0 +1,108 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthResponse {
+  accessToken: String!
+  refreshToken: String!
+  user: User!
+}
+
+input ChangePasswordDto {
+  confirmPassword: String!
+  newPassword: String!
+  oldPassword: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input ForgotPasswordDto {
+  email: String!
+}
+
+input LoginDto {
+  email: String!
+  password: String!
+}
+
+type LogoutResponse {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type Mutation {
+  changePassword(changePasswordInput: ChangePasswordDto!): String!
+  checkValid(tokenInput: TokenDto!): Boolean!
+  confirmEmail(tokenInput: TokenDto!): AuthResponse!
+  forgotPassword(forgotPasswordInput: ForgotPasswordDto!): String!
+  login(loginInput: LoginDto!): AuthResponse!
+  logout: LogoutResponse!
+  oauth(oauthInput: OAuthDto!): AuthResponse!
+  refreshTokens(refreshTokensInput: RefreshTokensDto!): Tokens!
+  register(registerInput: RegisterDto!): Boolean!
+  resetPassword(resetPasswordInput: ResetPasswordDto!): AuthResponse!
+}
+
+input OAuthDto {
+  authId: String!
+  avatar: String!
+  displayName: String!
+  email: String!
+  loginFrom: String!
+}
+
+type Query {
+  getMe: User!
+}
+
+input RefreshTokensDto {
+  refreshToken: String!
+}
+
+input RegisterDto {
+  confirmPassword: String!
+  displayName: String!
+  email: String!
+  password: String!
+}
+
+input ResetPasswordDto {
+  confirmPassword: String!
+  password: String!
+  token: String!
+}
+
+input TokenDto {
+  token: String!
+}
+
+type Tokens {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type User {
+  accessToken: String
+  address: String
+  attempts: Float!
+  authId: String
+  avatar: String
+  confirmToken: String
+  createdAt: DateTime!
+  displayName: String
+  email: String!
+  gender: String
+  id: String
+  isLogin: Boolean!
+  loginFrom: String
+  password: String
+  phone: String
+  refreshToken: String
+  resetToken: String
+  role: String!
+  status: Float!
+  updatedAt: DateTime!
+}

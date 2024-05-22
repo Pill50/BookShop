@@ -1,0 +1,197 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table users {
+  id String [pk]
+  authId String
+  email String [unique, not null]
+  address String
+  password String
+  avatar String
+  displayName String [not null]
+  gender Gender
+  phone String
+  isLogin Boolean [not null]
+  loginFrom String
+  status Int [not null]
+  attempts Int [not null, default: 0]
+  role Role [not null, default: 'CUSTOMER']
+  feedbacks feedbacks [not null]
+  orders orders [not null]
+  accessToken String
+  confirmToken String
+  refreshToken String
+  resetToken String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table books {
+  id String [pk]
+  categories book_categories [not null]
+  author authors [not null]
+  authorId String [not null]
+  publisher publishers [not null]
+  publisherId String [not null]
+  feedbacks feedbacks [not null]
+  OrderDetails order_details [not null]
+  promotions promotion [not null]
+  thumbnail String [not null]
+  title String [not null]
+  slug String [not null]
+  description String [not null]
+  price Float [not null]
+  discount Int [not null, default: 0]
+  amount Int [not null, default: 0]
+  soldNumber Int [not null, default: 0]
+  isDeleted Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table categories {
+  id String [pk]
+  books book_categories [not null]
+  title String [not null]
+  thumbnail String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table publishers {
+  id String [pk]
+  name String [not null]
+  books books [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table authors {
+  id String [pk]
+  name String [not null]
+  books books [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table feedbacks {
+  id String [pk]
+  book books [not null]
+  bookId String [not null]
+  user users [not null]
+  userId String [not null]
+  rating Int [not null, default: 1]
+  content String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table shippers {
+  id String [pk]
+  companyName String [not null]
+  phone String [not null]
+  order orders [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table orders {
+  id String [pk]
+  user users [not null]
+  userId String [not null]
+  orderDetail order_details [not null]
+  shipper shippers [not null]
+  shipperId String [not null]
+  receiverName String [not null]
+  address String [not null]
+  receiverPhone String [not null]
+  note String
+  status OrderStatus [not null]
+  amount Float [not null]
+  totalPrice Float [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table promotion {
+  id String [pk]
+  type PromotionType [not null]
+  startDate DateTime
+  endDate DateTime
+  bookId String [not null]
+  book books [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+}
+
+Table order_details {
+  id String [pk]
+  order orders [not null]
+  orderId String [not null]
+  book books [not null]
+  bookId String [not null]
+  amount Int [not null]
+  price Int [not null]
+  totalPrice Int [not null]
+  discount Int [not null]
+  orderDate DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table book_categories {
+  books books
+  booksId String [not null]
+  categories categories
+  categoryId String [not null]
+
+  indexes {
+    (booksId, categoryId) [pk]
+  }
+}
+
+Enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+Enum OrderStatus {
+  PENDING
+  COMPLETED
+  SHIPPED
+  CANCELED
+}
+
+Enum Gender {
+  MALE
+  FEMALE
+  ANOTHER
+}
+
+Enum PromotionType {
+  SALE
+  POPULAR
+}
+
+Ref: books.authorId > authors.id
+
+Ref: books.publisherId > publishers.id
+
+Ref: feedbacks.bookId > books.id
+
+Ref: feedbacks.userId > users.id
+
+Ref: orders.userId > users.id
+
+Ref: orders.shipperId > shippers.id
+
+Ref: promotion.bookId > books.id
+
+Ref: order_details.orderId > orders.id
+
+Ref: order_details.bookId > books.id
+
+Ref: book_categories.booksId > books.id [delete: Cascade]
+
+Ref: book_categories.categoryId > categories.id [delete: Cascade]

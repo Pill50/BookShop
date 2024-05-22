@@ -1,0 +1,57 @@
+<div class='relative overflow-x-auto shadow-md sm:rounded-lg'>
+  <table
+    class='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'
+  >
+    <thead
+      class='text-xs text-blue-700 uppercase bg-blue-50 dark:bg-blue-700 dark:text-blue-400'
+    >
+      <tr>
+        <th scope='col' class='px-6 py-3'>
+          Product name
+        </th>
+        <th scope='col' class='px-6 py-3'>
+          User
+        </th>
+        <th scope='col' class='px-6 py-3'>
+          Content
+        </th>
+        <th scope='col' class='px-6 py-3'>
+          Rating
+        </th>
+        <th scope='col' class='px-6 py-3'>
+          Created at
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each newFeedbacks}}
+        <tr
+          class='bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'
+        >
+          <th
+            scope='row'
+            class='px-3 py-4 font-medium text-gray-900 dark:text-white max-w-[200px]'
+          >
+            <p class='whitespace-normal break-words'>
+              {{this.book.title}}
+            </p>
+          </th>
+          <td class='px-6 py-4'>
+            {{this.user.displayName}}
+          </td>
+          <td class='px-6 py-4'>
+            <p class='whitespace-normal break-words'>
+              {{this.content}}
+            </p>
+          </td>
+          <td class='px-6 py-4 review__rating'>
+            {{this.rating}}
+          </td>
+          <td class='px-6 py-4'>
+            {{formatDate this.createdAt}}
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

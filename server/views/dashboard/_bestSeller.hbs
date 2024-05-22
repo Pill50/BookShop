@@ -1,0 +1,59 @@
+<div class='relative overflow-x-auto shadow-md sm:rounded-lg'>
+  <table
+    class='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'
+  >
+    <thead
+      class='text-xs text-blue-700 uppercase bg-blue-50 dark:bg-blue-700 dark:text-blue-400'
+    >
+      <tr>
+        <th scope='col' class='px-9 py-3'>
+        </th>
+        <th scope='col' class='px-3 py-3 whitespace-wrap'>
+          Product name
+        </th>
+        <th scope='col' class='px-6 py-3'>
+          Author
+        </th>
+        <th scope='col' class='px-6 py-3'>
+          Price
+        </th>
+        <th scope='col' class='px-6 py-3'>
+          Sold Number
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each bestSellers}}
+        <tr
+          class='bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'
+        >
+          <td class='p-3'>
+            <img
+              src='{{this.thumbnail}}'
+              alt='{{this.title}}'
+              class='w-16 h-16 rounded-md object-cover'
+            />
+          </td>
+          <th
+            scope='row'
+            class='px-3 py-4 font-medium text-gray-900 dark:text-white max-w-[200px]'
+          >
+            <p class='whitespace-normal break-words'>
+              {{this.title}}
+            </p>
+          </th>
+          <td class='px-3 py-4'>
+            {{this.author.name}}
+          </td>
+          <td class='px-6 py-4'>
+            {{this.price}}
+            VNĐ
+          </td>
+          <td class='px-6 py-4 font-bold text-blue-500'>
+            {{this.soldNumber}}
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

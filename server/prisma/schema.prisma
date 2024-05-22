@@ -1,0 +1,205 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id           String      @id @default(uuid())
+  authId       String?
+  email        String      @unique
+  address      String?
+  password     String?
+  avatar       String?
+  displayName  String
+  gender       Gender?
+  phone        String?
+  isLogin      Boolean
+  loginFrom    String?
+  status       Int
+  attempts     Int         @default(0)
+  role         Role        @default(CUSTOMER)
+  feedbacks    Feedbacks[]
+  orders       Orders[]
+  accessToken  String?
+  confirmToken String?
+  refreshToken String?
+  resetToken   String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([email], name: "user_email")
+  @@map(name: "users")
+}
+
+model Books {
+  id           String            @id @default(uuid())
+  categories   Book_Categories[]
+  author       Authors           @relation(fields: [authorId], references: [id])
+  authorId     String
+  publisher    Publishers        @relation(fields: [publisherId], references: [id])
+  publisherId  String
+  feedbacks    Feedbacks[]
+  OrderDetails OrderDetails[]
+  promotions   Promotions[]
+  thumbnail    String
+  title        String
+  slug         String
+  description  String
+  price        Float
+  discount     Int               @default(0)
+  amount       Int               @default(0)
+  soldNumber   Int               @default(0)
+  isDeleted    Boolean           @default(false)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([slug], name: "book_slug")
+  @@map(name: "books")
+}
+
+model Categories {
+  id        String            @id @default(uuid())
+  books     Book_Categories[]
+  title     String
+  thumbnail String
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@map(name: "categories")
+}
+
+model Publishers {
+  id        String   @id @default(uuid())
+  name      String
+  books     Books[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map(name: "publishers")
+}
+
+model Authors {
+  id        String   @id @default(uuid())
+  name      String
+  books     Books[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map(name: "authors")
+}
+
+model Feedbacks {
+  id        String   @id @default(uuid())
+  book      Books    @relation(fields: [bookId], references: [id])
+  bookId    String
+  user      Users    @relation(fields: [userId], references: [id])
+  userId    String
+  rating    Int      @default(1)
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map(name: "feedbacks")
+}
+
+model Shippers {
+  id          String   @id @default(uuid())
+  companyName String
+  phone       String
+  order       Orders[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map(name: "shippers")
+}
+
+model Orders {
+  id            String         @id @default(uuid())
+  user          Users          @relation(fields: [userId], references: [id])
+  userId        String
+  orderDetail   OrderDetails[]
+  shipper       Shippers       @relation(fields: [shipperId], references: [id])
+  shipperId     String
+  receiverName  String
+  address       String
+  receiverPhone String
+  note          String?
+  status        OrderStatus
+  amount        Float
+  totalPrice    Float
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@map(name: "orders")
+}
+
+model Promotions {
+  id        String        @id @default(uuid())
+  type      PromotionType
+  startDate DateTime?
+  endDate   DateTime?
+  bookId    String
+  book      Books         @relation(fields: [bookId], references: [id])
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @default(now())
+
+  @@map(name: "promotion")
+}
+
+model OrderDetails {
+  id         String   @id @default(uuid())
+  order      Orders   @relation(fields: [orderId], references: [id])
+  orderId    String
+  book       Books    @relation(fields: [bookId], references: [id])
+  bookId     String
+  amount     Int
+  price      Int
+  totalPrice Int
+  discount   Int
+  orderDate  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map(name: "order_details")
+}
+
+model Book_Categories {
+  books      Books?      @relation(fields: [booksId], references: [id], onDelete: Cascade)
+  booksId    String
+  categories Categories? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String
+
+  @@id([booksId, categoryId])
+  @@map(name: "book_categories")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  SHIPPED
+  CANCELED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  ANOTHER
+}
+
+enum PromotionType {
+  SALE
+  POPULAR
+}

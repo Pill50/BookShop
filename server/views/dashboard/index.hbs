@@ -1,0 +1,67 @@
+{{#> app}}
+  {{#*inline "content"}}
+   <div class="p-4">
+   <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+      <div class="grid grid-cols-3 gap-4 mb-4">
+            {{> _bookCard}}
+            {{> _orderCard}}
+            {{> _revenueCard}}
+      </div>
+      <div class="bg-white rounded-lg shadow w-full dark:bg-gray-800 flex justify-between gap-2 sm:flex-col lg:flex-row items-center">
+         <div class=" flex-1 flex justify-center">
+            {{> _revenueChart}}
+         </div>
+         <div class="max-w-sm p-2">
+            {{> _feedbackChart}}
+         </div>
+      </div>
+      <div class="rounded my-4">
+         <h2 class='font-bold text-blue-500 text-center text-4xl my-2'>RECENTLY ORDER</h2>
+         <div class="grid grid-cols-2 gap-4 xl:grid-cols-3">
+            {{#each recentlyOrders}}
+               {{> _recentlyOrder}}
+            {{/each}}
+         </div>
+         <div class="flex justify-end my-2">
+            <a href="/admin/order" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+               View more
+               <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+               </svg>
+            </a>
+         </div>
+      </div>
+      <div class="flex items-center justify-center rounded bg-gray-50 dark:bg-gray-800 my-4">
+         {{> _statistic}}
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+         <div class="">
+            {{> _bestSeller}}
+            <div class="flex justify-end my-2">
+               <a href="/admin/book" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                  View more
+                  <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                  </svg>
+               </a>
+            </div>
+         </div>
+         <div class="">
+            {{> _newFeedback}}
+            <div class="flex justify-end my-2">
+               <a href="/admin/feedback" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                  View more
+                  <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                  </svg>
+               </a>
+            </div>
+         </div>
+      </div>
+   </div>
+   </div>
+   <script src="/javascript/revenue.js"></script>
+   <script src="/javascript/feedback.js"></script>
+   <script src="/javascript/formatRating.js"></script>
+  {{/inline}}
+{{/app}}
