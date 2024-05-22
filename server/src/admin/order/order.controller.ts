@@ -31,7 +31,6 @@ export class OrderController {
       (acc, orderItem) => acc + orderItem.amount,
       0,
     );
-    console.log(order);
     return { order, totalBook };
   }
 

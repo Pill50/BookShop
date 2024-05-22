@@ -28,10 +28,13 @@
   <p
     class='mb-3 text-gray-600 font-semibold dark:text-gray-400 flex justify-between text-lg'
   >
-    Total orders: 100
+    Total orders:
+    {{cardStatistic.totalOrder}}
   </p>
   <p class='font-normal text-gray-500 dark:text-gray-400 flex justify-between'>
-    <span class='text-md text-blue-500 font-medium'>Today: 5</span>
-    <span class='text-md text-blue-500 font-medium'>This month: 50</span>
+    <span class='text-md text-blue-500 font-medium'>Today:
+      {{cardStatistic.orderToday}}</span>
+    <span class='text-md text-blue-500 font-medium'>This month:
+      {{cardStatistic.orderThisMonth}}</span>
   </p>
 </div>

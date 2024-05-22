@@ -7,21 +7,14 @@ import { BookService } from '../book/book.service';
 
 @Controller('admin/dashboard')
 export class DashboardController {
-  constructor(
-    private readonly dashboardService: DashboardService,
-    private readonly categoryService: CategoryService,
-    private readonly bookService: BookService,
-    private readonly feedbackService: FeedbackService,
-    private readonly orderService: OrderService,
-  ) {}
+  constructor(private readonly dashboardService: DashboardService) {}
 
   @Get('/')
   @Render('dashboard/index')
   async rendergGetAllCategories() {
-    const books = await this.bookService.getAllBooks();
-    const orders = await this.orderService.getAllOrders();
-    const categories = await this.categoryService.getAllCategories();
-    const feedbacks = await this.feedbackService.getAllFeedbacks();
-    const revenue = await this.dashboardService.getRevenue(orders.orders);
+    const cardStatistic = await this.dashboardService.getStatisticCard();
+
+    console.log(cardStatistic);
+    return { cardStatistic };
   }
 }
