@@ -12,20 +12,26 @@ import {
 import ProtectedRoute from './routes/ProtectedRoute'
 import React from 'react'
 import Loading from './components/Loading'
+import MainLayout from './layouts/MainLayout'
+import AuthLayout from './layouts/AuthLayout'
 
 function App() {
   return (
     <>
       <React.Suspense fallback={<Loading />}>
         <Routes>
-          <Route path={'/login'} element={<Login />}></Route>
-          <Route path={'/register'} element={<Register />}></Route>
-          <Route path={'/forgot-password'} element={<ForgotPassword />}></Route>
-          <Route path={'/reset-password/:token'} element={<ResetPassword />}></Route>
-          <Route path={'/register/confirm/:token'} element={<ConfirmEmail />}></Route>
+          <Route element={<AuthLayout />}>
+            <Route path={'/login'} element={<Login />}></Route>
+            <Route path={'/register'} element={<Register />}></Route>
+            <Route path={'/forgot-password'} element={<ForgotPassword />}></Route>
+            <Route path={'/reset-password/:token'} element={<ResetPassword />}></Route>
+            <Route path={'/register/confirm/:token'} element={<ConfirmEmail />}></Route>
+          </Route>
           <Route element={<ProtectedRoute />}>
-            <Route path={'/'} element={<Home />}></Route>
-            <Route path={'/change-password'} element={<ChangePassword />}></Route>
+            <Route element={<MainLayout />}>
+              <Route path={'/'} element={<Home />}></Route>
+              <Route path={'/change-password'} element={<ChangePassword />}></Route>
+            </Route>
           </Route>
           <Route path={'*'} element={<NotFound />}></Route>
         </Routes>
