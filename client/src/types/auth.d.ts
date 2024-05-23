@@ -11,6 +11,17 @@ export type Login = {
   password: string
 }
 
+export type Register = {
+  email: string
+  password: string
+  confirmPassword: string
+  displayName: string
+}
+
+export type ForgotPassword = {
+  email: string
+}
+
 export type Tokens = {
   accessToken: string
   refreshToken: string

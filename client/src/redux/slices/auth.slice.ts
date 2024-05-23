@@ -1,11 +1,15 @@
-import { User, User as UserType } from '~/types/user'
-import { Tokens as TokensType } from '~/types/auth'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import Cookies from 'js-cookie'
 import { AuthApis } from '~/apis'
-import { Login as LoginType, OAuth as OAuthType } from '~/types/auth'
-
 import { Response } from '~/types/response'
+import {
+  Login as LoginType,
+  OAuth as OAuthType,
+  Register as RegisterType,
+  ForgotPassword as ForgotPasswordType,
+  Tokens as TokensType
+} from '~/types/auth'
+import { User, User as UserType } from '~/types/user'
 
 interface IAuth {
   isLoading: boolean
@@ -94,6 +98,30 @@ export const login = createAsyncThunk<Response<TokensType>, LoginType, { rejectV
     try {
       const response = await AuthApis.login(body)
       return response.data as Response<TokensType>
+    } catch (error: any) {
+      return ThunkAPI.rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const register = createAsyncThunk<Response<null>, RegisterType, { rejectValue: Response<null> }>(
+  'auth/register',
+  async (body, ThunkAPI) => {
+    try {
+      const response = await AuthApis.register(body)
+      return response.data as Response<null>
+    } catch (error: any) {
+      return ThunkAPI.rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const forgotPassword = createAsyncThunk<Response<null>, ForgotPasswordType, { rejectValue: Response<null> }>(
+  'auth/forgot-password',
+  async (body, ThunkAPI) => {
+    try {
+      const response = await AuthApis.forgotPassword(body)
+      return response.data as Response<null>
     } catch (error: any) {
       return ThunkAPI.rejectWithValue(error.data as Response<null>)
     }

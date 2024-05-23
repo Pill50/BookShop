@@ -1,5 +1,10 @@
 import { apiCaller } from '~/configs/apiCaller'
-import { Login as LoginType, OAuth as OAuthType } from '../types/auth'
+import {
+  Login as LoginType,
+  OAuth as OAuthType,
+  Register as RegisterType,
+  ForgotPassword as ForgotPasswordType
+} from '~/types/auth'
 
 const OAuth = async (values: OAuthType) => {
   const path = '/graphql'
@@ -48,10 +53,31 @@ const login = async (values: LoginType) => {
   return response
 }
 
+const register = async (values: RegisterType) => {
+  const path = '/auth/register'
+  const data: RegisterType = {
+    email: values.email,
+    password: values.password,
+    confirmPassword: values.confirmPassword,
+    displayName: values.displayName
+  }
+  const response = await apiCaller('POST', path, data)
+  return response
+}
+
+const forgotPassword = async (values: ForgotPasswordType) => {
+  const path = '/auth/forgot-password'
+  const data: ForgotPasswordType = {
+    email: values.email
+  }
+  const response = await apiCaller('POST', path, data)
+  return response
+}
+
 const getMe = async () => {
   const path = '/auth/me'
   const response = await apiCaller('GET', path)
   return response
 }
 
-export { OAuth, login, getMe }
+export { OAuth, login, register, forgotPassword, getMe }
