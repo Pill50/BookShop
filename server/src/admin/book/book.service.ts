@@ -356,13 +356,13 @@ export class BookService {
             })),
           },
           author: {
-            create: {
-              name: bookData.authorName,
+            connect: {
+              id: bookData.authorId,
             },
           },
           publisher: {
-            create: {
-              name: bookData.publisherName,
+            connect: {
+              id: bookData.publisherId,
             },
           },
         },
@@ -442,24 +442,6 @@ export class BookService {
         url = process.env.DEFAULT_CATEGORY_IMAGE;
       }
 
-      await this.prismaService.authors.update({
-        where: {
-          id: isExistedBook.authorId,
-        },
-        data: {
-          name: bookData.authorName,
-        },
-      });
-
-      await this.prismaService.publishers.update({
-        where: {
-          id: isExistedBook.publisherId,
-        },
-        data: {
-          name: bookData.publisherName,
-        },
-      });
-
       const updatedBook = await this.prismaService.books.update({
         where: {
           id: id,
@@ -471,6 +453,8 @@ export class BookService {
           discount: bookData.discount >= 0 ? bookData.discount : 0,
           amount: bookData.amount >= 1 ? bookData.amount : 1,
           thumbnail: url,
+          authorId: bookData.authorId,
+          publisherId: bookData.publisherId,
         },
         include: {
           author: {

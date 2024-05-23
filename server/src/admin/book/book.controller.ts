@@ -20,6 +20,8 @@ import { BookDto } from './dto/book.dto';
 import { SessionGuard } from 'src/common/guard/session.guard';
 import { Roles } from 'src/common/decorators';
 import { Role } from '@prisma/client';
+import { AuthorService } from '../author/author.service';
+import { PublisherService } from '../publisher/publisher.service';
 
 @Controller('admin/book')
 @Roles(Role.ADMIN)
@@ -28,6 +30,8 @@ export class BookController {
   constructor(
     private bookService: BookService,
     private categorySerive: CategoryService,
+    private authorService: AuthorService,
+    private publisherService: PublisherService,
   ) {}
 
   @Get('/')
@@ -77,8 +81,10 @@ export class BookController {
   @Render('book/create')
   async renderCreateBook(@Req() req: any) {
     try {
-      const categories = await this.categorySerive.getAllCategories();
-      return { categories };
+      const categoryList = await this.categorySerive.getAllCategories();
+      const authorList = await this.authorService.getAllAuthors();
+      const publisherList = await this.publisherService.getAllPublishers();
+      return { categoryList, authorList, publisherList };
     } catch (err) {
       req.session.error_msg = err.message;
     }
@@ -100,8 +106,10 @@ export class BookController {
   async renderUpdateBook(@Req() req: any, @Param('id') id: string) {
     try {
       const book = await this.bookService.getBookById(id);
-      const categories = await this.categorySerive.getAllCategories();
-      return { book, categories };
+      const categoryList = await this.categorySerive.getAllCategories();
+      const authorList = await this.authorService.getAllAuthors();
+      const publisherList = await this.publisherService.getAllPublishers();
+      return { book, categoryList, authorList, publisherList };
     } catch (err) {
       req.session.error_msg = err.message;
     }
@@ -119,8 +127,8 @@ export class BookController {
         title: req.body.title,
         slug: req.body.title,
         amount: Number(req.body.amount),
-        authorName: req.body.author,
-        publisherName: req.body.publisher,
+        authorId: req.body.authorId,
+        publisherId: req.body.publisherId,
         description: req.body.description,
         discount: Number(req.body.discount),
         price: Number(req.body.price),
@@ -151,8 +159,8 @@ export class BookController {
         title: req.body.title,
         slug: req.body.title,
         amount: Number(req.body.amount),
-        authorName: req.body.author,
-        publisherName: req.body.publisher,
+        authorId: req.body.author,
+        publisherId: req.body.publisher,
         description: req.body.description,
         discount: Number(req.body.discount),
         price: Number(req.body.price),

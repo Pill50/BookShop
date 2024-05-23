@@ -22,11 +22,11 @@ export class BookDto {
   @IsOptional()
   amount: number;
 
-  @IsNotEmpty({ message: 'Author must not be empty' })
-  authorName: string;
+  @IsNotEmpty({ message: 'Author ID must not be empty' })
+  authorId: string;
 
-  @IsNotEmpty({ message: 'Publisher must not be empty' })
-  publisherName: string;
+  @IsNotEmpty({ message: 'Publisher ID must not be empty' })
+  publisherId: string;
 
   @IsNotEmpty({ message: 'Category must not be empty' })
   categories: string[];

@@ -65,12 +65,12 @@
                             {{formatDate updatedAt}}
                         </td>
                         <td class="px-6 py-4 flex flex-wrap items-center gap-2">
-                            <a href="/admin/category/update/{{id}}" >
+                            <a class="hover:bg-blue-100 p-2 flex justify-center items-center hover:rounded-md" href="/admin/category/update/{{id}}">
                                 <img src="/img/icon/edit.svg" alt="Edit">
                             </a>
-                            <a href="/admin/category/delete/{{id}}">
+                            <div data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="cursor-pointer p-2 flex justify-center items-center hover:bg-red-100 hover:rounded-md" onclick="setCategoryId('{{this.id}}')">
                                 <img src="/img/icon/delete.svg" alt="Delete">
-                            </a>
+                            </div>
                         </td>
                     </tr>
                     {{/each}}

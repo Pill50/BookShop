@@ -29,7 +29,7 @@
         <div class="">
             <label for="categories" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Categories</label>
             <div class="flex mb-2 gap-3 flex-wrap border-[1px] p-2 rounded-md">
-            {{#each categories}}
+            {{#each categoryList.categories}}
             <div class="flex items-center">
                 <input id="{{this.id}}" type="checkbox" value="{{this.id}}" name="categories[]" 
                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
@@ -42,25 +42,25 @@
         </div>
         <div class="flex gap-3">
             <div class="flex-1">
-                <label for="author" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Author</label>
-                <div class="flex mb-2">
-                    <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                        <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6.2V5h11v1.2M8 5v14m-3 0h6m2-6.8V11h8v1.2M17 11v8m-1.5 0h3"/>
-                        </svg>
-                    </span>
-                    <input type="text" id="author" name="author" value="{{book.author.name}}" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Bonnie Green">
+                <div class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Author</div>
+                <div class="flex mb-2 gap-3 flex-wrap border-[1px] p-2 rounded-md">
+                {{#each authorList.authors}}
+                    <div class="flex items-center">
+                        <input id="{{id}}" type="radio" value={{id}} name="authorId" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{#if (eq id ../book.author.id)}}checked{{/if}}>
+                        <label for="{{id}}" class="ms-1 text-sm font-medium text-gray-900 dark:text-gray-300">{{name}}</label>
+                    </div>  
+                {{/each}}
                 </div>
             </div>
             <div class="flex-1">
-                <label for="publisher" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Publisher</label>
-                <div class="flex mb-2">
-                    <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                        <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6.2V5h11v1.2M8 5v14m-3 0h6m2-6.8V11h8v1.2M17 11v8m-1.5 0h3"/>
-                        </svg>
-                    </span>
-                    <input type="text" id="publisher" name="publisher" value="{{book.publisher.name}}" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Bonnie Green">
+                <div class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Publisher</div>
+                <div class="flex mb-2 gap-3 flex-wrap border-[1px] p-2 rounded-md">
+                {{#each publisherList.publishers}}
+                    <div class="flex items-center">
+                        <input id="{{id}}" type="radio" value={{id}} name="publisherId" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{#if (eq id ../book.publisher.id)}}checked{{/if}}>
+                        <label for="{{id}}" class="ms-1 text-sm font-medium text-gray-900 dark:text-gray-300">{{name}}</label>
+                    </div>  
+                {{/each}}
                 </div>
             </div>
         </div>
