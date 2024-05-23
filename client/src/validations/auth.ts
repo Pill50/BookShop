@@ -34,3 +34,14 @@ export const resetPasswordValidationSchema = Yup.object({
     .oneOf([Yup.ref('password')], 'Confirm password do not match')
     .trim()
 })
+
+export const changePasswordValidationSchema = Yup.object({
+  oldPassword: Yup.string().trim().required(),
+  newPassword: Yup.string().trim().min(8).max(32).required(),
+  confirmPassword: Yup.string()
+    .trim()
+    .min(8)
+    .max(32)
+    .required()
+    .oneOf([Yup.ref('newPassword')], 'Password do not match')
+})

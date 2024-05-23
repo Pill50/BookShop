@@ -4,7 +4,8 @@ import {
   OAuth as OAuthType,
   Register as RegisterType,
   ForgotPassword as ForgotPasswordType,
-  ResetPassword as ResetPasswordType
+  ResetPassword as ResetPasswordType,
+  ChangePassword as ChangePasswordType
 } from '~/types/auth'
 
 const OAuth = async (values: OAuthType) => {
@@ -66,6 +67,24 @@ const register = async (values: RegisterType) => {
   return response
 }
 
+const confirmEmail = async (token: string) => {
+  const path = 'auth/confirm'
+  const data = {
+    token
+  }
+  const response = await apiCaller('POST', path, data)
+  return response
+}
+
+const refreshToken = async (token: string) => {
+  const path = 'auth/refresh'
+  const data = {
+    refreshToken: token
+  }
+  const response = await apiCaller('POST', path, data)
+  return response
+}
+
 const forgotPassword = async (values: ForgotPasswordType) => {
   const path = '/auth/forgot-password'
   const data: ForgotPasswordType = {
@@ -86,10 +105,38 @@ const resetPassword = async (values: ResetPasswordType) => {
   return response
 }
 
+const changePassword = async (values: ChangePasswordType) => {
+  const path = '/auth/change-password'
+  const data: ChangePasswordType = {
+    oldPassword: values.oldPassword,
+    newPassword: values.newPassword,
+    confirmPassword: values.confirmPassword
+  }
+  const response = await apiCaller('POST', path, data)
+  return response
+}
+
 const getMe = async () => {
   const path = '/auth/me'
   const response = await apiCaller('GET', path)
   return response
 }
 
-export { OAuth, login, register, forgotPassword, resetPassword, getMe }
+const logout = async () => {
+  const path = '/auth/logout'
+  const response = await apiCaller('POST', path)
+  return response
+}
+
+export {
+  OAuth,
+  login,
+  register,
+  forgotPassword,
+  confirmEmail,
+  refreshToken,
+  logout,
+  resetPassword,
+  changePassword,
+  getMe
+}

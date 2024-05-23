@@ -1,3 +1,5 @@
+import { User } from './user'
+
 export type OAuth = {
   authId: string
   email: string
@@ -28,7 +30,14 @@ export type ResetPassword = {
   confirmPassword: string
 }
 
+export type ChangePassword = {
+  oldPassword: string
+  newPassword: string
+  confirmPassword: string
+}
+
 export type Tokens = {
   accessToken: string
   refreshToken: string
+  user: User
 }

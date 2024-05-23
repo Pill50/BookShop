@@ -8,6 +8,7 @@ import {
   Register as RegisterType,
   ForgotPassword as ForgotPasswordType,
   ResetPassword as ResetPasswordType,
+  ChangePassword as ChangePasswordType,
   Tokens as TokensType
 } from '~/types/auth'
 import { User, User as UserType } from '~/types/user'
@@ -52,7 +53,7 @@ const AuthSlice = createSlice({
       .addCase(OAuth.fulfilled, (state, action: PayloadAction<TokensType>) => {
         Cookies.set('accessToken', action.payload.accessToken as string)
         Cookies.set('refreshToken', action.payload.refreshToken as string)
-        // Cookies.set('userRole', action.payload.user.role as string)
+        Cookies.set('userRole', action.payload.user.role as string)
         state.isLogin = true
         state.isLoading = false
       })
@@ -80,6 +81,19 @@ const AuthSlice = createSlice({
       .addCase(register.rejected, (state) => {
         state.isLoading = false
       })
+      .addCase(confirmEmail.pending, (state) => {
+        state.errorMessage = ''
+        state.successMessage = ''
+        state.isLoading = true
+      })
+      .addCase(confirmEmail.fulfilled, (state, action) => {
+        state.successMessage = action.payload.message
+        state.isLoading = false
+      })
+      .addCase(confirmEmail.rejected, (state, action) => {
+        state.errorMessage = action.payload?.message as string
+        state.isLoading = false
+      })
       .addCase(forgotPassword.pending, (state) => {
         state.isLoading = true
       })
@@ -87,6 +101,15 @@ const AuthSlice = createSlice({
         state.isLoading = false
       })
       .addCase(forgotPassword.rejected, (state) => {
+        state.isLoading = false
+      })
+      .addCase(changePassword.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(changePassword.fulfilled, (state) => {
+        state.isLoading = false
+      })
+      .addCase(changePassword.rejected, (state) => {
         state.isLoading = false
       })
       .addCase(resetPassword.pending, (state) => {
@@ -105,6 +128,19 @@ const AuthSlice = createSlice({
         state.isLoading = false
       })
       .addCase(getMe.rejected, (state) => {
+        state.isLoading = false
+      })
+      .addCase(logout.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(logout.fulfilled, (state) => {
+        Cookies.remove('accessToken')
+        Cookies.remove('refreshToken')
+        Cookies.remove('userRole')
+        state.isLogin = false
+        state.isLoading = false
+      })
+      .addCase(logout.rejected, (state) => {
         state.isLoading = false
       })
   }
@@ -153,6 +189,18 @@ export const register = createAsyncThunk<Response<null>, RegisterType, { rejectV
   }
 )
 
+export const confirmEmail = createAsyncThunk<Response<null>, string, { rejectValue: Response<null> }>(
+  'auth/confirm',
+  async (body, ThunkAPI) => {
+    try {
+      const response = await AuthApis.confirmEmail(body)
+      return response.data as Response<null>
+    } catch (error: any) {
+      return ThunkAPI.rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
 export const forgotPassword = createAsyncThunk<Response<null>, ForgotPasswordType, { rejectValue: Response<null> }>(
   'auth/forgot-password',
   async (body, ThunkAPI) => {
@@ -173,6 +221,44 @@ export const resetPassword = createAsyncThunk<Response<null>, ResetPasswordType,
       return response.data as Response<null>
     } catch (error: any) {
       return ThunkAPI.rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const changePassword = createAsyncThunk<Response<null>, ChangePasswordType, { rejectValue: Response<null> }>(
+  'auth/change-password',
+  async (body, ThunkAPI) => {
+    try {
+      const response = await AuthApis.changePassword(body)
+      return response.data as Response<null>
+    } catch (error: any) {
+      return ThunkAPI.rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const logout = createAsyncThunk<Response<null>, null, { rejectValue: Response<null> }>(
+  'auth/logout',
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await AuthApis.logout()
+      if (response.status >= 200 && response.status <= 299) {
+        dispatch(
+          setUser({
+            id: '',
+            avatar: '',
+            email: '',
+            displayName: '',
+            role: '',
+            gender: '',
+            phone: '',
+            address: ''
+          })
+        )
+      }
+      return response.data as Response<null>
+    } catch (error: any) {
+      return rejectWithValue(error.data as Response<null>)
     }
   }
 )
