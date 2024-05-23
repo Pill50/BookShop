@@ -50,6 +50,7 @@ export class AuthController {
         avatar: userResponse.avatar,
         role: userResponse.role,
       };
+      request.session.error_msg = '';
       return response.redirect('/admin/book');
     } catch (err) {
       request.session.error_msg = err.message;

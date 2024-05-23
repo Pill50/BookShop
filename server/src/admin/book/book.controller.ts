@@ -175,8 +175,7 @@ export class BookController {
     @Res() res: Response,
   ) {
     try {
-      // await this.bookService.deleteBook(id);
-      console.log(id);
+      await this.bookService.deleteBook(id);
       req.session.success_msg = 'Delete Book successfully';
       res.redirect('/admin/book');
     } catch (err) {

@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Render,
   Req,
   Res,
@@ -26,9 +27,17 @@ export class CategoryController {
 
   @Get('/')
   @Render('category/index')
-  async rendergGetAllCategories() {
+  async rendergGetAllCategories(@Query('page') page: string) {
     const categoryList = await this.categoryService.getAllCategories();
-    return { categoryList };
+
+    const pageIndex: number = page ? parseInt(page as string, 10) : 1;
+    const pagination = {
+      currentPage: pageIndex,
+      nextPage: pageIndex === categoryList.totalPage ? 1 : pageIndex + 1,
+      previousPage: pageIndex === 1 ? categoryList.totalPage : pageIndex - 1,
+    };
+
+    return { categoryList, pagination };
   }
 
   @Get('/create')

@@ -42,10 +42,10 @@ model Users {
 model Books {
   id           String            @id @default(uuid())
   categories   Book_Categories[]
-  author       Authors           @relation(fields: [authorId], references: [id])
-  authorId     String
-  publisher    Publishers        @relation(fields: [publisherId], references: [id])
-  publisherId  String
+  author       Authors?          @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorId     String?
+  publisher    Publishers?       @relation(fields: [publisherId], references: [id], onDelete: SetNull)
+  publisherId  String?
   feedbacks    Feedbacks[]
   OrderDetails OrderDetails[]
   promotions   Promotions[]
@@ -81,7 +81,7 @@ model Publishers {
   name      String
   books     Books[]
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
 
   @@map(name: "publishers")
 }
@@ -91,7 +91,7 @@ model Authors {
   name      String
   books     Books[]
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
 
   @@map(name: "authors")
 }
@@ -102,10 +102,10 @@ model Feedbacks {
   bookId    String
   user      Users    @relation(fields: [userId], references: [id])
   userId    String
-  rating    Int      @default(1)
+  rating    Float    @default(1)
   content   String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
 
   @@map(name: "feedbacks")
 }
@@ -116,7 +116,7 @@ model Shippers {
   phone       String
   order       Orders[]
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  updatedAt   DateTime @default(now())
 
   @@map(name: "shippers")
 }
@@ -136,7 +136,7 @@ model Orders {
   amount        Float
   totalPrice    Float
   createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  updatedAt     DateTime       @default(now())
 
   @@map(name: "orders")
 }
@@ -166,7 +166,7 @@ model OrderDetails {
   discount   Int
   orderDate  DateTime
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  updatedAt  DateTime @default(now())
 
   @@map(name: "order_details")
 }
