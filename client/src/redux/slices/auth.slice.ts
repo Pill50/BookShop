@@ -7,6 +7,7 @@ import {
   OAuth as OAuthType,
   Register as RegisterType,
   ForgotPassword as ForgotPasswordType,
+  ResetPassword as ResetPasswordType,
   Tokens as TokensType
 } from '~/types/auth'
 import { User, User as UserType } from '~/types/user'
@@ -70,6 +71,42 @@ const AuthSlice = createSlice({
       .addCase(login.rejected, (state) => {
         state.isLoading = false
       })
+      .addCase(register.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(register.fulfilled, (state) => {
+        state.isLoading = false
+      })
+      .addCase(register.rejected, (state) => {
+        state.isLoading = false
+      })
+      .addCase(forgotPassword.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.isLoading = false
+      })
+      .addCase(forgotPassword.rejected, (state) => {
+        state.isLoading = false
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.isLoading = false
+      })
+      .addCase(resetPassword.rejected, (state) => {
+        state.isLoading = false
+      })
+      .addCase(getMe.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getMe.fulfilled, (state) => {
+        state.isLoading = false
+      })
+      .addCase(getMe.rejected, (state) => {
+        state.isLoading = false
+      })
   }
 })
 
@@ -121,6 +158,18 @@ export const forgotPassword = createAsyncThunk<Response<null>, ForgotPasswordTyp
   async (body, ThunkAPI) => {
     try {
       const response = await AuthApis.forgotPassword(body)
+      return response.data as Response<null>
+    } catch (error: any) {
+      return ThunkAPI.rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const resetPassword = createAsyncThunk<Response<null>, ResetPasswordType, { rejectValue: Response<null> }>(
+  'auth/reset-password',
+  async (body, ThunkAPI) => {
+    try {
+      const response = await AuthApis.resetPassword(body)
       return response.data as Response<null>
     } catch (error: any) {
       return ThunkAPI.rejectWithValue(error.data as Response<null>)

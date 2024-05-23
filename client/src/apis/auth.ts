@@ -3,7 +3,8 @@ import {
   Login as LoginType,
   OAuth as OAuthType,
   Register as RegisterType,
-  ForgotPassword as ForgotPasswordType
+  ForgotPassword as ForgotPasswordType,
+  ResetPassword as ResetPasswordType
 } from '~/types/auth'
 
 const OAuth = async (values: OAuthType) => {
@@ -74,10 +75,21 @@ const forgotPassword = async (values: ForgotPasswordType) => {
   return response
 }
 
+const resetPassword = async (values: ResetPasswordType) => {
+  const path = '/auth/reset-password'
+  const data: ResetPasswordType = {
+    password: values.password,
+    confirmPassword: values.confirmPassword,
+    token: values.token
+  }
+  const response = await apiCaller('POST', path, data)
+  return response
+}
+
 const getMe = async () => {
   const path = '/auth/me'
   const response = await apiCaller('GET', path)
   return response
 }
 
-export { OAuth, login, register, forgotPassword, getMe }
+export { OAuth, login, register, forgotPassword, resetPassword, getMe }

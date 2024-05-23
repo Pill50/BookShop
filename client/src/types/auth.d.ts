@@ -22,6 +22,12 @@ export type ForgotPassword = {
   email: string
 }
 
+export type ResetPassword = {
+  token: string
+  password: string
+  confirmPassword: string
+}
+
 export type Tokens = {
   accessToken: string
   refreshToken: string
