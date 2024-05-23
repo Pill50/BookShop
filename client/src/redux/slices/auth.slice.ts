@@ -3,7 +3,7 @@ import { Tokens as TokensType } from '~/types/auth'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import Cookies from 'js-cookie'
 import { AuthApis } from '~/apis'
-import { Login as LoginType } from '~/types/auth'
+import { Login as LoginType, OAuth as OAuthType } from '~/types/auth'
 
 import { Response } from '~/types/response'
 
@@ -41,6 +41,19 @@ const AuthSlice = createSlice({
   },
   extraReducers(builder) {
     builder
+      .addCase(OAuth.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(OAuth.fulfilled, (state, action: PayloadAction<TokensType>) => {
+        Cookies.set('accessToken', action.payload.accessToken as string)
+        Cookies.set('refreshToken', action.payload.refreshToken as string)
+        // Cookies.set('userRole', action.payload.user.role as string)
+        state.isLogin = true
+        state.isLoading = false
+      })
+      .addCase(OAuth.rejected, (state) => {
+        state.isLoading = false
+      })
       .addCase(login.pending, (state) => {
         state.isLoading = true
       })
@@ -58,6 +71,23 @@ const AuthSlice = createSlice({
 
 export const { setUser } = AuthSlice.actions
 
+export const OAuth = createAsyncThunk<TokensType, OAuthType, { rejectValue: Response<null> }>(
+  'auth/oauth',
+  async (body, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await AuthApis.OAuth(body)
+      if (response) {
+        if (response.status >= 200 && response.status <= 299) {
+          dispatch(setUser(response.data.data.oauth.user))
+        }
+      }
+      console.log(response.data)
+      return response.data.data.oauth as TokensType
+    } catch (error: any) {
+      return rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
 export const login = createAsyncThunk<Response<TokensType>, LoginType, { rejectValue: Response<null> }>(
   'auth/login',
   async (body, ThunkAPI) => {
@@ -66,6 +96,28 @@ export const login = createAsyncThunk<Response<TokensType>, LoginType, { rejectV
       return response.data as Response<TokensType>
     } catch (error: any) {
       return ThunkAPI.rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const getMe = createAsyncThunk<Response<User>, null, { rejectValue: Response<null> }>(
+  'book/getMe',
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await AuthApis.getMe()
+      if (response) {
+        if (response.status >= 200 && response.status <= 299) {
+          dispatch(setUser(response.data.data))
+        } else {
+          Cookies.remove('accessToken')
+          Cookies.remove('refreshToken')
+          Cookies.remove('userRole')
+          window.location.href = '/login'
+        }
+      }
+      return response.data as Response<User>
+    } catch (error: any) {
+      return rejectWithValue(error.data as Response<null>)
     }
   }
 )
