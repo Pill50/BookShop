@@ -8,13 +8,19 @@ import {
   Req,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
+import { SessionGuard } from 'src/common/guard/session.guard';
+import { Role } from '@prisma/client';
+import { Roles } from 'src/common/decorators';
 
 @Controller('admin/category')
+@Roles(Role.ADMIN)
+@UseGuards(SessionGuard)
 export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 

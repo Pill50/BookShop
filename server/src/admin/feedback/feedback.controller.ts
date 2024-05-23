@@ -1,7 +1,12 @@
-import { Controller, Get, Query, Render } from '@nestjs/common';
+import { Controller, Get, Query, Render, UseGuards } from '@nestjs/common';
 import { FeedbackService } from './feedback.service';
+import { SessionGuard } from 'src/common/guard/session.guard';
+import { Role } from '@prisma/client';
+import { Roles } from 'src/common/decorators';
 
 @Controller('admin/feedback')
+@Roles(Role.ADMIN)
+@UseGuards(SessionGuard)
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 

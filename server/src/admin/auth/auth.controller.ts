@@ -25,7 +25,7 @@ export class AuthController {
     const toValidate: string[] = ['email', 'password', 'confirmPassword'];
     const errors: string[] = UserValidator.validate(request.body, toValidate);
     if (errors.length > 0) {
-      request.session.flashErrors = errors;
+      request.session.error_msg = errors;
       return response.redirect('/auth/register');
     } else {
       await this.authService.createOrUpdate(
@@ -59,6 +59,7 @@ export class AuthController {
   @Redirect('/')
   logout(@Req() request, @Res() response: Response) {
     request.session.user = null;
-    response.redirect('/admin/auth/login');
+    request.session.error_msg = '';
+    request.session.response.redirect('/admin/auth/login');
   }
 }

@@ -12,8 +12,8 @@
   <title>{{#if viewData.title}}{{ viewData.title }}{{else}}Online Store{{/if}}</title>
 </head>
 <body>
-  {{!-- {{> _navbar}} --}}
   <div class="">
+    {{> _toast}}
     <div class="sidebar">
       {{> _sidebar}}
     </div>
@@ -26,5 +26,9 @@
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+  <script src="/javascript/revenue.js"></script>
+  <script src="/javascript/feedback.js"></script>
+  <script src="/javascript/formatRating.js"></script>
+  <script src="/javascript/toast.js"></script>
 </body>
 </html>

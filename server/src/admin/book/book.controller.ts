@@ -9,6 +9,7 @@ import {
   Req,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { BookService } from './book.service';
@@ -16,8 +17,13 @@ import { Response } from 'express';
 import { CategoryService } from '../category/category.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BookDto } from './dto/book.dto';
+import { SessionGuard } from 'src/common/guard/session.guard';
+import { Roles } from 'src/common/decorators';
+import { Role } from '@prisma/client';
 
 @Controller('admin/book')
+@Roles(Role.ADMIN)
+@UseGuards(SessionGuard)
 export class BookController {
   constructor(
     private bookService: BookService,

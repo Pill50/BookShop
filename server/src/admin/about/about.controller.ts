@@ -1,9 +1,22 @@
-import { Body, Controller, Get, Post, Render, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Render,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 import { Response } from 'express';
+import { SessionGuard } from 'src/common/guard/session.guard';
+import { Role } from '@prisma/client';
+import { Roles } from 'src/common/decorators';
 
 @Controller('admin/about')
+@Roles(Role.ADMIN)
+@UseGuards(SessionGuard)
 export class AboutController {
   @Get('/')
   async viewAboutPage(@Res() res: Response) {

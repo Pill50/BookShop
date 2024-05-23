@@ -1,9 +1,21 @@
-import { Controller, Get, Param, Query, Render, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  Render,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus, Role } from '@prisma/client';
 import { Response } from 'express';
+import { SessionGuard } from 'src/common/guard/session.guard';
+import { Roles } from 'src/common/decorators';
 
 @Controller('admin/order')
+@Roles(Role.ADMIN)
+@UseGuards(SessionGuard)
 export class OrderController {
   constructor(private orderService: OrderService) {}
 
