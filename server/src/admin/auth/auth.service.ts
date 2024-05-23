@@ -27,12 +27,15 @@ export class AuthService {
     const user = await this.prismaService.users.findUnique({
       where: { email: email },
     });
-    if (user) {
-      const isMatch = await argon2.verify(user.password, password);
-      if (isMatch) {
-        return user;
-      }
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
-    return null;
+    const isMatch = await argon2.verify(user.password, password);
+    if (!isMatch) {
+      throw new HttpException('Password do not match', HttpStatus.BAD_REQUEST);
+    }
+
+    return user;
   }
 }

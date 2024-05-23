@@ -41,7 +41,6 @@ const OAuth = async (values: OAuthType) => {
     variables
   }
   const response = await apiCaller('POST', path, data)
-  console.log(response)
   return response
 }
 

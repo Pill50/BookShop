@@ -158,7 +158,6 @@ export const OAuth = createAsyncThunk<TokensType, OAuthType, { rejectValue: Resp
           dispatch(setUser(response.data.data.oauth.user))
         }
       }
-      console.log(response.data)
       return response.data.data.oauth as TokensType
     } catch (error: any) {
       return rejectWithValue(error.data as Response<null>)

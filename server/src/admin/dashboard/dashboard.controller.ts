@@ -19,7 +19,6 @@ export class DashboardController {
     const bestSellers = await this.dashboardService.getBestSellerProduct();
     const newFeedbacks = await this.dashboardService.getNewFeedback();
 
-    console.log(newFeedbacks);
     return {
       cardStatistic,
       recentlyOrders,

@@ -32,7 +32,7 @@ export class BookController {
 
   @Get('/')
   @Render('book/index')
-  async renderAllBooks(@Res() res: Response, @Query() filter: FilterBookDto) {
+  async renderAllBooks(@Query() filter: FilterBookDto) {
     const pageIndex: number | undefined = filter.page
       ? parseInt(filter.page as string, 10)
       : 1;
@@ -75,80 +75,112 @@ export class BookController {
 
   @Get('/create')
   @Render('book/create')
-  async renderCreateBook() {
-    const categories = await this.categorySerive.getAllCategories();
-    return { categories };
+  async renderCreateBook(@Req() req: any) {
+    try {
+      const categories = await this.categorySerive.getAllCategories();
+      return { categories };
+    } catch (err) {
+      req.session.error_msg = err.message;
+    }
   }
 
   @Get('/:id')
   @Render('book/book-detail')
-  async renderBookDetail(@Param('id') id: string) {
-    const book = await this.bookService.getBookById(id);
-    return { book };
+  async renderBookDetail(@Req() req: any, @Param('id') id: string) {
+    try {
+      const book = await this.bookService.getBookById(id);
+      return { book };
+    } catch (err) {
+      req.session.error_msg = err.message;
+    }
   }
 
   @Get('/update/:id')
   @Render('book/update')
-  async renderUpdateBook(@Param('id') id: string) {
-    const book = await this.bookService.getBookById(id);
-    const categories = await this.categorySerive.getAllCategories();
-    return { book, categories };
+  async renderUpdateBook(@Req() req: any, @Param('id') id: string) {
+    try {
+      const book = await this.bookService.getBookById(id);
+      const categories = await this.categorySerive.getAllCategories();
+      return { book, categories };
+    } catch (err) {
+      req.session.error_msg = err.message;
+    }
   }
 
   @Post('/create')
   @UseInterceptors(FileInterceptor('file'))
   async createBook(
-    @Req() req,
+    @Req() req: any,
     @Res() res: Response,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    const data: BookDto = {
-      title: req.body.title,
-      slug: req.body.title,
-      amount: Number(req.body.amount),
-      authorName: req.body.author,
-      publisherName: req.body.publisher,
-      description: req.body.description,
-      discount: Number(req.body.discount),
-      price: Number(req.body.price),
-      categories: req.body.categories,
-    };
+    try {
+      const data: BookDto = {
+        title: req.body.title,
+        slug: req.body.title,
+        amount: Number(req.body.amount),
+        authorName: req.body.author,
+        publisherName: req.body.publisher,
+        description: req.body.description,
+        discount: Number(req.body.discount),
+        price: Number(req.body.price),
+        categories: req.body.categories,
+      };
 
-    const response = await this.bookService.createBook(data);
-    if (response) {
-      await this.bookService.uploadThumbnail(file, response.book.id);
+      const response = await this.bookService.createBook(data);
+      if (response) {
+        await this.bookService.uploadThumbnail(file, response.book.id);
+      }
+      req.session.success_msg = 'Create book successfully';
+      res.redirect('/admin/book');
+    } catch (err) {
+      req.session.error_msg = err.message;
     }
-    res.redirect('/admin/book');
   }
 
   @Post('/update/:id')
   @UseInterceptors(FileInterceptor('file'))
   async updateBook(
-    @Req() req,
+    @Req() req: any,
     @Res() res: Response,
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    const data: BookDto = {
-      title: req.body.title,
-      slug: req.body.title,
-      amount: Number(req.body.amount),
-      authorName: req.body.author,
-      publisherName: req.body.publisher,
-      description: req.body.description,
-      discount: Number(req.body.discount),
-      price: Number(req.body.price),
-      categories: req.body.categories,
-    };
+    try {
+      const data: BookDto = {
+        title: req.body.title,
+        slug: req.body.title,
+        amount: Number(req.body.amount),
+        authorName: req.body.author,
+        publisherName: req.body.publisher,
+        description: req.body.description,
+        discount: Number(req.body.discount),
+        price: Number(req.body.price),
+        categories: req.body.categories,
+      };
 
-    await this.bookService.updateBook(id, file, data);
+      await this.bookService.updateBook(id, file, data);
 
-    res.redirect('/admin/book');
+      req.session.success_msg = 'Update book successfully';
+      res.redirect('/admin/book');
+    } catch (err) {
+      req.session.error_msg = err.message;
+    }
   }
 
   @Get('/delete/:id')
-  async deleteBook(@Param('id') id: string, @Res() res: Response) {
-    await this.bookService.deleteBook(id);
-    res.redirect('/admin/book');
+  async deleteBook(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Res() res: Response,
+  ) {
+    try {
+      // await this.bookService.deleteBook(id);
+      console.log(id);
+      req.session.success_msg = 'Delete Book successfully';
+      res.redirect('/admin/book');
+    } catch (err) {
+      req.session.error_msg = err.message;
+    }
   }
 }

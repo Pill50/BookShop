@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Render,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -36,14 +37,15 @@ export class AboutController {
   async editAboutPage() {}
 
   @Post('/save')
-  async saveAboutPage(@Body() body) {
+  async saveAboutPage(@Body() body, @Req() req: any) {
     const { templateHTML } = body;
     const filePath = path.join(process.cwd(), 'public', 'about.html');
 
     try {
       await fs.writeFile(filePath, templateHTML);
+      req.session.success_msg = 'Update about content successfully';
     } catch (err) {
-      console.error('Error saving about.html:', err);
+      req.session.error_msg = err.message;
     }
   }
 }
