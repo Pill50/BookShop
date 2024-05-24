@@ -30,9 +30,9 @@ const RegisterPage: React.FC = () => {
     const result = await dispatch(AuthActions.register(values))
     try {
       if (result.meta.requestStatus === 'rejected') {
-        throw new Error(result.payload?.message)
+        throw new Error('Invalid request')
       }
-      toast.success(result.payload?.message as string)
+      toast.success('Register successfully! Please check your email for verification!')
     } catch (error: any) {
       toast.error(error.message)
     }
@@ -148,7 +148,7 @@ const RegisterPage: React.FC = () => {
                 <Link to={'/login'}>Login</Link>
               </span>
             </p>
-            <div className='inline-flex items-center justify-center w-full relative'>
+            <div className='inline-flex items-center justify-center w-full relative z-10'>
               <hr className='w-64 h-px my-8 bg-gray-300 border-0 dark:bg-gray-700' />
               <span className='absolute px-3 font-medium text-gray-900 bg-green-100 -translate-x-1/2 left-1/2 dark:text-white dark:bg-gray-900'>
                 OR

@@ -51,6 +51,7 @@ const AuthSlice = createSlice({
         state.isLoading = true
       })
       .addCase(OAuth.fulfilled, (state, action: PayloadAction<TokensType>) => {
+        console.log(action)
         Cookies.set('accessToken', action.payload.accessToken as string)
         Cookies.set('refreshToken', action.payload.refreshToken as string)
         Cookies.set('userRole', action.payload.user.role as string)
@@ -63,9 +64,9 @@ const AuthSlice = createSlice({
       .addCase(login.pending, (state) => {
         state.isLoading = true
       })
-      .addCase(login.fulfilled, (state, action) => {
-        Cookies.set('accessToken', action.payload.data?.accessToken as string)
-        Cookies.set('refreshToken', action.payload.data?.refreshToken as string)
+      .addCase(login.fulfilled, (state, action: PayloadAction<TokensType>) => {
+        Cookies.set('accessToken', action.payload.accessToken as string)
+        Cookies.set('refreshToken', action.payload.refreshToken as string)
         state.isLogin = true
         state.isLoading = false
       })
@@ -87,7 +88,11 @@ const AuthSlice = createSlice({
         state.isLoading = true
       })
       .addCase(confirmEmail.fulfilled, (state, action) => {
-        state.successMessage = action.payload.message
+        if (action.payload?.statusCode === 400) {
+          state.errorMessage = action.payload.message
+        } else {
+          state.successMessage = 'Confirm Email Successfully'
+        }
         state.isLoading = false
       })
       .addCase(confirmEmail.rejected, (state, action) => {
@@ -164,12 +169,12 @@ export const OAuth = createAsyncThunk<TokensType, OAuthType, { rejectValue: Resp
     }
   }
 )
-export const login = createAsyncThunk<Response<TokensType>, LoginType, { rejectValue: Response<null> }>(
+export const login = createAsyncThunk<TokensType, LoginType, { rejectValue: Response<null> }>(
   'auth/login',
   async (body, ThunkAPI) => {
     try {
       const response = await AuthApis.login(body)
-      return response.data as Response<TokensType>
+      return response.data.data.login as TokensType
     } catch (error: any) {
       return ThunkAPI.rejectWithValue(error.data as Response<null>)
     }
@@ -188,12 +193,19 @@ export const register = createAsyncThunk<Response<null>, RegisterType, { rejectV
   }
 )
 
-export const confirmEmail = createAsyncThunk<Response<null>, string, { rejectValue: Response<null> }>(
+export const confirmEmail = createAsyncThunk<Response<null | any>, string, { rejectValue: Response<null> }>(
   'auth/confirm',
   async (body, ThunkAPI) => {
     try {
       const response = await AuthApis.confirmEmail(body)
-      return response.data as Response<null>
+      if (response.data.errors) {
+        const dataError = {
+          statusCode: 400,
+          message: response.data.errors[0].message
+        }
+        return dataError
+      }
+      return response.data.data.confirmEmail as Response<null>
     } catch (error: any) {
       return ThunkAPI.rejectWithValue(error.data as Response<null>)
     }
@@ -205,19 +217,19 @@ export const forgotPassword = createAsyncThunk<Response<null>, ForgotPasswordTyp
   async (body, ThunkAPI) => {
     try {
       const response = await AuthApis.forgotPassword(body)
-      return response.data as Response<null>
+      return response.data.data.forgotPassword as Response<null>
     } catch (error: any) {
       return ThunkAPI.rejectWithValue(error.data as Response<null>)
     }
   }
 )
 
-export const resetPassword = createAsyncThunk<Response<null>, ResetPasswordType, { rejectValue: Response<null> }>(
+export const resetPassword = createAsyncThunk<Response<User>, ResetPasswordType, { rejectValue: Response<null> }>(
   'auth/reset-password',
   async (body, ThunkAPI) => {
     try {
       const response = await AuthApis.resetPassword(body)
-      return response.data as Response<null>
+      return response.data.data.resetPassword as Response<User>
     } catch (error: any) {
       return ThunkAPI.rejectWithValue(error.data as Response<null>)
     }
@@ -269,7 +281,7 @@ export const getMe = createAsyncThunk<Response<User>, null, { rejectValue: Respo
       const response = await AuthApis.getMe()
       if (response) {
         if (response.status >= 200 && response.status <= 299) {
-          dispatch(setUser(response.data.data))
+          dispatch(setUser(response.data.data.getMe))
         } else {
           Cookies.remove('accessToken')
           Cookies.remove('refreshToken')

@@ -26,7 +26,7 @@ const ForgotPasswordPage: React.FC = () => {
       if (result.meta.requestStatus === 'rejected') {
         throw new Error(result.payload?.message)
       }
-      toast.success(result.payload?.message as string)
+      toast.success('Check your email to reset password!')
     } catch (error: any) {
       toast.error(error.message)
     }
@@ -83,7 +83,7 @@ const ForgotPasswordPage: React.FC = () => {
                 <Link to={'/register'}>Signup</Link>
               </span>
             </p>
-            <div className='inline-flex items-center justify-center w-full relative'>
+            <div className='inline-flex items-center justify-center w-full relative z-10'>
               <hr className='w-64 h-px my-8 bg-gray-300 border-0 dark:bg-gray-700' />
               <span className='absolute px-3 font-medium text-gray-900 bg-green-100 -translate-x-1/2 left-1/2 dark:text-white dark:bg-gray-900'>
                 OR

@@ -30,7 +30,7 @@ const ResetPasswordPage: React.FC = () => {
       if (result.meta.requestStatus === 'rejected') {
         throw new Error(result.payload?.message)
       }
-      toast.success(result.payload?.message as string)
+      toast.success('Password reset successfully!')
       navigate('/login')
     } catch (error: any) {
       toast.error(error.message)

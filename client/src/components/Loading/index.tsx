@@ -48,7 +48,7 @@ const LoadingSVG = () => (
 )
 
 const Loading: React.FC = () => (
-  <div className='absolute top-0 right-0 left-0 bottom-0 flex items-center justify-center h-screen bg-gray-300'>
+  <div className='absolute top-0 right-0 left-0 bottom-0 flex items-center justify-center h-screen bg-gray-300 z-[1000]'>
     <LoadingSVG />
   </div>
 )

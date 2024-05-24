@@ -36,42 +36,99 @@ const OAuth = async (values: OAuthType) => {
       loginFrom: values.loginFrom
     }
   }
-  const data = {
+  const payload = {
     query,
     variables
   }
-  const response = await apiCaller('POST', path, data)
+  const response = await apiCaller('POST', path, payload)
   return response
 }
 
 const login = async (values: LoginType) => {
-  const path = '/auth/login'
-  const data: LoginType = {
-    email: values.email,
-    password: values.password
+  const path = '/graphql'
+  const query = `
+      mutation($loginInput: LoginDto!) {
+          login(loginInput: $loginInput) {
+              accessToken
+              refreshToken
+              user {
+                  id
+                  displayName
+                  address
+                  phone
+                  role
+                  avatar
+                  gender
+              }
+          }
+      }
+  `
+  const variables = {
+    loginInput: {
+      email: values.email,
+      password: values.password
+    }
   }
-  const response = await apiCaller('POST', path, data)
+  const payload = {
+    query,
+    variables
+  }
+  const response = await apiCaller('POST', path, payload)
   return response
 }
 
 const register = async (values: RegisterType) => {
-  const path = '/auth/register'
-  const data: RegisterType = {
-    email: values.email,
-    password: values.password,
-    confirmPassword: values.confirmPassword,
-    displayName: values.displayName
+  const path = '/graphql'
+  const query = `
+      mutation($registerInput: RegisterDto!) {
+          register(registerInput: $registerInput)
+      }
+  `
+  const variables = {
+    registerInput: {
+      email: values.email,
+      password: values.password,
+      confirmPassword: values.confirmPassword,
+      displayName: values.displayName
+    }
   }
-  const response = await apiCaller('POST', path, data)
+  const payload = {
+    query,
+    variables
+  }
+  const response = await apiCaller('POST', path, payload)
   return response
 }
 
 const confirmEmail = async (token: string) => {
-  const path = 'auth/confirm'
-  const data = {
-    token
+  const path = '/graphql'
+  const query = `
+      mutation($tokenInput: TokenDto!) {
+        confirmEmail(tokenInput: $tokenInput) {
+          accessToken
+          refreshToken
+          user {
+            id
+            displayName
+            address
+            phone
+            role
+            avatar
+            gender
+          }
+        }
+      }
+  `
+  const variables = {
+    tokenInput: {
+      token: token
+    }
   }
-  const response = await apiCaller('POST', path, data)
+  const payload = {
+    query,
+    variables
+  }
+  const response = await apiCaller('POST', path, payload)
   return response
 }
 
@@ -85,22 +142,56 @@ const refreshToken = async (token: string) => {
 }
 
 const forgotPassword = async (values: ForgotPasswordType) => {
-  const path = '/auth/forgot-password'
-  const data: ForgotPasswordType = {
-    email: values.email
+  const path = '/graphql'
+  const query = `
+      mutation($forgotPasswordInput: ForgotPasswordDto!) {
+        forgotPassword(forgotPasswordInput: $forgotPasswordInput)
+      }
+  `
+  const variables = {
+    forgotPasswordInput: {
+      email: values.email
+    }
   }
-  const response = await apiCaller('POST', path, data)
+  const payload = {
+    query,
+    variables
+  }
+  const response = await apiCaller('POST', path, payload)
   return response
 }
 
 const resetPassword = async (values: ResetPasswordType) => {
-  const path = '/auth/reset-password'
-  const data: ResetPasswordType = {
-    password: values.password,
-    confirmPassword: values.confirmPassword,
-    token: values.token
+  const path = '/graphql'
+  const query = `
+    mutation($resetPasswordInput: ResetPasswordDto!) {
+      resetPassword(resetPasswordInput: $resetPasswordInput) {
+          accessToken
+          refreshToken
+          user {
+            id
+            displayName
+            address
+            phone
+            role
+            avatar
+            gender
+          }
+        }
+      }
+  `
+  const variables = {
+    resetPasswordInput: {
+      password: values.password,
+      confirmPassword: values.confirmPassword,
+      token: values.token
+    }
   }
-  const response = await apiCaller('POST', path, data)
+  const payload = {
+    query,
+    variables
+  }
+  const response = await apiCaller('POST', path, payload)
   return response
 }
 
@@ -116,8 +207,25 @@ const changePassword = async (values: ChangePasswordType) => {
 }
 
 const getMe = async () => {
-  const path = '/auth/me'
-  const response = await apiCaller('GET', path)
+  const path = '/graphql'
+  const query = `
+      query {
+        getMe {
+            id
+            avatar,
+            role,
+            gender,
+            address, 
+            displayName,
+            email,
+            phone
+        }
+      }
+  `
+  const payload = {
+    query: query
+  }
+  const response = await apiCaller('POST', path, payload)
   return response
 }
 
