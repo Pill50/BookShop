@@ -5,10 +5,9 @@ import { join } from 'path';
 import { PrismaModule } from './prisma/prisma.module';
 import { MailerModule } from './mailer/mailer.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
-import { AdminModule } from './admin/admin.module';
 import { FlashMiddleware } from './common/middlewares/flash.middleware';
-import { AuthModule } from './customer/auth/auth.module';
-import { UserModule } from './customer/user/user.module';
+import { AdminModule } from './admin/admin.module';
+import { CustomerModule } from './customer/customer.module';
 
 @Module({
   imports: [
@@ -21,12 +20,11 @@ import { UserModule } from './customer/user/user.module';
       fieldResolverEnhancers: ['interceptors'],
       sortSchema: true,
     }),
-    AuthModule,
     PrismaModule,
     MailerModule,
-    UserModule,
     CloudinaryModule,
     AdminModule,
+    CustomerModule,
   ],
 })
 export class AppModule implements NestModule {
