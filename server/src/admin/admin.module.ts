@@ -7,7 +7,8 @@ import { PromotionModule } from './promotion/promotion.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { AboutModule } from './about/about.module';
 import { DashboardModule } from './dashboard/dashboard.module';
-
+import { AuthorModule } from './author/author.module';
+import { PublisherModule } from './publisher/publisher.module';
 @Module({
   controllers: [],
   providers: [],
@@ -20,6 +21,8 @@ import { DashboardModule } from './dashboard/dashboard.module';
     FeedbackModule,
     AboutModule,
     DashboardModule,
+    AuthorModule,
+    PublisherModule,
   ],
 })
 export class AdminModule {}

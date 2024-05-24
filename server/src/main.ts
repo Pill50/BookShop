@@ -76,27 +76,6 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   );
-  app.use('/admin', function (req, res, next) {
-    res.locals.session = req.session;
-    res.locals.user = req.session.user || null;
-    const flashErrors: string[] = req.session.flashErrors;
-    if (flashErrors) {
-      res.locals.flashErrors = flashErrors;
-      req.session.flashErrors = null;
-    }
-    next();
-  });
-
-  app.use('/admin', function (req: any, res, next) {
-    if (
-      !req.session.user &&
-      !req.url.startsWith('/auth') &&
-      req.session.user?.role !== 'ADMIN'
-    ) {
-      return res.redirect('/admin/auth/login');
-    }
-    next();
-  });
 
   await app.listen(8080);
 }

@@ -90,7 +90,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         const reviewRatings = document.querySelectorAll('.review__rating');
         reviewRatings.forEach((ratingElement) => {
-            const rating = parseInt(ratingElement.innerText);
+            const rating = parseFloat(ratingElement.textContent.trim(););
             if (!isNaN(rating)) {
                 ratingElement.innerHTML = renderStarRating(rating);
             } else {

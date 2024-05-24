@@ -7,10 +7,9 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AuthError } from '../errors/authError.enum';
-import { Payload } from '../../auth/types/payload.type';
 import { JwtError } from 'src/common/errors/jwtError.enum';
-import { Status } from '../../auth/types/status.enum';
 import { GqlExecutionContext } from '@nestjs/graphql';
+import { Payload, Status } from 'src/customer/auth/types';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {

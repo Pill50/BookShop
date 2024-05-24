@@ -4,25 +4,40 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Render,
   Req,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
+import { SessionGuard } from 'src/common/guard/session.guard';
+import { Role } from '@prisma/client';
+import { Roles } from 'src/common/decorators';
 
 @Controller('admin/category')
+@Roles(Role.ADMIN)
+@UseGuards(SessionGuard)
 export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
   @Get('/')
   @Render('category/index')
-  async rendergGetAllCategories() {
+  async rendergGetAllCategories(@Query('page') page: string) {
     const categoryList = await this.categoryService.getAllCategories();
-    return { categoryList };
+
+    const pageIndex: number = page ? parseInt(page as string, 10) : 1;
+    const pagination = {
+      currentPage: pageIndex,
+      nextPage: pageIndex === categoryList.totalPage ? 1 : pageIndex + 1,
+      previousPage: pageIndex === 1 ? categoryList.totalPage : pageIndex - 1,
+    };
+
+    return { categoryList, pagination };
   }
 
   @Get('/create')

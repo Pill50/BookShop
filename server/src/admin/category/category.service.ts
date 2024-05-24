@@ -11,10 +11,26 @@ export class CategoryService {
     private cloudinaryService: CloudinaryService,
   ) {}
 
-  async getAllCategories() {
+  async getAllCategories(pageIndex: number = 1) {
     try {
-      const categories = await this.prismaService.categories.findMany();
-      return categories;
+      const take = 10;
+      const skip = (pageIndex - 1) * take;
+
+      const [categories, totalRecord] = await Promise.all([
+        this.prismaService.categories.findMany({
+          skip,
+          take,
+        }),
+        this.prismaService.categories.count(),
+      ]);
+
+      const totalPage = Math.ceil(totalRecord / take);
+
+      return {
+        categories,
+        totalPage,
+        totalRecord,
+      };
     } catch (error) {
       throw exceptionHandler(error);
     }

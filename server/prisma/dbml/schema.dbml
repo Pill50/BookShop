@@ -30,10 +30,10 @@ Table users {
 Table books {
   id String [pk]
   categories book_categories [not null]
-  author authors [not null]
-  authorId String [not null]
-  publisher publishers [not null]
-  publisherId String [not null]
+  author authors
+  authorId String
+  publisher publishers
+  publisherId String
   feedbacks feedbacks [not null]
   OrderDetails order_details [not null]
   promotions promotion [not null]
@@ -64,7 +64,7 @@ Table publishers {
   name String [not null]
   books books [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
 }
 
 Table authors {
@@ -72,7 +72,7 @@ Table authors {
   name String [not null]
   books books [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
 }
 
 Table feedbacks {
@@ -81,10 +81,10 @@ Table feedbacks {
   bookId String [not null]
   user users [not null]
   userId String [not null]
-  rating Int [not null, default: 1]
+  rating Float [not null, default: 1]
   content String [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
 }
 
 Table shippers {
@@ -93,7 +93,7 @@ Table shippers {
   phone String [not null]
   order orders [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
 }
 
 Table orders {
@@ -111,7 +111,7 @@ Table orders {
   amount Float [not null]
   totalPrice Float [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
 }
 
 Table promotion {
@@ -137,7 +137,7 @@ Table order_details {
   discount Int [not null]
   orderDate DateTime [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
 }
 
 Table book_categories {
@@ -174,9 +174,9 @@ Enum PromotionType {
   POPULAR
 }
 
-Ref: books.authorId > authors.id
+Ref: books.authorId > authors.id [delete: Set Null]
 
-Ref: books.publisherId > publishers.id
+Ref: books.publisherId > publishers.id [delete: Set Null]
 
 Ref: feedbacks.bookId > books.id
 

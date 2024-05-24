@@ -25,7 +25,7 @@ export class AuthController {
     const toValidate: string[] = ['email', 'password', 'confirmPassword'];
     const errors: string[] = UserValidator.validate(request.body, toValidate);
     if (errors.length > 0) {
-      request.session.flashErrors = errors;
+      request.session.error_msg = errors;
       return response.redirect('/auth/register');
     } else {
       await this.authService.createOrUpdate(
@@ -41,16 +41,19 @@ export class AuthController {
   async connect(@Body() body, @Req() request: any, @Res() response: Response) {
     const email = body.email;
     const pass = body.password;
-    const user = await this.authService.login(email, pass);
-    if (user) {
+
+    try {
+      const userResponse = await this.authService.login(email, pass);
       request.session.user = {
-        id: user.id,
-        name: user.displayName,
-        avatar: user.avatar,
-        role: user.role,
+        id: userResponse.id,
+        name: userResponse.displayName,
+        avatar: userResponse.avatar,
+        role: userResponse.role,
       };
+      request.session.error_msg = '';
       return response.redirect('/admin/book');
-    } else {
+    } catch (err) {
+      request.session.error_msg = err.message;
       return response.redirect('/admin/auth/login');
     }
   }
@@ -59,6 +62,13 @@ export class AuthController {
   @Redirect('/')
   logout(@Req() request, @Res() response: Response) {
     request.session.user = null;
+    request.session.error_msg = '';
     response.redirect('/admin/auth/login');
+  }
+
+  @Get('/clear-session-messages')
+  async clearMessage(@Req() req: any) {
+    req.session.error_msg = null;
+    req.session.success_msg = null;
   }
 }

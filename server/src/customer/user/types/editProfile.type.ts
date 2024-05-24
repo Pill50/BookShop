@@ -1,4 +1,4 @@
-import { Gender } from 'src/auth/types';
+import { Gender } from 'src/customer/auth/types';
 
 export type EditProfile = {
   displayName: string;

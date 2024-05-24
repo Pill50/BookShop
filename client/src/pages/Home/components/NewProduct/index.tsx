@@ -1,0 +1,49 @@
+import React, { useEffect } from 'react'
+import { FaRegNewspaper } from 'react-icons/fa6'
+import BookCard from '~/components/BookCard'
+import { useAppDispatch, useAppSelector } from '~/hooks/redux'
+import { BookActions } from '~/redux/slices'
+import { Book } from '~/types/book'
+
+const NewProduct: React.FC = () => {
+  const dispatch = useAppDispatch()
+  const topNewestBooks = useAppSelector((state) => state.book.newestBooks)
+
+  useEffect(() => {
+    dispatch(BookActions.getTopNewest(null))
+  }, [dispatch])
+
+  return (
+    <>
+      <div className='mt-10'>
+        <div className='flex gap-1 items-center rounded-tr-lg rounded-tl-lg bg-blue-200 p-2'>
+          <div className='p-2 bg-blue-500 rounded-lg'>
+            <FaRegNewspaper size={28} color='white' />
+          </div>
+          <h3 className='text-xl text-blue-500 font-bold'>New Product</h3>
+        </div>
+        <div className='grid grid-cols-1 gap-4 p-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'>
+          {topNewestBooks.length > 0 &&
+            topNewestBooks.map((book: Book) => (
+              <BookCard
+                key={book.id}
+                id={book.id}
+                slug={book.slug}
+                title={book.title}
+                amount={book.amount}
+                author={book.author?.name || 'No Author'}
+                description={book.description}
+                curPrice={book.price}
+                oldPrice={Math.round(book.price / (1 - book.discount / 100))}
+                discount={book.discount}
+                categories={book.categories}
+                thumbnail={book.thumbnail}
+              />
+            ))}
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default NewProduct

@@ -8,14 +8,19 @@ import {
   Render,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { PromotionService } from './promotion.service';
-import { PromotionType } from '@prisma/client';
+import { PromotionType, Role } from '@prisma/client';
 import { PromotionDto } from './dto/promotion.dto';
 import { Response } from 'express';
 import { FilterPromotionDto } from './dto/filterPromotion.dto';
+import { SessionGuard } from 'src/common/guard/session.guard';
+import { Roles } from 'src/common/decorators';
 
 @Controller('admin/promotion')
+@Roles(Role.ADMIN)
+@UseGuards(SessionGuard)
 export class PromotionController {
   constructor(private readonly promotionService: PromotionService) {}
 

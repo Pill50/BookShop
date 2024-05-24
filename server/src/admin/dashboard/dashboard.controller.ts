@@ -1,7 +1,12 @@
-import { Controller, Get, Render } from '@nestjs/common';
+import { Controller, Get, Render, UseGuards } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
+import { SessionGuard } from 'src/common/guard/session.guard';
+import { Role } from '@prisma/client';
+import { Roles } from 'src/common/decorators';
 
 @Controller('admin/dashboard')
+@Roles(Role.ADMIN)
+@UseGuards(SessionGuard)
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
@@ -14,7 +19,6 @@ export class DashboardController {
     const bestSellers = await this.dashboardService.getBestSellerProduct();
     const newFeedbacks = await this.dashboardService.getNewFeedback();
 
-    console.log(newFeedbacks);
     return {
       cardStatistic,
       recentlyOrders,
