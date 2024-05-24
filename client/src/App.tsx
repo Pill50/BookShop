@@ -1,11 +1,15 @@
 import { Route, Routes } from 'react-router-dom'
 import {
+  About,
+  Cart,
   ChangePassword,
   ConfirmEmail,
   ForgotPassword,
   Home,
   Login,
   NotFound,
+  Profile,
+  Promotion,
   Register,
   ResetPassword
 } from './routes/routes'
@@ -30,7 +34,13 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<MainLayout />}>
               <Route path={'/'} element={<Home />}></Route>
-              <Route path={'/change-password'} element={<ChangePassword />}></Route>
+              <Route path={'/about'} element={<About />}></Route>
+              <Route path={'/promotion'} element={<Promotion />}></Route>
+              <Route path={'/profile'}>
+                <Route index element={<Profile />}></Route>
+                <Route path='change-password' element={<ChangePassword />}></Route>
+              </Route>
+              <Route path={'/cart'} element={<Cart />}></Route>
             </Route>
           </Route>
           <Route path={'*'} element={<NotFound />}></Route>

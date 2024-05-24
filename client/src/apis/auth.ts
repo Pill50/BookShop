@@ -11,21 +11,21 @@ import {
 const OAuth = async (values: OAuthType) => {
   const path = '/graphql'
   const query = `
-      mutation($oauthInput: OAuthDto!) {
-          oauth(oauthInput: $oauthInput) {
-              accessToken
-              refreshToken
-              user {
-                  id
-                  displayName
-                  address
-                  phone
-                  role
-                  avatar
-                  gender
-              }
-          }
+    mutation($oauthInput: OAuthDto!) {
+      oauth(oauthInput: $oauthInput) {
+        accessToken
+        refreshToken
+        user {
+            id
+            displayName
+            address
+            phone
+            role
+            avatar
+            gender
+        }
       }
+    }
   `
   const variables = {
     oauthInput: {
@@ -47,21 +47,21 @@ const OAuth = async (values: OAuthType) => {
 const login = async (values: LoginType) => {
   const path = '/graphql'
   const query = `
-      mutation($loginInput: LoginDto!) {
-          login(loginInput: $loginInput) {
-              accessToken
-              refreshToken
-              user {
-                  id
-                  displayName
-                  address
-                  phone
-                  role
-                  avatar
-                  gender
-              }
-          }
+    mutation($loginInput: LoginDto!) {
+      login(loginInput: $loginInput) {
+        accessToken
+        refreshToken
+        user {
+            id
+            displayName
+            address
+            phone
+            role
+            avatar
+            gender
+        }
       }
+    }
   `
   const variables = {
     loginInput: {
@@ -133,11 +133,25 @@ const confirmEmail = async (token: string) => {
 }
 
 const refreshToken = async (token: string) => {
-  const path = 'auth/refresh'
-  const data = {
-    refreshToken: token
+  const path = '/graphql'
+  const query = `
+    mutation ($refreshTokensInput: RefreshTokensDto!) {
+      refreshTokens(refreshTokensInput: $refreshTokensInput) {
+        accessToken
+        refreshToken
+      }
+    }
+  `
+  const variables = {
+    refreshTokensInput: {
+      refreshToken: token
+    }
   }
-  const response = await apiCaller('POST', path, data)
+  const payload = {
+    query,
+    variables
+  }
+  const response = await apiCaller('POST', path, payload)
   return response
 }
 
@@ -230,8 +244,20 @@ const getMe = async () => {
 }
 
 const logout = async () => {
-  const path = '/auth/logout'
-  const response = await apiCaller('POST', path)
+  const path = '/graphql'
+  const query = `
+    mutation {
+      logout {
+        accessToken
+        refreshToken
+      }
+    }
+  `
+  const payload = {
+    query
+  }
+
+  const response = await apiCaller('POST', path, payload)
   return response
 }
 

@@ -267,7 +267,7 @@ export const logout = createAsyncThunk<Response<null>, null, { rejectValue: Resp
           })
         )
       }
-      return response.data as Response<null>
+      return response.data.data.logout as Response<null>
     } catch (error: any) {
       return rejectWithValue(error.data as Response<null>)
     }
