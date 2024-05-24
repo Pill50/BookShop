@@ -40,11 +40,11 @@ const BookCard: React.FC<IBookCart> = (props: IBookCart) => {
 
   return (
     <div
-      className='card bg-base-100 shadow-lg hover:cursor-pointer hover:shadow-2xl transition-all'
+      className='card bg-base-100 shadow-lg hover:cursor-pointer hover:shadow-2xl transition-all bg-white rounded-2xl'
       onClick={() => navigate(`/book/${props.slug}`)}
     >
       <figure className='px-2 pt-2 md:px-4 md:pt-4'>
-        <img src={props.thumbnail} alt={props.title} className='rounded-xl h-[200px]' />
+        <img src={props.thumbnail} alt={props.title} className='rounded-xl h-[200px] object-cover' />
       </figure>
       <div className='card-body px-4 py-2 gap-1'>
         <div className='flex gap-1 flex-wrap'>

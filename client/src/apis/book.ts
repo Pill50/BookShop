@@ -6,4 +6,10 @@ const getTopTrending = async () => {
   return response
 }
 
-export { getTopTrending }
+const getTopNewest = async () => {
+  const path = '/book/newest'
+  const response = await apiCaller('GET', path)
+  return response
+}
+
+export { getTopTrending, getTopNewest }

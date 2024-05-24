@@ -3,7 +3,7 @@ import Category from './components/Category'
 import Banner from './components/Banner'
 import Publishers from './components/Publishers'
 import TrendingProduct from './components/Trending'
-// import NewProduct from './components/NewProduct'
+import NewProduct from './components/NewProduct'
 
 const HomePage: React.FC = () => {
   return (
@@ -12,7 +12,7 @@ const HomePage: React.FC = () => {
         <Banner />
         <Category />
         <TrendingProduct />
-        {/* <NewProduct /> */}
+        <NewProduct />
       </div>
       <Publishers />
     </>

@@ -54,6 +54,15 @@ const BookSlice = createSlice({
       .addCase(getTopTrendingBooks.rejected, (state) => {
         state.isLoading = false
       })
+      .addCase(getTopNewest.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getTopNewest.fulfilled, (state) => {
+        state.isLoading = false
+      })
+      .addCase(getTopNewest.rejected, (state) => {
+        state.isLoading = false
+      })
   }
 })
 
@@ -67,6 +76,23 @@ export const getTopTrendingBooks = createAsyncThunk<Response<null>, null, { reje
       if (response) {
         if (response.status >= 200 && response.status <= 299) {
           dispatch(setTopTrendingBooks(response.data.data))
+        }
+      }
+      return response.data as Response<null>
+    } catch (error: any) {
+      return rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const getTopNewest = createAsyncThunk<Response<null>, null, { rejectValue: Response<null> }>(
+  'book/newest',
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await BookApis.getTopNewest()
+      if (response) {
+        if (response.status >= 200 && response.status <= 299) {
+          dispatch(setNewBooks(response.data.data))
         }
       }
       return response.data as Response<null>
