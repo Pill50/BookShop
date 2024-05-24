@@ -1,5 +1,5 @@
-import { CloudinaryService } from './../cloudinary/cloudinary.service';
-import { PrismaService } from './../prisma/prisma.service';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AuthError } from 'src/common/errors/authError.enum';
 import { UserError } from 'src/common/errors/userError.enum';

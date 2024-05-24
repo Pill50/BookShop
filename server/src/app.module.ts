@@ -3,12 +3,12 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { PrismaModule } from './prisma/prisma.module';
-import { AuthModule } from './auth/auth.module';
 import { MailerModule } from './mailer/mailer.module';
-import { UserModule } from './user/user.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { AdminModule } from './admin/admin.module';
 import { FlashMiddleware } from './common/middlewares/flash.middleware';
+import { AuthModule } from './customer/auth/auth.module';
+import { UserModule } from './customer/user/user.module';
 
 @Module({
   imports: [
