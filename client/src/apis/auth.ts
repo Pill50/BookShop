@@ -20,6 +20,7 @@ const OAuth = async (values: OAuthType) => {
             displayName
             address
             phone
+            email
             role
             avatar
             gender
@@ -54,6 +55,7 @@ const login = async (values: LoginType) => {
         user {
             id
             displayName
+            email
             address
             phone
             role

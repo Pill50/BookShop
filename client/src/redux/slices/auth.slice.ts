@@ -171,12 +171,17 @@ export const OAuth = createAsyncThunk<TokensType, OAuthType, { rejectValue: Resp
 )
 export const login = createAsyncThunk<TokensType, LoginType, { rejectValue: Response<null> }>(
   'auth/login',
-  async (body, ThunkAPI) => {
+  async (body, { dispatch, rejectWithValue }) => {
     try {
       const response = await AuthApis.login(body)
+      if (response) {
+        if (response.status >= 200 && response.status <= 299) {
+          dispatch(setUser(response.data.data.login.user))
+        }
+      }
       return response.data.data.login as TokensType
     } catch (error: any) {
-      return ThunkAPI.rejectWithValue(error.data as Response<null>)
+      return rejectWithValue(error.data as Response<null>)
     }
   }
 )
