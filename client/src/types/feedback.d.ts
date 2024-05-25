@@ -1,7 +1,9 @@
 import { User } from './user'
 
 export type Feedback = {
-    user: User
-    date: string
-    content: string
+  user: User
+  date: string
+  rating: number
+  content: string
+  createdAt: string
 }

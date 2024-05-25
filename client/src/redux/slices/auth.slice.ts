@@ -51,7 +51,6 @@ const AuthSlice = createSlice({
         state.isLoading = true
       })
       .addCase(OAuth.fulfilled, (state, action: PayloadAction<TokensType>) => {
-        console.log(action)
         Cookies.set('accessToken', action.payload.accessToken as string)
         Cookies.set('refreshToken', action.payload.refreshToken as string)
         Cookies.set('userRole', action.payload.user.role as string)

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { BookApis } from '~/apis'
-import { Book } from '~/types/book'
+import { Book, FilterBook, FilterBookResponse } from '~/types/book'
 import { Feedback } from '~/types/feedback'
 import { Response } from '~/types/response'
 
@@ -63,6 +63,35 @@ const BookSlice = createSlice({
       .addCase(getTopNewest.rejected, (state) => {
         state.isLoading = false
       })
+      .addCase(getBookById.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getBookById.fulfilled, (state) => {
+        state.isLoading = false
+      })
+      .addCase(getBookById.rejected, (state) => {
+        state.isLoading = false
+      })
+      .addCase(getBookBySlug.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getBookBySlug.fulfilled, (state) => {
+        state.isLoading = false
+      })
+      .addCase(getBookBySlug.rejected, (state) => {
+        state.isLoading = false
+      })
+      .addCase(filterBooks.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.totalPage = action.payload.data?.totalPage as number
+        state.totalRecord = action.payload.data?.totalRecord as number
+      })
+      .addCase(filterBooks.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(filterBooks.rejected, (state) => {
+        state.isLoading = false
+      })
   }
 })
 
@@ -96,6 +125,69 @@ export const getTopNewest = createAsyncThunk<Response<null>, null, { rejectValue
         }
       }
       return response.data as Response<null>
+    } catch (error: any) {
+      return rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const getRelatedBooks = createAsyncThunk<Response<null>, string, { rejectValue: Response<null> }>(
+  'book/getRelatedBooks',
+  async (body, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await BookApis.getRelatedBooks(body)
+      if (response) {
+        if (response.status >= 200 && response.status <= 299) {
+          dispatch(setBookList(response.data.data.books))
+        }
+      }
+      return response.data as Response<null>
+    } catch (error: any) {
+      return rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const getBookBySlug = createAsyncThunk<Response<Book>, string, { rejectValue: Response<null> }>(
+  'book/getBookBySlug',
+  async (body, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await BookApis.getBookBySlug(body)
+      if (response) {
+        if (response.status >= 200 && response.status <= 299) {
+          dispatch(setBook(response.data.data.book))
+        }
+      }
+      return response.data as Response<Book>
+    } catch (error: any) {
+      return rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const getBookById = createAsyncThunk<Response<Book>, string, { rejectValue: Response<null> }>(
+  'book/getBookById',
+  async (body, ThunkAPI) => {
+    try {
+      const response = await BookApis.getBookById(body)
+      return response.data as Response<Book>
+    } catch (error: any) {
+      return ThunkAPI.rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const filterBooks = createAsyncThunk<Response<FilterBookResponse>, FilterBook, { rejectValue: Response<null> }>(
+  'book/filter',
+  async (body, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await BookApis.filterBooks(body)
+      if (response) {
+        if (response.status >= 200 && response.status <= 299) {
+          dispatch(setBookList(response.data.data.books))
+        }
+      }
+      return response.data as Response<FilterBookResponse>
     } catch (error: any) {
       return rejectWithValue(error.data as Response<null>)
     }

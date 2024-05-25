@@ -42,7 +42,7 @@ export class BookController {
     return await this.bookService.getRelatedBooks(categoriesIds);
   }
 
-  @Get('/:slug')
+  @Get(':slug')
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Get book successfully')
   async getBookBySlug(@Param('slug') slug: string) {
