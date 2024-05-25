@@ -102,4 +102,50 @@ export const getTopNewest = createAsyncThunk<Response<null>, null, { rejectValue
   }
 )
 
+export const getRelatedBooks = createAsyncThunk<Response<null>, string, { rejectValue: Response<null> }>(
+  'book/getRelatedBooks',
+  async (body, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await BookApis.getRelatedBooks(body)
+      if (response) {
+        if (response.status >= 200 && response.status <= 299) {
+          dispatch(setBookList(response.data.data.books))
+        }
+      }
+      return response.data as Response<null>
+    } catch (error: any) {
+      return rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const getBookBySlug = createAsyncThunk<Response<Book>, string, { rejectValue: Response<null> }>(
+  'book/getBookBySlug',
+  async (body, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await BookApis.getBookBySlug(body)
+      if (response) {
+        if (response.status >= 200 && response.status <= 299) {
+          dispatch(setBook(response.data.data.book))
+        }
+      }
+      return response.data as Response<Book>
+    } catch (error: any) {
+      return rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const getBookById = createAsyncThunk<Response<Book>, string, { rejectValue: Response<null> }>(
+  'book/getBookById',
+  async (body, ThunkAPI) => {
+    try {
+      const response = await BookApis.getBookById(body)
+      return response.data as Response<Book>
+    } catch (error: any) {
+      return ThunkAPI.rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
 export default BookSlice

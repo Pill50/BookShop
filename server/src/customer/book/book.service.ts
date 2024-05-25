@@ -226,6 +226,18 @@ export class BookService {
               },
             },
           },
+          promotions: {
+            where: {
+              endDate: {
+                gte: new Date(),
+              },
+            },
+            select: {
+              type: true,
+              startDate: true,
+              endDate: true,
+            },
+          },
         },
       });
 
@@ -287,6 +299,18 @@ export class BookService {
               },
             },
           },
+          promotions: {
+            where: {
+              endDate: {
+                gte: new Date(),
+              },
+            },
+            select: {
+              type: true,
+              startDate: true,
+              endDate: true,
+            },
+          },
         },
       });
 
@@ -311,6 +335,9 @@ export class BookService {
   async getTop10BestSeller() {
     try {
       const bookList = await this.prismaService.books.findMany({
+        where: {
+          isDeleted: false,
+        },
         orderBy: {
           soldNumber: 'desc',
         },
@@ -355,6 +382,9 @@ export class BookService {
   async getTop10Newest() {
     try {
       const bookList = await this.prismaService.books.findMany({
+        where: {
+          isDeleted: false,
+        },
         orderBy: {
           createdAt: 'desc',
         },

@@ -12,4 +12,22 @@ const getTopNewest = async () => {
   return response
 }
 
-export { getTopTrending, getTopNewest }
+const getBookBySlug = async (slug: string) => {
+  const path = `/book/${slug}`
+  const response = await apiCaller('GET', path)
+  return response
+}
+
+const getBookById = async (id: string) => {
+  const path = `/book/id/${id}`
+  const response = await apiCaller('GET', path)
+  return response
+}
+
+const getRelatedBooks = async (categories: string) => {
+  const path = `/book/related?categories=${categories}`
+  const response = await apiCaller('GET', path)
+  return response
+}
+
+export { getTopTrending, getTopNewest, getBookBySlug, getBookById, getRelatedBooks }

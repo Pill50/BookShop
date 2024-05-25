@@ -1,6 +1,7 @@
 import { Author } from './author'
 import { Category } from './category'
 import { Feedback } from './feedback'
+import { Promotion } from './promotion'
 import { Publisher } from './publisher'
 
 export type Book = {
@@ -9,6 +10,7 @@ export type Book = {
   author: Author
   publisher: Publisher
   feedbacks: Feedback[]
+  promotions: Promotion[]
   thumbnail: string
   slug: string
   title: string
