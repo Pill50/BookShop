@@ -2,12 +2,15 @@ import React from 'react'
 import { MdFeedback } from 'react-icons/md'
 import CustomerFeedBacks from './CustomerFeedbacks'
 import { Book } from '~/types/book'
+import Pagination from '~/components/Pagination'
 
 interface IFeedback {
   book: Book
 }
 
 const Feedback: React.FC<IFeedback> = ({ book }) => {
+  const handleChangePage = (page: number) => {}
+
   return (
     <div className='mt-3'>
       <div className='flex gap-1 items-center rounded-lg bg-red-200 p-2 w-fit'>
@@ -26,6 +29,7 @@ const Feedback: React.FC<IFeedback> = ({ book }) => {
           content={feedback.content}
         />
       ))}
+      <Pagination totalPage={12} handleChangePage={handleChangePage} />
     </div>
   )
 }

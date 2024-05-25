@@ -132,7 +132,7 @@ const DetailBookInfo: React.FC<IDetailBookInfo> = ({ book }) => {
           </button>
         </div>
       </div>
-      <div className='grid grid-cols-2 h-fit gap-2'>
+      <div className='flex flex-col h-fit gap-2'>
         {book.promotions?.length > 0 &&
           book.promotions.map((promotion: Promotion, index: number) => (
             <div className='bg-green-200 p-2 rounded-lg text-sm text-gray-600' key={index}>
