@@ -1,15 +1,13 @@
 import React, { useState } from 'react'
 import { Book, BookInCart } from '~/types/book'
-import { FaStar } from 'react-icons/fa'
-import { FaStarHalfAlt } from 'react-icons/fa'
-import { FaRegStar } from 'react-icons/fa'
+import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa'
 import { Promotion } from '~/types/promotion'
 
 interface IDetailBookInfo {
   book: Book
 }
+
 const DetailBookInfo: React.FC<IDetailBookInfo> = ({ book }) => {
-  console.log(book)
   const [amount, setAmount] = useState<number>(1)
 
   const averageRating = book?.feedbacks?.length
@@ -34,19 +32,21 @@ const DetailBookInfo: React.FC<IDetailBookInfo> = ({ book }) => {
     // dispatch(CartActions.addBookToCart(data))
   }
 
+  const originalPrice = book.discount ? Math.round(book.price / (1 - book.discount / 100)) : book.price
+
   return (
-    <div className='flex flex-col justify-center gap-4 lg:flex-row bg-gray-100 rounded-xl p-4'>
-      <div className='flex-1 min-w-[300px] lg:w-[400px]'>
+    <div className='flex flex-col md:justify-center gap-4 lg:flex-row bg-gray-100 rounded-xl p-4'>
+      <div className='w-full lg:w-[400px] lg:h-[400px]'>
         <figure className='w-full h-full'>
           <img src={book.thumbnail} alt={book.title} className='rounded-lg object-cover w-full h-full' />
         </figure>
       </div>
       <div className='flex flex-col gap-2 justify-center'>
-        <h2 className='font-bold text-2xl text-blue-600 truncate ...'>{book.title}</h2>
-        <p className='italic truncate ...'>{book.description}</p>
-        <div className='bg-orange-100 rounded-lg p-3 w-full flex'>
-          <p className='text-center flex gap-3'>
-            <p className='text-gray-600 flex items-center gap-1'>
+        <h2 className='font-bold text-2xl text-blue-600 truncate'>{book.title}</h2>
+        <p className='italic truncate'>{book.description}</p>
+        <div className='bg-orange-100 rounded-lg p-3 w-full'>
+          <div className='text-center flex gap-3 flex-wrap'>
+            <div className='text-gray-600 flex items-center gap-1'>
               <span className='text-xl underline text-gray-800'>{averageRating.toFixed(1)} </span>
               <div className='flex'>
                 {Array.from({ length: fullStars }).map((_, index) => (
@@ -57,7 +57,7 @@ const DetailBookInfo: React.FC<IDetailBookInfo> = ({ book }) => {
                   <FaRegStar key={index} className='text-red-600' />
                 ))}
               </div>
-            </p>
+            </div>
             <span>|</span>
             <p className='text-gray-600'>
               <span className='text-xl underline text-gray-800'>{book?.feedbacks?.length}</span> Feedbacks
@@ -66,7 +66,7 @@ const DetailBookInfo: React.FC<IDetailBookInfo> = ({ book }) => {
             <p className='text-gray-600'>
               <span className='text-xl underline text-gray-800'>{book.soldNumber}</span> Sold
             </p>
-          </p>
+          </div>
         </div>
         <div className='w-fit'>
           {book.categories?.length > 0 &&
@@ -89,10 +89,10 @@ const DetailBookInfo: React.FC<IDetailBookInfo> = ({ book }) => {
           Stock Amount: <span className='font-normal'>{book.amount}</span>
         </p>
         <div className='bg-blue-100 rounded-lg p-3 flex items-center justify-between'>
-          <span className='font-semibold'>
-            <span className='line-through text-gray-600'>{Math.round(book.price / (1 - book.discount / 100))}</span> -
+          <div className='font-semibold'>
+            <span className='line-through text-gray-600'>{originalPrice}</span> -
             <span className='text-2xl text-red-500 font-bold'>{book.price} </span> VNĐ
-          </span>
+          </div>
           <div className='w-fit bg-purple-300 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300'>
             -{book.discount}%
           </div>
@@ -101,7 +101,7 @@ const DetailBookInfo: React.FC<IDetailBookInfo> = ({ book }) => {
           <button
             className='join-item text-xl bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400'
             onClick={() => {
-              if (amount == 1) setAmount(1)
+              if (amount === 1) setAmount(1)
               else setAmount(amount - 1)
             }}
           >
@@ -113,7 +113,7 @@ const DetailBookInfo: React.FC<IDetailBookInfo> = ({ book }) => {
           <button
             className='join-item text-xl bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400'
             onClick={() => {
-              if (amount == book.amount) setAmount(book.amount)
+              if (amount === book.amount) setAmount(book.amount)
               else setAmount(amount + 1)
             }}
           >
@@ -134,10 +134,10 @@ const DetailBookInfo: React.FC<IDetailBookInfo> = ({ book }) => {
       </div>
       <div className='grid grid-cols-2 h-fit gap-2'>
         {book.promotions?.length > 0 &&
-          book.promotions?.map((promotion: Promotion) => (
-            <div className='bg-green-200 p-2 rounded-lg text-sm text-gray-600'>
+          book.promotions.map((promotion: Promotion, index: number) => (
+            <div className='bg-green-200 p-2 rounded-lg text-sm text-gray-600' key={index}>
               <p>
-                Type: <span className='font-bold text-xl text-green-600'>{promotion.type}</span>
+                Type: <span className='font-bold text-lg text-green-600'>{promotion.type}</span>
               </p>
               <p>
                 Start date: <span className='font-semibold'>{promotion.startDate.slice(0, 10)}</span>

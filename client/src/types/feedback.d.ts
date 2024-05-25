@@ -5,4 +5,5 @@ export type Feedback = {
   date: string
   rating: number
   content: string
+  createdAt: string
 }
