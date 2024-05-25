@@ -12,7 +12,8 @@ import {
   Profile,
   Promotion,
   Register,
-  ResetPassword
+  ResetPassword,
+  Search
 } from './routes/routes'
 import ProtectedRoute from './routes/ProtectedRoute'
 import React from 'react'
@@ -37,6 +38,7 @@ function App() {
               <Route path={'/'} element={<Home />}></Route>
               <Route path={'/about'} element={<About />}></Route>
               <Route path={'/promotion'} element={<Promotion />}></Route>
+              <Route path={'/search'} element={<Search />}></Route>
               <Route path={'/book/:slug'} element={<BookDetail />}></Route>
               <Route path={'/profile'}>
                 <Route index element={<Profile />}></Route>
