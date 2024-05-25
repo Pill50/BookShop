@@ -1,4 +1,5 @@
 import { apiCaller } from '~/configs/apiCaller'
+import { FilterBook } from '~/types/book'
 
 const getTopTrending = async () => {
   const path = '/book/best-sellers'
@@ -30,4 +31,20 @@ const getRelatedBooks = async (categories: string) => {
   return response
 }
 
-export { getTopTrending, getTopNewest, getBookBySlug, getBookById, getRelatedBooks }
+const filterBooks = async (values: FilterBook) => {
+  let basePath: string = `/book?page=${values.pageIndex}`
+  if (values.keyword !== undefined) basePath += `&keyword=${encodeURIComponent(values.keyword)}`
+  if (values.categories !== undefined) basePath += `&categories=${values.categories}`
+  if (values.publisherId !== undefined) basePath += `&publisherId=${values.publisherId}`
+  if (values.sortByPrice !== undefined) basePath += `&sortByPrice=${encodeURIComponent(values.sortByPrice)}`
+  if (values.sortByDate !== undefined) basePath += `&sortByDate=${encodeURIComponent(values.sortByDate)}`
+  if (values.sortBySoldAmount !== undefined)
+    basePath += `&sortBySoldAmount=${encodeURIComponent(values.sortBySoldAmount)}`
+
+  window.history.pushState({}, '', basePath)
+
+  const response = await apiCaller('GET', basePath)
+  return response
+}
+
+export { getTopTrending, getTopNewest, getBookBySlug, getBookById, getRelatedBooks, filterBooks }
