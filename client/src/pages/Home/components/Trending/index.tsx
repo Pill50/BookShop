@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { IoMdTrendingUp } from 'react-icons/io'
+import { FaChevronRight } from 'react-icons/fa'
 import BookCard from '~/components/BookCard'
 import { useAppDispatch, useAppSelector } from '~/hooks/redux'
 import { BookActions } from '~/redux/slices'
@@ -20,15 +21,23 @@ const TrendingProduct: React.FC = () => {
           <div className='p-2 bg-red-500 rounded-lg'>
             <IoMdTrendingUp size={28} color='white' />
           </div>
-          <h3 className='text-xl text-red-500 font-bold'>Product Trending</h3>
+          <h3 className='text-xl text-red-500 font-bold'>Best Seller</h3>
+          <button
+            type='button'
+            className='ml-auto flex items-center justify-between text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 shrink-0'
+          >
+            View More
+            <FaChevronRight />
+          </button>
         </div>
-        <div className='grid grid-cols-1 gap-4 p-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'>
+        <div className='grid grid-cols-1 gap-4 p-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5'>
           {topTrendingBooks?.length > 0 &&
             topTrendingBooks?.map((book: Book) => (
               <BookCard
                 key={book.id}
                 id={book.id}
                 title={book.title}
+                soldNumber={book.soldNumber}
                 amount={book.amount}
                 slug={book.slug}
                 author={book.author?.name || 'No Author'}

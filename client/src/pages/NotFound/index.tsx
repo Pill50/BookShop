@@ -2,6 +2,7 @@ import React from 'react'
 import NotFound from '~/assets/images/notfound.png'
 import Ellipse1 from '~/assets/images/ellipse_1.png'
 import Ellipse2 from '~/assets/images/ellipse_2.png'
+import { NavLink } from 'react-router-dom'
 
 const NotFoundPage: React.FC = () => {
   return (
@@ -12,12 +13,12 @@ const NotFoundPage: React.FC = () => {
         <img src={NotFound} alt='NOT FOUND' className='w-[500px] object-cover bg-transparent' />
         <h1 className='font-bold text-xl'>Something went wrong</h1>
         <p className='my-2'>Sorry, We can’t find the page you’re looking for.</p>
-        <button
-          type='button'
+        <NavLink
+          to={'/'}
           className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'
         >
           BACK TO HOME
-        </button>
+        </NavLink>
       </div>
     </>
   )
