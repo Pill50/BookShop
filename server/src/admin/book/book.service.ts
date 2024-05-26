@@ -340,6 +340,7 @@ export class BookService {
       const newBook = await this.prismaService.books.create({
         data: {
           title: bookData.title,
+          rating: undefined,
           slug: uniqueSlug,
           description: bookData.description,
           price: bookData.price,

@@ -54,6 +54,7 @@ model Books {
   slug         String
   description  String
   price        Float
+  rating       Float
   discount     Int               @default(0)
   amount       Int               @default(0)
   soldNumber   Int               @default(0)

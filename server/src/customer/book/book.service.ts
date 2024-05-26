@@ -1,18 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { BookError, exceptionHandler } from 'src/common/errors';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { BookDto } from './dto/book.dto';
-import { generateUniqueSlug } from 'src/utils/helper';
 @Injectable()
 export class BookService {
-  constructor(
-    private prismaService: PrismaService,
-    private cloudinaryService: CloudinaryService,
-  ) {}
+  constructor(private prismaService: PrismaService) {}
 
   async getAllBooks(
     pageIndex: number,
+    rating: number,
     keyword: string,
     publisherId: string[],
     categories: string[],
@@ -25,9 +20,23 @@ export class BookService {
       let baseFilter: any = {
         isDeleted: false,
       };
+
       if (keyword) {
         baseFilter.title = {
           contains: keyword,
+        };
+      }
+
+      if (rating) {
+        baseFilter.AND = {
+          rating: {
+            gte: rating,
+          },
+          AND: {
+            rating: {
+              lt: rating + 1,
+            },
+          },
         };
       }
 
@@ -51,6 +60,7 @@ export class BookService {
       const totalRecord = await this.prismaService.books.count({
         where: baseFilter,
       });
+
       const take = 10;
       const skip = ((pageIndex ?? 1) - 1) * take;
       const totalPage = Math.ceil(totalRecord / take);
@@ -423,6 +433,28 @@ export class BookService {
       return formattedBooks;
     } catch (error) {
       throw exceptionHandler(error);
+    }
+  }
+
+  async getStatistics() {
+    try {
+      const users = await this.prismaService.users.count();
+      const books = await this.prismaService.books.count();
+      const feedbacks = await this.prismaService.feedbacks.count();
+      const categories = await this.prismaService.categories.count();
+      const shippers = await this.prismaService.shippers.count();
+      const promotions = await this.prismaService.promotions.count();
+
+      return {
+        users,
+        books,
+        feedbacks,
+        categories,
+        shippers,
+        promotions,
+      };
+    } catch (err) {
+      throw exceptionHandler(err);
     }
   }
 }
