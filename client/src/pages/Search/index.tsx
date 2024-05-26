@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '~/hooks/redux'
 import { BookActions } from '~/redux/slices'
 import { Book, FilterBook } from '~/types/book'
 import NoResult from '~/assets/images/noResult.png'
+import Pagination from '~/components/Pagination'
 
 const SearchPage: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -66,57 +67,58 @@ const SearchPage: React.FC = () => {
     }
   }
 
-  console.log(bookList)
   return (
     <>
       <div className='max-w-screen-xl p-4 mx-auto'>
-        <div className='flex'>
+        <div className='flex flex-col md:flex-row'>
           <FilterProducts
             onFilterChange={handleFiterChange}
             initCategory={categoriesParam}
             initPublisher={publisherIdParam}
           />
-          <div className='flex-1 ml-2'>
+          <div className='flex-1 md:ml-2 mt-4 md:mt-0'>
             <div className='flex gap-2'>
               <FaRegLightbulb size={24} />
               <p>
-                Kết quả tìm kiếm cho từ khóa <span className='text-red-500 font-semibold'> {keyword} </span>
+                Search results for keywords <span className='text-red-500 font-semibold'> {keyword} </span>
               </p>
             </div>
-            <div className='bg-gray-200 rounded-lg my-2'>
-              <div className='inline-flex items-center gap-2 p-2 shrink-0'>
-                <p>Sắp xếp theo</p>
+            <div className='bg-orange-100 rounded-lg my-2 py-3'>
+              <div className='inline-flex items-center gap-2 p-2 shrink-0 w-full flex-col justify-center md:w-fit md:flex-row flex-wrap'>
+                <p className='font-bold text-xl'>Sort by</p>
                 <button
-                  className='btn btn-primary w-36'
+                  className='w-1/2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800btn btn-primary md:w-36'
                   onClick={() => setDataFilter({ ...dataFilter, sortBySoldAmount: 'desc' })}
                 >
-                  Bán chạy
+                  Best Selling
                 </button>
-                <div className='dropdown dropdown-end'>
-                  <div tabIndex={0} role='button' className='btn btn-primary m-1  w-36'>
-                    Ngày ra mắt
-                  </div>
-                  <ul tabIndex={0} className='dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52'>
-                    <li onClick={() => setDataFilter({ ...dataFilter, sortByDate: 'asc' })}>
-                      <a>Mới nhất</a>
-                    </li>
-                    <li onClick={() => setDataFilter({ ...dataFilter, sortByDate: 'desc' })}>
-                      <a>Cũ nhất</a>
-                    </li>
-                  </ul>
+                <div className='w-1/2 md:w-36 mx-auto'>
+                  <select
+                    id='countries'
+                    className='bg-gray-50 border border-blue-700 text-gray-900 font-semibold text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-blue-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                  >
+                    <option selected>Publish Date</option>
+                    <option value='US' onClick={() => setDataFilter({ ...dataFilter, sortByDate: 'asc' })}>
+                      Newest
+                    </option>
+                    <option value='CA' onClick={() => setDataFilter({ ...dataFilter, sortByDate: 'desc' })}>
+                      Latest
+                    </option>
+                  </select>
                 </div>
-                <div className='dropdown dropdown-end'>
-                  <div tabIndex={0} role='button' className='btn btn-primary m-1  w-36'>
-                    Giá
-                  </div>
-                  <ul tabIndex={0} className='dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52'>
-                    <li onClick={() => setDataFilter({ ...dataFilter, sortByPrice: 'asc' })}>
-                      <a>Tăng dần</a>
-                    </li>
-                    <li onClick={() => setDataFilter({ ...dataFilter, sortByPrice: 'desc' })}>
-                      <a>Giảm dần</a>
-                    </li>
-                  </ul>
+                <div className='w-1/2 md:w-36 mx-auto'>
+                  <select
+                    id='countries'
+                    className='bg-gray-50 border border-blue-700 text-gray-900 font-semibold text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-blue-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                  >
+                    <option selected>Price</option>
+                    <option value='US' onClick={() => setDataFilter({ ...dataFilter, sortByPrice: 'asc' })}>
+                      Ascending
+                    </option>
+                    <option value='CA' onClick={() => setDataFilter({ ...dataFilter, sortByPrice: 'desc' })}>
+                      Descending
+                    </option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -151,13 +153,18 @@ const SearchPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className='join flex justify-end'>
-          <button className='join-item btn bg-blue-200' onClick={() => handlePageIndexChange('decrease')}>
-            «
+        <div className='flex justify-end'>
+          <button
+            className='w-20 text-md rounded-tl-md rounded-bl-md bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400'
+            onClick={() => handlePageIndexChange('decrease')}
+          >
+            Previous
           </button>
-          <button className='join-item btn'>Page {pageIndex}</button>
-          <button className='join-item btn bg-blue-200' onClick={() => handlePageIndexChange('increase')}>
-            »
+          <div className=' px-3 py-1 flex items-center justify-center border-t-[1px] border-b-[1px] border-gray-300'>
+            {pageIndex}
+          </div>
+          <button className='w-20 text-md rounded-tr-md rounded-br-md bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400'>
+            Next
           </button>
         </div>
       </div>

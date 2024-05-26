@@ -76,7 +76,7 @@ const FilterProducts: React.FC<IFilterBook> = ({ onFilterChange, initCategory, i
   }
 
   return (
-    <div className='w-64 bg-green-100 rounded-lg p-3'>
+    <div className='w-full md:w-64 bg-green-100 rounded-lg p-3'>
       <div className='flex items-center gap-1 mb-2'>
         <div className='bg-red-600 rounded-md p-3'>
           <FaFilter size={24} color='white' />
