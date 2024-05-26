@@ -31,9 +31,16 @@ const getRelatedBooks = async (categories: string) => {
   return response
 }
 
+const getStatistic = async () => {
+  const path = `/book/statistic`
+  const response = await apiCaller('GET', path)
+  return response
+}
+
 const filterBooks = async (values: FilterBook) => {
   let basePath: string = `/book?page=${values.pageIndex}`
   if (values.keyword !== undefined) basePath += `&keyword=${encodeURIComponent(values.keyword)}`
+  if (values.rating !== undefined) basePath += `&rating=${encodeURIComponent(values.rating)}`
   if (values.categories !== undefined) basePath += `&categories=${values.categories}`
   if (values.publisherId !== undefined) basePath += `&publisherId=${values.publisherId}`
   if (values.sortByPrice !== undefined) basePath += `&sortByPrice=${encodeURIComponent(values.sortByPrice)}`
@@ -47,4 +54,4 @@ const filterBooks = async (values: FilterBook) => {
   return response
 }
 
-export { getTopTrending, getTopNewest, getBookBySlug, getBookById, getRelatedBooks, filterBooks }
+export { getTopTrending, getTopNewest, getBookBySlug, getBookById, getRelatedBooks, getStatistic, filterBooks }

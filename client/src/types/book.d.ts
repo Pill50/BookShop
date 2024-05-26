@@ -17,12 +17,14 @@ export type Book = {
   description: string
   amount: number
   soldNumber: number
+  rating: number
   price: number
   discount: number
 }
 
 export type FilterBook = {
   pageIndex: number
+  rating?: number
   keyword?: string
   publisherId?: string[]
   categories?: string[]
@@ -52,4 +54,13 @@ export type BookInCart = {
 export type UpdateBookInCart = {
   bookId: string
   amount: number
+}
+
+export type Statistic = {
+  users: number
+  books: number
+  categories: number
+  feedbacks: number
+  shippers: number
+  promotions: number
 }

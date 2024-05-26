@@ -5,11 +5,13 @@ import BookCard from '~/components/BookCard'
 import { useAppDispatch, useAppSelector } from '~/hooks/redux'
 import { BookActions } from '~/redux/slices'
 import { Book, FilterBook } from '~/types/book'
+import NoResult from '~/assets/images/noResult.png'
 
 const SearchPage: React.FC = () => {
   const dispatch = useAppDispatch()
   const urlParams = new URLSearchParams(window.location.search)
   const keyword = urlParams.get('keyword') as string
+  const ratingParam = urlParams.get('rating') as string
   const categoriesParam = urlParams.get('categories') as string
   const publisherIdParam = urlParams.get('publisherId') as string
   const pageParam = urlParams.get('page') as string
@@ -29,19 +31,21 @@ const SearchPage: React.FC = () => {
     publisherId: publisherIdParam !== undefined ? [publisherIdParam] : undefined,
     sortByDate: sortByDateParam || undefined,
     sortByPrice: sortByPriceParam || undefined,
-    sortBySoldAmount: sortBySoldAmountParam || undefined
+    sortBySoldAmount: sortBySoldAmountParam || undefined,
+    rating: Number(ratingParam) || undefined
   })
 
   useEffect(() => {
     dispatch(BookActions.filterBooks(dataFilter))
   }, [dispatch, dataFilter])
 
-  const handleFiterChange = (categoriesId: string[], publisherId: string[]) => {
+  const handleFiterChange = (categoriesId: string[], publisherId: string[], rating?: number) => {
     setDataFilter({
       ...dataFilter,
       categories: categoriesId,
       publisherId: publisherId,
-      pageIndex: pageIndex
+      pageIndex: pageIndex,
+      rating: rating
     })
   }
 
@@ -62,9 +66,10 @@ const SearchPage: React.FC = () => {
     }
   }
 
+  console.log(bookList)
   return (
     <>
-      <div className='container mx-auto px-12 py-4'>
+      <div className='max-w-screen-xl p-4 mx-auto'>
         <div className='flex'>
           <FilterProducts
             onFilterChange={handleFiterChange}
@@ -115,16 +120,20 @@ const SearchPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className='grid grid-cols-1 gap-4 p-2 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
+            <div className='grid grid-cols-1 gap-4 p-2 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 relative'>
               {totalRecord === 0 ? (
                 <>
-                  <h2 className='font-bold'>No books found!!</h2>
+                  <div className='absolute left-1/2 translate-x-[-50%] text-center'>
+                    <img src={NoResult} alt='No Result' />
+                    <h2 className='font-bold text-red-600 text-2xl'>OOP!! No book found!</h2>
+                  </div>
                 </>
               ) : (
                 bookList.map((book: Book) => (
                   <BookCard
                     key={book.id}
                     id={book.id}
+                    rating={book.rating}
                     author={book.author?.name || 'No Author'}
                     soldNumber={book.soldNumber}
                     title={book.title}

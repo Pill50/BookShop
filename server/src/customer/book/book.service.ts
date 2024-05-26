@@ -96,6 +96,7 @@ export class BookService {
           title: true,
           slug: true,
           description: true,
+          rating: true,
           price: true,
           thumbnail: true,
           amount: true,

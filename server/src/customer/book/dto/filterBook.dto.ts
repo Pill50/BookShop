@@ -8,6 +8,9 @@ export class FilterBookDto {
   page: string;
 
   @IsOptional()
+  rating: string;
+
+  @IsOptional()
   publisherId: string;
 
   @IsOptional()

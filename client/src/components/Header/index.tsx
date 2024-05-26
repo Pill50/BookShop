@@ -1,5 +1,5 @@
 import { Dropdown, Avatar } from 'flowbite-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '~/hooks/redux'
 import { AuthActions } from '~/redux/slices'
@@ -8,8 +8,8 @@ import { IoIosMenu } from 'react-icons/io'
 
 const Header: React.FC = () => {
   const dispatch = useAppDispatch()
-  const user = useAppSelector((state) => state.auth.user)
   const navigate = useNavigate()
+  const user = useAppSelector((state) => state.auth.user)
   const { pathname } = useLocation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -17,6 +17,9 @@ const Header: React.FC = () => {
     setIsMenuOpen(!isMenuOpen)
   }
 
+  useEffect(() => {
+    dispatch(AuthActions.getMe(null))
+  }, [])
   const handleLogout = async () => {
     const result = await dispatch(AuthActions.logout(null))
     try {
@@ -58,7 +61,9 @@ const Header: React.FC = () => {
               placeholder='Search...'
             />
             <Dropdown
-              label={<Avatar alt='User settings' img={user.avatar} className='bg-blue-300 object-cover rounded-lg' />}
+              label={
+                <Avatar alt='User settings' img={user.avatar} className='bg-blue-300 object-cover rounded-lg w-10' />
+              }
               arrowIcon={false}
               inline
             >

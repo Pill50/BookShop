@@ -36,7 +36,7 @@ const DetailBookInfo: React.FC<IDetailBookInfo> = ({ book }) => {
 
   return (
     <div className='flex flex-col md:justify-center gap-4 lg:flex-row bg-gray-100 rounded-xl p-4'>
-      <div className='w-full lg:w-[400px] lg:h-[400px]'>
+      <div className='w-full sm:w-1/2 mx-auto lg:mx-0 lg:w-[400px] lg:h-[400px] my-auto'>
         <figure className='w-full h-full'>
           <img src={book.thumbnail} alt={book.title} className='rounded-lg object-cover w-full h-full' />
         </figure>
@@ -68,11 +68,11 @@ const DetailBookInfo: React.FC<IDetailBookInfo> = ({ book }) => {
             </p>
           </div>
         </div>
-        <div className='w-fit'>
+        <div className='w-fit flex flex-wrap gap-2'>
           {book.categories?.length > 0 &&
             book.categories.map((category: any, index) => (
               <div
-                className='bg-purple-200 text-purple-800 text-xs font-medium me-2 px-2.5 py-1 rounded dark:bg-purple-900 dark:text-purple-300'
+                className='bg-purple-200 text-purple-800 text-xs font-medium px-2.5 py-1 rounded dark:bg-purple-900 dark:text-purple-300'
                 key={index}
               >
                 {category.title}

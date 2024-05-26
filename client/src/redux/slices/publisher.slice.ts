@@ -38,7 +38,7 @@ const PublisherSlice = createSlice({
 export const { setPublisher } = PublisherSlice.actions
 
 export const getAllPublishers = createAsyncThunk<Response<null>, null, { rejectValue: Response<null> }>(
-  'category',
+  'publisher/getAllPublishers',
   async (_, { dispatch, rejectWithValue }) => {
     try {
       const response = await PublisherApis.getAllPublishers()
