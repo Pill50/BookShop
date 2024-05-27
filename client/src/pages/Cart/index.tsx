@@ -5,6 +5,7 @@ import { useAppDispatch } from '~/hooks/redux'
 import { BookActions, CartActions } from '~/redux/slices'
 import { BookInCart, UpdateBookInCart } from '~/types/book'
 import ConfirmModal from './Modal'
+import DeleteModal from './DeleteModal'
 
 const CartPage: React.FC = () => {
   const navigate = useNavigate()
@@ -192,12 +193,7 @@ const CartPage: React.FC = () => {
                       </p>
                     </td>
                     <td className='px-6 py-4'>
-                      <button
-                        className='focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 z-10'
-                        onClick={(e) => handleDeleteItem(e, item.bookId)}
-                      >
-                        Delete
-                      </button>
+                      <DeleteModal id={item.bookId} handleDeleteItem={handleDeleteItem} />
                     </td>
                   </tr>
                 ))}
