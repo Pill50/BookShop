@@ -6,6 +6,7 @@ import { BookModule } from './book/book.module';
 import { PublisherModule } from './publisher/publisher.module';
 import { ShipperModule } from './shipper/shipper.module';
 import { OrderModule } from './order/order.module';
+import { PromotionModule } from './promotion/promotion.module';
 
 @Module({
   controllers: [],
@@ -18,6 +19,7 @@ import { OrderModule } from './order/order.module';
     PublisherModule,
     ShipperModule,
     OrderModule,
+    PromotionModule,
   ],
 })
 export class CustomerModule {}
