@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { ErrorMessage, Field, Formik, Form } from 'formik'
-// import Tab from '~/components/Tab'
+import Tab from './Tab'
 import { updateProfileValidationSchema } from '~/validations/user'
 import DefaultAvatar from '~/assets/images/logo.png'
 import { useNavigate } from 'react-router-dom'
@@ -33,16 +33,16 @@ const ProfilePage: React.FC = () => {
   }
 
   const handleUpdateProfile = async (values: any) => {
-    // const result = await dispatch(UserActions.updateInformation(values))
-    // try {
-    //   if (result.meta.requestStatus === 'rejected') {
-    //     throw new Error(result.payload?.message)
-    //   }
-    //   toast.success(result.payload?.message as string)
-    //   await dispatch(UserActions.getProfile(null))
-    // } catch (error: any) {
-    //   toast.error(error.message)
-    // }
+    const result = await dispatch(UserActions.updateInformation(values))
+    try {
+      if (result.meta.requestStatus === 'rejected') {
+        throw new Error(result.payload?.message)
+      }
+      toast.success(result.payload?.message as string)
+      await dispatch(UserActions.getProfile(null))
+    } catch (error: any) {
+      toast.error(error.message)
+    }
   }
 
   const handleLogout = async () => {
@@ -51,7 +51,6 @@ const ProfilePage: React.FC = () => {
       if (result.meta.requestStatus === 'rejected') {
         throw new Error(result.payload?.message)
       }
-      toast.success(result.payload?.message as string)
       navigate('/login')
     } catch (error: any) {
       toast.error(error.message)
@@ -62,8 +61,8 @@ const ProfilePage: React.FC = () => {
     <>
       {isLoading && <Loading />}
       <Toaster />
-      <div className='container mx-auto'>
-        {/* <Tab /> */}
+      <div className='max-w-screen-xl p-4 mx-auto'>
+        <Tab />
         <div className='p-4 m-2 flex flex-col justify-center items-center'>
           <ModalChangeAvatar urlAvatar={DefaultAvatar} user={user} />
         </div>
@@ -83,16 +82,17 @@ const ProfilePage: React.FC = () => {
                         Display Name
                       </label>
                       <Field
+                        id='displayName'
                         name='displayName'
                         type='text'
-                        className={`px-2 py-4 rounded-lg border-[1px] outline-none w-60 md:max-w-sm ${
-                          formik.errors.displayName && formik.touched.displayName ? 'border-error' : ''
+                        className={`px-2 py-3 rounded-lg border-[1px] outline-none w-60 md:max-w-sm ${
+                          formik.errors.displayName && formik.touched.displayName ? 'border-red-500' : ''
                         }`}
                       />
                       <ErrorMessage
                         name='displayName'
                         component='span'
-                        className='text-[14px] text-error font-medium'
+                        className='text-[14px] text-red-600 font-medium'
                       />
                     </div>
                     <div className='flex flex-col mb-3 flex-1'>
@@ -103,11 +103,11 @@ const ProfilePage: React.FC = () => {
                         name='email'
                         disabled={true}
                         type='text'
-                        className={`px-2 py-4 rounded-lg border-[1px] outline-none w-60 md:max-w-sm ${
-                          formik.errors.email && formik.touched.email ? 'border-error' : ''
+                        className={`px-2 py-3 rounded-lg border-[1px] outline-none w-60 md:max-w-sm bg-gray-300 ${
+                          formik.errors.email && formik.touched.email ? 'border-red-500' : ''
                         }`}
                       />
-                      <ErrorMessage name='email' component='span' className='text-[14px] text-error font-medium' />
+                      <ErrorMessage name='email' component='span' className='text-[14px] text-red-600 font-medium' />
                     </div>
                   </div>
                   <div className='flex flex-col gap-2 md:flex-row'>
@@ -118,7 +118,7 @@ const ProfilePage: React.FC = () => {
                       <Field
                         name='address'
                         type='text'
-                        className={`px-2 py-4 rounded-lg border-[1px] outline-none w-60 md:max-w-sm ${
+                        className={`px-2 py-3 rounded-lg border-[1px] outline-none w-60 md:max-w-sm ${
                           formik.errors.address && formik.touched.address ? 'border-error' : ''
                         }`}
                       />
@@ -131,7 +131,7 @@ const ProfilePage: React.FC = () => {
                       <Field
                         name='phone'
                         type='text'
-                        className={`px-2 py-4 rounded-lg border-[1px] outline-none w-60 md:max-w-sm ${
+                        className={`px-2 py-3 rounded-lg border-[1px] outline-none w-60 md:max-w-sm ${
                           formik.errors.phone && formik.touched.phone ? 'border-error' : ''
                         }`}
                       />
@@ -188,10 +188,17 @@ const ProfilePage: React.FC = () => {
                   </div>
 
                   <div className='flex justify-end gap-2'>
-                    <button className='btn ml-2 btn-error text-lg' onClick={handleLogout} type='button'>
+                    <button
+                      className='focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'
+                      onClick={handleLogout}
+                      type='button'
+                    >
                       Logout
                     </button>
-                    <button className='text-white btn btn-primary text-lg' type='submit'>
+                    <button
+                      className='focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900'
+                      type='submit'
+                    >
                       Save
                     </button>
                   </div>

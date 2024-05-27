@@ -34,19 +34,19 @@ const PromotionPage: React.FC = () => {
       <div className='max-w-screen-xl p-4 mx-auto'>
         <div className='flex justify-center items-center'>
           <div
-            className={`${typeParam === '' ? 'bg-green-500' : 'bg-green-300'} w-1/3 md:w-40 text-center py-3 md:py-4 md:px-10 rounded-tl-lg rounded-bl-lg font-semibold cursor-pointer hover:bg-green-500 transition-all`}
+            className={`${typeParam === '' ? 'text-white bg-green-500' : 'bg-green-300'} w-1/3 md:w-40 text-center py-3 md:py-4 md:px-10 rounded-tl-lg rounded-bl-lg font-semibold cursor-pointer hover:bg-green-500 transition-all`}
             onClick={() => setDataFilter({ ...dataFilter, type: undefined })}
           >
             ALL
           </div>
           <div
-            className={`${typeParam === 'SALE' ? 'bg-green-500' : 'bg-green-300'} w-1/3 md:w-40 text-center py-3 md:py-4 md:px-10 font-semibold cursor-pointer hover:bg-green-500 transition-all border-l-[1px] border-r-[1px]`}
+            className={`${typeParam === 'SALE' ? 'text-white bg-green-500' : 'bg-green-300'} w-1/3 md:w-40 text-center py-3 md:py-4 md:px-10 font-semibold cursor-pointer hover:bg-green-500 transition-all border-l-[1px] border-r-[1px]`}
             onClick={() => setDataFilter({ ...dataFilter, type: 'SALE' })}
           >
             ON SALE
           </div>
           <div
-            className={`${typeParam === 'POPULAR' ? 'bg-green-500' : 'bg-green-300'} w-1/3 md:w-40 text-center py-3 md:py-4 md:px-10 rounded-tr-lg rounded-br-lg font-semibold cursor-pointer hover:bg-green-500 transition-all`}
+            className={`${typeParam === 'POPULAR' ? 'text-white bg-green-500' : 'bg-green-300'} w-1/3 md:w-40 text-center py-3 md:py-4 md:px-10 rounded-tr-lg rounded-br-lg font-semibold cursor-pointer hover:bg-green-500 transition-all`}
             onClick={() => setDataFilter({ ...dataFilter, type: 'POPULAR' })}
           >
             POPULAR

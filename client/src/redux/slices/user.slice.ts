@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { UserApis } from '~/apis'
 import { Response } from '~/types/response'
 import { setUser } from './auth.slice'
+import { UpdateInformation as UpdateInformationType } from '~/types/user'
 
 interface IUser {
   isLoading: boolean
@@ -26,6 +27,15 @@ const UserSlice = createSlice({
       .addCase(getProfile.rejected, (state) => {
         state.isLoading = false
       })
+      .addCase(updateInformation.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(updateInformation.fulfilled, (state) => {
+        state.isLoading = false
+      })
+      .addCase(updateInformation.rejected, (state) => {
+        state.isLoading = false
+      })
   }
 })
 
@@ -45,5 +55,23 @@ export const getProfile = createAsyncThunk<Response<null>, null, { rejectValue: 
     }
   }
 )
+
+export const updateInformation = createAsyncThunk<
+  Response<null>,
+  UpdateInformationType,
+  { rejectValue: Response<null> }
+>('auth/update-profile', async (body, { dispatch, rejectWithValue }) => {
+  try {
+    const response = await UserApis.updateInformation(body)
+    if (response) {
+      if (response.status >= 200 && response.status <= 299) {
+        dispatch(setUser(response.data.data))
+      }
+    }
+    return response.data as Response<null>
+  } catch (error: any) {
+    return rejectWithValue(error.data as Response<null>)
+  }
+})
 
 export default UserSlice
