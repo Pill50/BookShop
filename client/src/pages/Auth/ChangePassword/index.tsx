@@ -28,8 +28,8 @@ const ChangePasswordPage: React.FC = () => {
       if (result.meta.requestStatus === 'rejected') {
         throw new Error(result.payload?.message)
       }
-      toast.success(result.payload?.message as string)
-      navigate('/profile')
+      toast.success('Change password successfully')
+      navigate(-1)
     } catch (error: any) {
       toast.error(error.message)
     }
@@ -41,6 +41,7 @@ const ChangePasswordPage: React.FC = () => {
       <Toaster />
       <div className='max-w-screen-xl p-4 mx-auto'>
         <Tab />
+        <h1 className='font-bold text-blue-600 text-center text-2xl my-2'>Change password</h1>
         <div className='flex justify-center m-2'>
           <Formik
             initialValues={initialValue}
@@ -57,11 +58,11 @@ const ChangePasswordPage: React.FC = () => {
                   <Field
                     type='password'
                     name='oldPassword'
-                    className={`px-2 py-4 rounded-lg border-[1px] outline-none w-[300px] ${
-                      formik.errors.oldPassword && formik.touched.oldPassword && 'border-error'
+                    className={`px-2 py-3 rounded-lg border-[1px] outline-none w-[300px] ${
+                      formik.errors.oldPassword && formik.touched.oldPassword && 'border-red-500'
                     } `}
                   />
-                  <ErrorMessage name='oldPassword' component='span' className='text-[14px] text-error font-medium' />
+                  <ErrorMessage name='oldPassword' component='span' className='text-[14px] text-red-600 font-medium' />
                 </div>
                 <div className='flex flex-col mb-3'>
                   <label htmlFor='newPassword' className='text-sm mb-1 font-bold'>
@@ -70,11 +71,11 @@ const ChangePasswordPage: React.FC = () => {
                   <Field
                     type='password'
                     name='newPassword'
-                    className={`px-2 py-4 rounded-lg border-[1px] outline-none w-full md:max-w-sm ${
-                      formik.errors.newPassword && formik.touched.newPassword && 'border-error'
+                    className={`px-2 py-3 rounded-lg border-[1px] outline-none w-full md:max-w-sm ${
+                      formik.errors.newPassword && formik.touched.newPassword && 'border-red-500'
                     }`}
                   />
-                  <ErrorMessage name='newPassword' component='span' className='text-[14px] text-error font-medium' />
+                  <ErrorMessage name='newPassword' component='span' className='text-[14px] text-red-600 font-medium' />
                 </div>
                 <div className='flex flex-col mb-3'>
                   <label htmlFor='confirmPassword' className='text-sm mb-1 font-bold'>
@@ -83,22 +84,29 @@ const ChangePasswordPage: React.FC = () => {
                   <Field
                     type='password'
                     name='confirmPassword'
-                    className={`px-2 py-4 rounded-lg border-[1px] outline-none w-full md:max-w-sm ${
-                      formik.errors.confirmPassword && formik.touched.confirmPassword && 'border-error'
+                    className={`px-2 py-3 rounded-lg border-[1px] outline-none w-full md:max-w-sm ${
+                      formik.errors.confirmPassword && formik.touched.confirmPassword && 'border-red-500'
                     }`}
                   />
                   <ErrorMessage
                     name='confirmPassword'
                     component='span'
-                    className='text-[14px] text-error font-medium'
+                    className='text-[14px] text-red-600 font-medium'
                   />
                 </div>
                 <div className='flex justify-end'>
-                  <button type='submit' name='save_button' className='text-white btn btn-primary text-lg'>
+                  <button
+                    type='submit'
+                    name='save_button'
+                    className='focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900'
+                  >
                     Save
                   </button>
                   <Link to={'/'}>
-                    <button type='submit' className='btn text-lg ml-2'>
+                    <button
+                      type='submit'
+                      className='focus:outline-none text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-900'
+                    >
                       Cancel
                     </button>
                   </Link>
