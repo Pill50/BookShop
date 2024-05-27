@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { ErrorMessage, Field, Formik, Form } from 'formik'
-import Tab from './Tab'
+import Tab from '../../components/Tab'
 import { updateProfileValidationSchema } from '~/validations/user'
 import DefaultAvatar from '~/assets/images/logo.png'
 import { useNavigate } from 'react-router-dom'

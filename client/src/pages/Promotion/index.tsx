@@ -34,7 +34,7 @@ const PromotionPage: React.FC = () => {
       <div className='max-w-screen-xl p-4 mx-auto'>
         <div className='flex justify-center items-center'>
           <div
-            className={`${typeParam === '' ? 'text-white bg-green-500' : 'bg-green-300'} w-1/3 md:w-40 text-center py-3 md:py-4 md:px-10 rounded-tl-lg rounded-bl-lg font-semibold cursor-pointer hover:bg-green-500 transition-all`}
+            className={`${typeParam === null ? 'text-white bg-green-500' : 'bg-green-300'} w-1/3 md:w-40 text-center py-3 md:py-4 md:px-10 rounded-tl-lg rounded-bl-lg font-semibold cursor-pointer hover:bg-green-500 transition-all`}
             onClick={() => setDataFilter({ ...dataFilter, type: undefined })}
           >
             ALL

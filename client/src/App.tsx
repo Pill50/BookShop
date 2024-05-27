@@ -6,6 +6,7 @@ import {
   ChangePassword,
   ConfirmEmail,
   ForgotPassword,
+  HistoryOrder,
   Home,
   Login,
   NotFound,
@@ -43,6 +44,7 @@ function App() {
               <Route path={'/profile'}>
                 <Route index element={<Profile />}></Route>
                 <Route path='change-password' element={<ChangePassword />}></Route>
+                <Route path='orders' element={<HistoryOrder />}></Route>
               </Route>
               <Route path={'/cart'} element={<Cart />}></Route>
             </Route>
