@@ -71,9 +71,9 @@ const Header: React.FC = () => {
                 <span className='block text-sm'>{user.displayName}</span>
                 <span className='block truncate text-sm font-medium'>{user.email}</span>
               </Dropdown.Header>
-              <Dropdown.Item className='hover:bg-blue-100 hover:text-blue-500'>
-                <NavLink to={'/profile'}>Profile</NavLink>
-              </Dropdown.Item>
+              <NavLink to={'/profile'}>
+                <Dropdown.Item className='hover:bg-blue-100 hover:text-blue-500'>Profile</Dropdown.Item>
+              </NavLink>
               <Dropdown.Divider />
               <Dropdown.Item onClick={handleLogout} className='text-red-500 hover:bg-red-100'>
                 Sign out
