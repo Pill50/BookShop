@@ -36,8 +36,8 @@ export const resetPasswordValidationSchema = Yup.object({
 })
 
 export const changePasswordValidationSchema = Yup.object({
-  oldPassword: Yup.string().trim().required(),
-  newPassword: Yup.string().trim().min(8).max(32).required(),
+  oldPassword: Yup.string().trim().min(8).max(32).required('Old password is required'),
+  newPassword: Yup.string().trim().min(8).max(32).required('New password is required'),
   confirmPassword: Yup.string()
     .trim()
     .min(8)

@@ -1,4 +1,5 @@
 import { apiCaller } from '~/configs/apiCaller'
+import { UpdateInformation as UpdateInformationType } from '~/types/user'
 
 const getProfile = async () => {
   const path = '/user/profile'
@@ -6,4 +7,10 @@ const getProfile = async () => {
   return response
 }
 
-export { getProfile }
+const updateInformation = async (values: UpdateInformationType) => {
+  const path = '/user/edit-profile'
+  const response = await apiCaller('POST', path, values)
+  return response
+}
+
+export { getProfile, updateInformation }

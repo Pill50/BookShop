@@ -212,13 +212,25 @@ const resetPassword = async (values: ResetPasswordType) => {
 }
 
 const changePassword = async (values: ChangePasswordType) => {
-  const path = '/auth/change-password'
-  const data: ChangePasswordType = {
-    oldPassword: values.oldPassword,
-    newPassword: values.newPassword,
-    confirmPassword: values.confirmPassword
+  const path = '/graphql'
+  const query = `
+    mutation($changePasswordInput: ChangePasswordDto!) {
+      changePassword(changePasswordInput: $changePasswordInput) 
+    }
+  `
+  const variables = {
+    changePasswordInput: {
+      oldPassword: values.oldPassword,
+      newPassword: values.newPassword,
+      confirmPassword: values.confirmPassword
+    }
   }
-  const response = await apiCaller('POST', path, data)
+  const payload = {
+    query,
+    variables
+  }
+  const response = await apiCaller('POST', path, payload)
+  console.log(response)
   return response
 }
 

@@ -8,3 +8,11 @@ export type User = {
   address?: string
   role: string
 }
+
+export type UpdateInformation = {
+  avatar?: File | undefined
+  displayName?: string
+  phone?: string
+  gender?: string
+  address?: string
+}

@@ -22,7 +22,7 @@ const Pagination: React.FC<IPagination> = ({ totalPage, handleChangePage }) => {
       >
         Previous
       </button>
-      <button className=' px-3 py-1 flex items-center justify-center border-t-[1px] border-b-[1px] border-gray-300'>
+      <button className='px-3 py-1 flex items-center justify-center border-t-[1px] border-b-[1px] border-gray-300'>
         {page}
       </button>
       <button

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { BookApis } from '~/apis'
-import { Book, FilterBook, FilterBookResponse } from '~/types/book'
+import { Book, FilterBook, FilterBookResponse, Statistic } from '~/types/book'
 import { Feedback } from '~/types/feedback'
 import { Response } from '~/types/response'
 
@@ -171,6 +171,18 @@ export const getBookById = createAsyncThunk<Response<Book>, string, { rejectValu
     try {
       const response = await BookApis.getBookById(body)
       return response.data as Response<Book>
+    } catch (error: any) {
+      return ThunkAPI.rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const getStatistic = createAsyncThunk<Response<Statistic>, null, { rejectValue: Response<null> }>(
+  'book/getStatistic',
+  async (_, ThunkAPI) => {
+    try {
+      const response = await BookApis.getStatistic()
+      return response.data as Response<Statistic>
     } catch (error: any) {
       return ThunkAPI.rejectWithValue(error.data as Response<null>)
     }

@@ -1,5 +1,5 @@
 import { Dropdown, Avatar } from 'flowbite-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '~/hooks/redux'
 import { AuthActions } from '~/redux/slices'
@@ -8,8 +8,8 @@ import { IoIosMenu } from 'react-icons/io'
 
 const Header: React.FC = () => {
   const dispatch = useAppDispatch()
-  const user = useAppSelector((state) => state.auth.user)
   const navigate = useNavigate()
+  const user = useAppSelector((state) => state.auth.user)
   const { pathname } = useLocation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -17,6 +17,9 @@ const Header: React.FC = () => {
     setIsMenuOpen(!isMenuOpen)
   }
 
+  useEffect(() => {
+    dispatch(AuthActions.getMe(null))
+  }, [])
   const handleLogout = async () => {
     const result = await dispatch(AuthActions.logout(null))
     try {
@@ -32,10 +35,10 @@ const Header: React.FC = () => {
   return (
     <nav className='bg-blue-50 shadow-lg border-gray-200 dark:bg-gray-900 sticky top-0 z-[1000]'>
       <div className='max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4'>
-        <a href='https://flowbite.com/' className='flex items-center space-x-3 rtl:space-x-reverse'>
+        <NavLink to='/' className='flex items-center space-x-3 rtl:space-x-reverse'>
           <img src='https://flowbite.com/docs/images/logo.svg' className='h-8' alt='Flowbite Logo' />
           <span className='self-center text-2xl font-semibold whitespace-nowrap dark:text-white'>BookShop</span>
-        </a>
+        </NavLink>
         <div className='flex md:order-2'>
           <button
             type='button'
@@ -53,12 +56,13 @@ const Header: React.FC = () => {
             </div>
             <input
               type='text'
-              id='search-navbar'
               className='block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
               placeholder='Search...'
             />
             <Dropdown
-              label={<Avatar alt='User settings' img={user.avatar} className='bg-blue-300 object-cover rounded-lg' />}
+              label={
+                <Avatar alt='User settings' img={user.avatar} className='bg-blue-300 object-cover rounded-lg w-10' />
+              }
               arrowIcon={false}
               inline
             >
@@ -66,9 +70,9 @@ const Header: React.FC = () => {
                 <span className='block text-sm'>{user.displayName}</span>
                 <span className='block truncate text-sm font-medium'>{user.email}</span>
               </Dropdown.Header>
-              <Dropdown.Item className='hover:bg-blue-100 hover:text-blue-500'>
-                <NavLink to={'/profile'}>Profile</NavLink>
-              </Dropdown.Item>
+              <NavLink to={'/profile'}>
+                <Dropdown.Item className='hover:bg-blue-100 hover:text-blue-500'>Profile</Dropdown.Item>
+              </NavLink>
               <Dropdown.Divider />
               <Dropdown.Item onClick={handleLogout} className='text-red-500 hover:bg-red-100'>
                 Sign out
@@ -97,7 +101,6 @@ const Header: React.FC = () => {
             </div>
             <input
               type='text'
-              id='search-navbar'
               className='block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
               placeholder='Search...'
             />

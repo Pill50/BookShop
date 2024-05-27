@@ -42,6 +42,7 @@ Table books {
   slug String [not null]
   description String [not null]
   price Float [not null]
+  rating Float [not null]
   discount Int [not null, default: 0]
   amount Int [not null, default: 0]
   soldNumber Int [not null, default: 0]

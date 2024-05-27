@@ -42,6 +42,13 @@ export class BookController {
     return await this.bookService.getRelatedBooks(categoriesIds);
   }
 
+  @Get('/statistic')
+  @HttpCode(HttpStatus.OK)
+  @ResponseMessage('Get statistic successfully')
+  async getStatistic() {
+    return this.bookService.getStatistics();
+  }
+
   @Get(':slug')
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Get book successfully')
@@ -66,6 +73,9 @@ export class BookController {
     const keyword: string | undefined = filter.keyword
       ? (filter.keyword as string)
       : undefined;
+    const rating: number | undefined = filter.rating
+      ? parseInt(filter.rating as string)
+      : undefined;
     const publisherId: string[] | undefined = filter.publisherId
       ? (filter.publisherId.split(',') as string[])
       : undefined;
@@ -84,6 +94,7 @@ export class BookController {
 
     return this.bookService.getAllBooks(
       pageIndex,
+      rating,
       keyword,
       publisherId,
       categories,
