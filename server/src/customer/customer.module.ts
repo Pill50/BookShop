@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { BookModule } from './book/book.module';
 import { PublisherModule } from './publisher/publisher.module';
+import { ShipperModule } from './shipper/shipper.module';
 
 @Module({
   controllers: [],
@@ -14,6 +15,7 @@ import { PublisherModule } from './publisher/publisher.module';
     CategoryModule,
     BookModule,
     PublisherModule,
+    ShipperModule,
   ],
 })
 export class CustomerModule {}

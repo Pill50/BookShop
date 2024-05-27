@@ -5,6 +5,7 @@ import { useAppDispatch } from '~/hooks/redux'
 import { BookInCart } from '~/types/book'
 import { Category } from '~/types/category'
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa'
+import { CartActions } from '~/redux/slices'
 
 interface IBookCart {
   id: string
@@ -38,7 +39,7 @@ const BookCard: React.FC<IBookCart> = (props: IBookCart) => {
       price: props.curPrice,
       orderDate: new Date(Date.now()).toISOString()
     }
-    // dispatch(CartActions.addBookToCart(data))
+    dispatch(CartActions.addBookToCart(data))
   }
 
   const renderRatingStars = (rating: number) => {

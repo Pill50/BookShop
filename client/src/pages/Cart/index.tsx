@@ -11,11 +11,11 @@ const CartPage: React.FC = () => {
   const dispatch = useAppDispatch()
   const [cartList, setCartList] = useState<BookInCart[]>([])
   const [totalPrice, setTotalPrice] = useState<number>(0)
-  const [bill, setBill] = useState<BookInCart[]>([])
+  const [bill, setBill] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     const totalPrice = cartList.reduce((acc, cur) => {
-      acc += cur.price * cur.amount
+      acc += (cur.price * cur.amount * (100 - cur.discount)) / 100
       return acc
     }, 0)
 
@@ -28,16 +28,22 @@ const CartPage: React.FC = () => {
       setCartList(res.payload as BookInCart[])
     }
     getBookInCart()
-  }, [])
+  }, [dispatch])
 
   const handleDeleteItem = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
     e.stopPropagation()
     dispatch(CartActions.deleteBookInCart(id)).then((res) => {
       setCartList(res.payload as BookInCart[])
+      setBill((prevBill) => {
+        const newBill = new Set(prevBill)
+        newBill.delete(id)
+        return newBill
+      })
     })
   }
 
   const handleUpdateItem = (e: React.MouseEvent<HTMLButtonElement>, bookId: string, amount: number) => {
+    e.preventDefault()
     e.stopPropagation()
     const data: UpdateBookInCart = {
       bookId,
@@ -61,75 +67,89 @@ const CartPage: React.FC = () => {
     e.stopPropagation()
     const isChecked = e.target.checked
     if (isChecked) {
-      setBill([...cartList])
+      setBill(new Set(cartList.map((item) => item.bookId)))
     } else {
-      setBill([])
-      const checkboxes = document.querySelectorAll('input[type="checkbox"].item-checkbox')
-      checkboxes.forEach((checkbox: any) => {
-        checkbox.checked = false
-      })
+      setBill(new Set())
     }
   }
 
-  const handleAddItemToBill = (e: React.MouseEvent<HTMLInputElement, MouseEvent>, item: BookInCart) => {
+  const handleAddItemToBill = (e: React.ChangeEvent<HTMLInputElement>, bookId: string) => {
     e.stopPropagation()
-    if (bill.includes(item)) {
-      const newBill = bill.filter((cartItem) => cartItem.bookId !== item.bookId)
-      setBill(newBill)
-    } else {
-      setBill([...bill, item])
-    }
+    setBill((prevBill) => {
+      const newBill = new Set(prevBill)
+      if (newBill.has(bookId)) {
+        newBill.delete(bookId)
+      } else {
+        newBill.add(bookId)
+      }
+      return newBill
+    })
   }
 
   return (
     <>
       <Toaster />
       <div className='max-w-screen-xl px-4 mx-auto min-h-screen'>
-        <h1 className='text-center font-bold text-green-600 text-4xl'>MY CART</h1>
+        <h1 className='text-center font-bold text-green-600 text-4xl my-3'>MY CART</h1>
         {cartList.length === 0 ? (
           <h1>No Items In Cart</h1>
         ) : (
           <div className='overflow-x-auto'>
-            <table className='table table-zebra shadow-md'>
-              <thead>
+            <table className='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
+              <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
                 <tr>
-                  <th>
-                    <label>
+                  <th scope='col' className='p-4'>
+                    <div className='flex items-center'>
                       <input
+                        id='checkbox-all-search'
                         type='checkbox'
-                        className='checkbox'
                         onChange={handleSelectAll}
-                        checked={bill.length === cartList.length && cartList.length !== 0}
+                        checked={bill.size === cartList.length && cartList.length !== 0}
+                        className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
                       />
-                    </label>
+                      <label htmlFor='checkbox-all-search' className='sr-only'>
+                        checkbox
+                      </label>
+                    </div>
                   </th>
-                  <th className='font-bold text-lg text-blue-600'>Product</th>
-                  <th className='font-bold text-lg text-blue-600'>Unit Price</th>
-                  <th className='font-bold text-lg text-blue-600'>Amount</th>
-                  <th className='font-bold text-lg text-blue-600'>Total Price</th>
-                  <th className='font-bold text-lg text-blue-600'>Actions</th>
+                  <th scope='col' className='px-6 py-3 font-bold text-lg text-blue-600'>
+                    Product
+                  </th>
+                  <th scope='col' className='px-6 py-3 font-bold text-lg text-blue-600'>
+                    Unit Price
+                  </th>
+                  <th scope='col' className='px-6 py-3 font-bold text-lg text-blue-600'>
+                    Discount
+                  </th>
+                  <th scope='col' className='px-6 py-3 font-bold text-lg text-blue-600'>
+                    Amount
+                  </th>
+                  <th scope='col' className='px-6 py-3 font-bold text-lg text-blue-600'>
+                    Total Price
+                  </th>
+                  <th scope='col' className='px-6 py-3 font-bold text-lg text-blue-600'>
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {cartList.map((item, index) => (
-                  <tr
-                    key={index}
-                    onClick={() => navigate('/product/1')}
-                    className='hover:cursor-pointer hover:bg-blue-50 transition-all'
-                  >
-                    <th>
-                      <label>
+                  <tr key={index} className='hover:bg-blue-50 transition-all bg-white border-b'>
+                    <td className='w-4 p-4'>
+                      <div className='flex items-center'>
                         <input
                           type='checkbox'
-                          className='checkbox'
-                          checked={bill.includes(item)}
-                          onChange={() => console.log(item)}
-                          onClick={(e) => handleAddItemToBill(e, item)}
+                          checked={bill.has(item.bookId)}
+                          onChange={(e) => handleAddItemToBill(e, item.bookId)}
+                          className='item-checkbox w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
                         />
-                      </label>
-                    </th>
-                    <td>
-                      <div className='flex items-center gap-3'>
+                      </div>
+                    </td>
+                    <td className='px-6 py-4'>
+                      <div
+                        className='flex items-center gap-3 hover:cursor-pointer'
+                        onClick={() => navigate(`/product/${item.bookId}`)}
+                      >
                         <div className='avatar'>
                           <div className='mask mask-squircle w-12 h-12'>
                             <img src={item.thumbnail} alt={item.title} />
@@ -141,31 +161,41 @@ const CartPage: React.FC = () => {
                         </div>
                       </div>
                     </td>
-                    <td>
-                      <span className=''>{item.price}</span>
+                    <td className='px-6 py-4'>
+                      <span className=''>{item.price.toFixed(2)} VNĐ</span>
                     </td>
-                    <td>
-                      <div className='join'>
+                    <td className='px-6 py-4'>
+                      <span className=''>{item.discount}%</span>
+                    </td>
+                    <td className='px-6 py-4'>
+                      <div className='flex'>
                         <button
-                          className='join-item btn'
+                          className='w-10 text-md rounded-tl-md rounded-bl-md bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400'
                           onClick={(e) => handleUpdateItem(e, item.bookId, item.amount - 1)}
                         >
                           -
                         </button>
-                        <button className='join-item btn'>{item.amount}</button>
+                        <button className='w-10 px-3 py-1 flex items-center justify-center border-t-[1px] border-b-[1px] border-gray-300'>
+                          {item.amount}
+                        </button>
                         <button
-                          className='join-item btn'
+                          className='w-10 text-md rounded-tr-md rounded-br-md bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400 z-10'
                           onClick={(e) => handleUpdateItem(e, item.bookId, item.amount + 1)}
                         >
                           +
                         </button>
                       </div>
                     </td>
-                    <td>
-                      <p className=''>{item.price * item.amount}</p>
+                    <td className='px-6 py-4'>
+                      <p className='font-semibold'>
+                        {((item.price * item.amount * (100 - item.discount)) / 100).toFixed(2)} VNĐ
+                      </p>
                     </td>
-                    <td>
-                      <button className='btn btn-neutral z-10' onClick={(e) => handleDeleteItem(e, item.bookId)}>
+                    <td className='px-6 py-4'>
+                      <button
+                        className='focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 z-10'
+                        onClick={(e) => handleDeleteItem(e, item.bookId)}
+                      >
                         Delete
                       </button>
                     </td>
@@ -173,11 +203,13 @@ const CartPage: React.FC = () => {
                 ))}
               </tbody>
             </table>
-            <div className='flex justify-end my-4 gap-2 items-center'>
-              <h2 className='text-lg'>
-                Total price: <span className='font-semibold text-red-500'>{totalPrice} VNĐ</span>
+            <div className='flex justify-end my-4 gap-2 items-end flex-col'>
+              <h2 className='text-lg font-semibold'>
+                Total price: <span className='font-semibold text-red-500 text-2xl'>{totalPrice.toFixed(2)} VNĐ</span>
               </h2>
-              <ConfirmModal orderItems={bill} />
+              <ConfirmModal
+                orderItems={Array.from(bill).map((bookId) => cartList.find((item) => item.bookId === bookId)!)}
+              />
             </div>
           </div>
         )}
