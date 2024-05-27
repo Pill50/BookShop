@@ -5,5 +5,6 @@ import * as BookApis from '../apis/book'
 import * as PublisherApis from '../apis/publisher'
 import * as OrderApis from '../apis/order'
 import * as ShipperApis from '../apis/shipper'
+import * as PromotionApis from '../apis/promotion'
 
-export { AuthApis, UserApis, CategoryApis, BookApis, PublisherApis, OrderApis, ShipperApis }
+export { AuthApis, UserApis, CategoryApis, BookApis, PublisherApis, OrderApis, ShipperApis, PromotionApis }

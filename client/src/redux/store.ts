@@ -4,6 +4,8 @@ import CategorySlice from './slices/category.slice'
 import BookSlice from './slices/book.slice'
 import PublisherSlice from './slices/publisher.slice'
 import ShipperSlice from './slices/shipper.slice'
+import PromotionSlice from './slices/promotion.slice'
+import OrderSlice from './slices/order.slice'
 
 const store = configureStore({
   reducer: {
@@ -11,7 +13,9 @@ const store = configureStore({
     category: CategorySlice.reducer,
     book: BookSlice.reducer,
     publisher: PublisherSlice.reducer,
-    shipper: ShipperSlice.reducer
+    shipper: ShipperSlice.reducer,
+    order: OrderSlice.reducer,
+    promotion: PromotionSlice.reducer
   }
 })
 

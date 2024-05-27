@@ -19,14 +19,13 @@ interface IBookCart {
   amount: number
   discount: number
   rating?: number
-  promotions?: Promotion[]
+  promotions?: Promotion
   soldNumber: number
   categories: Category[]
   thumbnail: string
 }
 
 const BookCard: React.FC<IBookCart> = (props: IBookCart) => {
-  console.log(props)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
 
@@ -64,13 +63,12 @@ const BookCard: React.FC<IBookCart> = (props: IBookCart) => {
       className='bg-base-100 shadow-lg hover:cursor-pointer hover:shadow-2xl transition-all bg-white rounded-2xl flex flex-col relative'
       onClick={() => navigate(`/book/${props.slug}`)}
     >
-      {props.promotions &&
-        props.promotions?.map((promotion: Promotion, index: number) => (
-          <div className='absolute bg-red-400 px-3 rounded-lg' key={index}>
-            <p>{promotion.type}</p>
-            <p>End at: {promotion.endDate}</p>
-          </div>
-        ))}
+      {props.promotions && (
+        <div className='absolute bg-red-200 px-2 rounded-lg left-[-10px] top-[-5px]'>
+          <p className='font-bold text-red-700'>{props.promotions.type}</p>
+          <p className='text-sm font-semibold'>End at: {props.promotions.endDate.slice(0, 10)}</p>
+        </div>
+      )}
       <figure className='px-2 pt-2 md:px-4 md:pt-4'>
         <img src={props.thumbnail} alt={props.title} className='rounded-xl h-[200px] object-cover w-full' />
       </figure>

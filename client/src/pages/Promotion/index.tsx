@@ -1,59 +1,90 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import BookCard from '~/components/BookCard'
 import Pagination from '~/components/Pagination'
 import { useAppDispatch, useAppSelector } from '~/hooks/redux'
-import { BookActions } from '~/redux/slices'
-import { Book } from '~/types/book'
+import { PromotionActions } from '~/redux/slices'
+import NoResult from '~/assets/images/noResult.png'
+import { FilterPromotion, Promotion } from '~/types/promotion'
 
 const PromotionPage: React.FC = () => {
   const dispatch = useAppDispatch()
-  const bookList = useAppSelector((state) => state.book.bookList)
-  const topTrendingBooks = useAppSelector((state) => state.book.topTrendingBooks)
-  const totalPage = useAppSelector((state) => state.book.totalPage)
-  const totalRecord = useAppSelector((state) => state.book.totalRecord)
+  const promotionList = useAppSelector((state) => state.promotion.promotionList)
+  const totalPage = useAppSelector((state) => state.promotion.totalPage)
+  const totalRecord = useAppSelector((state) => state.promotion.totalRecord)
+
+  const urlParams = new URLSearchParams(window.location.search)
+  const pageParam = urlParams.get('page') as string
+  const typeParam = urlParams.get('type') as string
+
+  const [dataFilter, setDataFilter] = useState<FilterPromotion>({
+    pageIndex: Number(pageParam) || 1,
+    type: typeParam || ''
+  })
 
   useEffect(() => {
-    dispatch(BookActions.getTopTrendingBooks(null))
-  }, [])
+    dispatch(PromotionActions.filterPromotions(dataFilter))
+  }, [dataFilter])
 
-  const handleChangePage = () => {}
+  const handleChangePage = (page: number) => {
+    setDataFilter({ ...dataFilter, pageIndex: page })
+  }
 
   return (
     <>
       <div className='max-w-screen-xl p-4 mx-auto'>
         <div className='flex justify-center items-center'>
-          <div className='bg-green-300 w-40 text-center py-4 px-10 rounded-tl-lg rounded-bl-lg font-semibold cursor-pointer hover:bg-green-500 transition-all'>
+          <div
+            className={`${typeParam === '' ? 'bg-green-500' : 'bg-green-300'} w-1/3 md:w-40 text-center py-3 md:py-4 md:px-10 rounded-tl-lg rounded-bl-lg font-semibold cursor-pointer hover:bg-green-500 transition-all`}
+            onClick={() => setDataFilter({ ...dataFilter, type: undefined })}
+          >
             ALL
           </div>
-          <div className='bg-green-300 w-40 text-center py-4 px-10 font-semibold cursor-pointer hover:bg-green-500 transition-all border-l-[1px] border-r-[1px]'>
+          <div
+            className={`${typeParam === 'SALE' ? 'bg-green-500' : 'bg-green-300'} w-1/3 md:w-40 text-center py-3 md:py-4 md:px-10 font-semibold cursor-pointer hover:bg-green-500 transition-all border-l-[1px] border-r-[1px]`}
+            onClick={() => setDataFilter({ ...dataFilter, type: 'SALE' })}
+          >
             ON SALE
           </div>
-          <div className='bg-green-300 w-40 text-center py-4 px-10 rounded-tr-lg rounded-br-lg font-semibold cursor-pointer hover:bg-green-500 transition-all'>
+          <div
+            className={`${typeParam === 'POPULAR' ? 'bg-green-500' : 'bg-green-300'} w-1/3 md:w-40 text-center py-3 md:py-4 md:px-10 rounded-tr-lg rounded-br-lg font-semibold cursor-pointer hover:bg-green-500 transition-all`}
+            onClick={() => setDataFilter({ ...dataFilter, type: 'POPULAR' })}
+          >
             POPULAR
           </div>
         </div>
-        <div className='grid grid-cols-1 gap-4 p-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 mb-3'>
-          {topTrendingBooks?.length > 0 &&
-            topTrendingBooks?.map((book: Book) => (
-              <BookCard
-                key={book.id}
-                id={book.id}
-                promotions={book.promotions}
-                title={book.title}
-                soldNumber={book.soldNumber}
-                amount={book.amount}
-                slug={book.slug}
-                author={book.author?.name || 'No Author'}
-                description={book.description}
-                curPrice={book.price}
-                oldPrice={Math.round(book.price / (1 - book.discount / 100))}
-                discount={book.discount}
-                categories={book.categories}
-                thumbnail={book.thumbnail}
-              />
-            ))}
-        </div>
-        <Pagination totalPage={10} handleChangePage={handleChangePage} />
+        {totalRecord === 0 ? (
+          <>
+            <div className='text-center mx-auto flex justify-center flex-col items-center'>
+              <img src={NoResult} alt='No Result' />
+              <h2 className='font-bold text-red-600 text-2xl'>OOP!! No promotions found!</h2>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className='grid grid-cols-1 gap-4 p-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 mb-3'>
+              {promotionList?.length > 0 &&
+                promotionList?.map((promotion: Promotion, index: number) => (
+                  <BookCard
+                    key={index}
+                    id={promotion.book.id}
+                    promotions={promotion as Promotion}
+                    title={promotion.book.title}
+                    soldNumber={promotion.book.soldNumber}
+                    amount={promotion.book.amount}
+                    slug={promotion.book.slug}
+                    author={promotion.book.author?.name || 'No Author'}
+                    description={promotion.book.description}
+                    curPrice={promotion.book.price}
+                    oldPrice={Math.round(promotion.book.price / (1 - promotion.book.discount / 100))}
+                    discount={promotion.book.discount}
+                    categories={promotion.book.categories}
+                    thumbnail={promotion.book.thumbnail}
+                  />
+                ))}
+            </div>
+            <Pagination totalPage={totalPage} handleChangePage={handleChangePage} />
+          </>
+        )}
       </div>
     </>
   )
