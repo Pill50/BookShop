@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from '~/hooks/redux'
 import { BookActions } from '~/redux/slices'
 import { Book, FilterBook } from '~/types/book'
 import NoResult from '~/assets/images/noResult.png'
-import Pagination from '~/components/Pagination'
 
 const SearchPage: React.FC = () => {
   const dispatch = useAppDispatch()

@@ -6,6 +6,7 @@ import { BookActions, CartActions } from '~/redux/slices'
 import { BookInCart, UpdateBookInCart } from '~/types/book'
 import ConfirmModal from './Modal'
 import DeleteModal from './DeleteModal'
+import NoResult from '~/assets/images/noResult.png'
 
 const CartPage: React.FC = () => {
   const navigate = useNavigate()
@@ -55,7 +56,7 @@ const CartPage: React.FC = () => {
       const stockAmount = res.payload?.data?.amount as number
 
       if (amount > stockAmount) {
-        toast.error(`Bạn chỉ có thể mua tối đa ${stockAmount} sản phẩm`)
+        toast.error(`You can buy maximum ${stockAmount} books`)
       } else {
         dispatch(CartActions.updateBookInCart(data)).then((res) => {
           setCartList(res.payload as BookInCart[])
@@ -90,10 +91,13 @@ const CartPage: React.FC = () => {
   return (
     <>
       <Toaster />
-      <div className='max-w-screen-xl px-4 mx-auto min-h-screen'>
+      <div className='max-w-screen-xl px-4 mx-auto min-h-screen relative'>
         <h1 className='text-center font-bold text-green-600 text-4xl my-3'>MY CART</h1>
         {cartList.length === 0 ? (
-          <h1>No Items In Cart</h1>
+          <div className='absolute left-1/2 translate-x-[-50%] text-center'>
+            <img src={NoResult} alt='No Result' />
+            <h2 className='font-bold text-red-600 text-2xl'>No items in cart!</h2>
+          </div>
         ) : (
           <div className='overflow-x-auto'>
             <table className='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>

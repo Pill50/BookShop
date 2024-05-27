@@ -6,6 +6,7 @@ import { BookInCart } from '~/types/book'
 import { Category } from '~/types/category'
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa'
 import { CartActions } from '~/redux/slices'
+import { Promotion } from '~/types/promotion'
 
 interface IBookCart {
   id: string
@@ -18,12 +19,14 @@ interface IBookCart {
   amount: number
   discount: number
   rating?: number
+  promotions?: Promotion[]
   soldNumber: number
   categories: Category[]
   thumbnail: string
 }
 
 const BookCard: React.FC<IBookCart> = (props: IBookCart) => {
+  console.log(props)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
 
@@ -58,9 +61,16 @@ const BookCard: React.FC<IBookCart> = (props: IBookCart) => {
 
   return (
     <div
-      className='bg-base-100 shadow-lg hover:cursor-pointer hover:shadow-2xl transition-all bg-white rounded-2xl flex flex-col'
+      className='bg-base-100 shadow-lg hover:cursor-pointer hover:shadow-2xl transition-all bg-white rounded-2xl flex flex-col relative'
       onClick={() => navigate(`/book/${props.slug}`)}
     >
+      {props.promotions &&
+        props.promotions?.map((promotion: Promotion, index: number) => (
+          <div className='absolute bg-red-400 px-3 rounded-lg' key={index}>
+            <p>{promotion.type}</p>
+            <p>End at: {promotion.endDate}</p>
+          </div>
+        ))}
       <figure className='px-2 pt-2 md:px-4 md:pt-4'>
         <img src={props.thumbnail} alt={props.title} className='rounded-xl h-[200px] object-cover w-full' />
       </figure>
