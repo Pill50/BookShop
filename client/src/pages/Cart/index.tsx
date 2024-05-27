@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch } from '~/hooks/redux'
-import { BookActions } from '~/redux/slices'
+import { BookActions, CartActions } from '~/redux/slices'
 import { BookInCart, UpdateBookInCart } from '~/types/book'
 import ConfirmModal from './Modal'
 
@@ -22,19 +22,19 @@ const CartPage: React.FC = () => {
     setTotalPrice(totalPrice)
   }, [cartList])
 
-  // useEffect(() => {
-  //   const getBookInCart = async () => {
-  //     const res = await dispatch(CartActions.getBookInCart(null))
-  //     setCartList(res.payload as BookInCart[])
-  //   }
-  //   getBookInCart()
-  // }, [])
+  useEffect(() => {
+    const getBookInCart = async () => {
+      const res = await dispatch(CartActions.getBookInCart(null))
+      setCartList(res.payload as BookInCart[])
+    }
+    getBookInCart()
+  }, [])
 
   const handleDeleteItem = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
     e.stopPropagation()
-    // dispatch(CartActions.deleteBookInCart(id)).then((res) => {
-    //   setCartList(res.payload as BookInCart[])
-    // })
+    dispatch(CartActions.deleteBookInCart(id)).then((res) => {
+      setCartList(res.payload as BookInCart[])
+    })
   }
 
   const handleUpdateItem = (e: React.MouseEvent<HTMLButtonElement>, bookId: string, amount: number) => {
@@ -50,9 +50,9 @@ const CartPage: React.FC = () => {
       if (amount > stockAmount) {
         toast.error(`Bạn chỉ có thể mua tối đa ${stockAmount} sản phẩm`)
       } else {
-        // dispatch(CartActions.updateBookInCart(data)).then((res) => {
-        //   setCartList(res.payload as BookInCart[])
-        // })
+        dispatch(CartActions.updateBookInCart(data)).then((res) => {
+          setCartList(res.payload as BookInCart[])
+        })
       }
     })
   }

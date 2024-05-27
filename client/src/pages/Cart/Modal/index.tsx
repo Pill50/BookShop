@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '~/hooks/redux'
-// import { CartActions, OrderActions, ShipperActions } from '~/redux/slices'
+import { CartActions, OrderActions, ShipperActions } from '~/redux/slices'
 import { BookInCart } from '~/types/book'
-// import { Order } from '~/types/order'
+import { Order } from '~/types/order'
 import { Shipper } from '~/types/shipper'
 
 interface IConfirmModal {
@@ -14,12 +14,11 @@ interface IConfirmModal {
 const ConfirmModal: React.FC<IConfirmModal> = ({ orderItems }) => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  //   const shipperList = useAppSelector((state) => state.shipper.shippers)
+  const shipperList = useAppSelector((state) => state.shipper.shippers)
   const [open, setOpen] = useState<boolean>(false)
   const [note, setNote] = useState<string>('')
   const [totalPrice, setTotalPrice] = useState<number>(0)
-  //   const [shipper, setShipper] = useState<Shipper>(shipperList[0] || 'Shopee Express')
-  const [shipper, setShipper] = useState<Shipper>()
+  const [shipper, setShipper] = useState<Shipper>(shipperList[0] || 'Shopee Express')
   const [infoReciever, setInfoReciever] = useState({
     recieverName: '',
     recieverPhone: '',
@@ -34,9 +33,9 @@ const ConfirmModal: React.FC<IConfirmModal> = ({ orderItems }) => {
     )
   }, [orderItems])
 
-  //   useEffect(() => {
-  //     dispatch(ShipperActions.getAllShippers(null))
-  //   }, [])
+  useEffect(() => {
+    dispatch(ShipperActions.getAllShippers(null))
+  }, [])
 
   const handleToggleModal = () => {
     setOpen(!open)
@@ -47,33 +46,33 @@ const ConfirmModal: React.FC<IConfirmModal> = ({ orderItems }) => {
     const totalBooks = orderItems.reduce((acc, cur) => {
       return acc + cur.amount
     }, 0)
-    // const orderData: Order = {
-    //   amount: totalBooks,
-    //   totalPrice: totalPrice,
-    //   note: note,
-    //   recieverName: infoReciever.recieverName,
-    //   recieverPhone: infoReciever.recieverPhone,
-    //   address: infoReciever.address,
-    //   shipperId: shipper.id,
-    //   orderItem: orderItems
-    // }
+    const orderData: Order = {
+      amount: totalBooks,
+      totalPrice: totalPrice,
+      note: note,
+      recieverName: infoReciever.recieverName,
+      recieverPhone: infoReciever.recieverPhone,
+      address: infoReciever.address,
+      shipperId: shipper.id,
+      orderItem: orderItems
+    }
 
-    // const response = await dispatch(OrderActions.createOrder(orderData))
-    // if (response.payload?.statusCode === 200) {
-    //   orderItems.forEach(async (item) => {
-    //     await dispatch(CartActions.deleteBookInCart(item.bookId))
-    //   })
-    //   toast.success(response.payload.message, {
-    //     duration: 1000
-    //   })
-    //   setOpen(false)
-    //   setTimeout(() => {
-    //     navigate('/')
-    //   }, 1000)
-    // } else {
-    //   toast.error(response.payload?.message as string)
-    //   setOpen(false)
-    // }
+    const response = await dispatch(OrderActions.createOrder(orderData))
+    if (response.payload?.statusCode === 200) {
+      orderItems.forEach(async (item) => {
+        await dispatch(CartActions.deleteBookInCart(item.bookId))
+      })
+      toast.success(response.payload.message, {
+        duration: 1000
+      })
+      setOpen(false)
+      setTimeout(() => {
+        navigate('/')
+      }, 1000)
+    } else {
+      toast.error(response.payload?.message as string)
+      setOpen(false)
+    }
   }
 
   return (
