@@ -7,6 +7,7 @@ import { PublisherModule } from './publisher/publisher.module';
 import { ShipperModule } from './shipper/shipper.module';
 import { OrderModule } from './order/order.module';
 import { PromotionModule } from './promotion/promotion.module';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   controllers: [],
@@ -20,6 +21,7 @@ import { PromotionModule } from './promotion/promotion.module';
     ShipperModule,
     OrderModule,
     PromotionModule,
+    FeedbackModule,
   ],
 })
 export class CustomerModule {}

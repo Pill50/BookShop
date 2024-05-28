@@ -1,17 +1,40 @@
 import React, { useState } from 'react'
-import { Toaster } from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 import { FaStar } from 'react-icons/fa'
 import { FaRegStar } from 'react-icons/fa'
+import { useAppDispatch, useAppSelector } from '~/hooks/redux'
+import { FeedbackActions } from '~/redux/slices'
+import { CreateFeedback } from '~/types/feedback'
 interface IFeedbackModal {
-  id: string
+  bookId: string
 }
 
-const FeedbackModal: React.FC<IFeedbackModal> = ({ id }) => {
+const FeedbackModal: React.FC<IFeedbackModal> = ({ bookId }) => {
+  const user = useAppSelector((state) => state.auth.user)
+  const dispatch = useAppDispatch()
   const [open, setOpen] = useState<boolean>(false)
   const [rating, setRating] = useState<number>()
   const [content, setContent] = useState<string>('')
 
-  const createFeedback = () => {}
+  const createFeedback = async () => {
+    if (rating === undefined) {
+      toast.error('Rating is required')
+    } else {
+      const data: CreateFeedback = {
+        content: content,
+        rating: rating as number,
+        userId: user.id,
+        bookId: bookId
+      }
+      await dispatch(FeedbackActions.createFeedback(data))
+        .then((res) => {
+          toast.success(res.payload?.message as string)
+        })
+        .catch((err) => {
+          toast.error(err.message)
+        })
+    }
+  }
 
   return (
     <>
@@ -100,8 +123,10 @@ const FeedbackModal: React.FC<IFeedbackModal> = ({ id }) => {
               <p className='bg-orange-100 text-orange-500 p-2 rounded-md font-semibold'>Content</p>
               <input
                 type='text'
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
                 placeholder='Give your feedback here'
-                className='px-2 py-3 rounded-lg border-[1px] outline-none my-2 text-gray-500 w-full'
+                className='px-2 py-3 rounded-lg border-[1px] outline-none my-2 text-gray-500 w-full font-normal'
               />
             </div>
             <div className='flex gap-2 justify-center'>
@@ -110,6 +135,7 @@ const FeedbackModal: React.FC<IFeedbackModal> = ({ id }) => {
                 className='text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300  font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center'
                 onClick={(e) => {
                   setOpen(false)
+                  createFeedback()
                 }}
               >
                 Submit

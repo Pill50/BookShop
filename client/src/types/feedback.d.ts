@@ -7,3 +7,10 @@ export type Feedback = {
   content: string
   createdAt: string
 }
+
+export type CreateFeedback = {
+  userId: string
+  bookId: string
+  rating: number
+  content: string
+}

@@ -40,13 +40,13 @@ const OrderItems: React.FC<IOrderItems> = ({ orderItemInfo, isFeedback }) => {
               </p>
             </div>
             <div className='block bg-gray-200 h-[1px] my-1'></div>
-            <p className={`${isFeedback ? 'flex justify-between items-end' : 'text-right'}  mt-auto font-semibold`}>
-              {isFeedback && <FeedbackModal id={orderItemInfo.book.bookId} />}
+            <div className={`${isFeedback ? 'flex justify-between items-end' : 'text-right'}  mt-auto font-semibold`}>
+              {isFeedback && <FeedbackModal bookId={orderItemInfo.book.id} />}
               <div className=''>
                 Total item's price:{' '}
                 <span className='text-red-500 font-bold italic'>{orderItemInfo.totalPrice} VNĐ</span>
               </div>
-            </p>
+            </div>
           </div>
         </div>
       </div>
