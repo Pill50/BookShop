@@ -162,8 +162,8 @@ model OrderDetails {
   book       Books    @relation(fields: [bookId], references: [id])
   bookId     String
   amount     Int
-  price      Int
-  totalPrice Int
+  price      Float
+  totalPrice Float
   discount   Int
   orderDate  DateTime
   createdAt  DateTime @default(now())

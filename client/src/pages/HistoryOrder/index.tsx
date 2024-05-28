@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '~/hooks/redux'
 import { OrderActions } from '~/redux/slices'
 import { GetUserOrder, UserOrder } from '~/types/order'
 import { Toaster } from 'react-hot-toast'
+import Pagination from '~/components/Pagination'
 
 const HistoryOrdersPage: React.FC = () => {
   const urlParams = new URLSearchParams(window.location.search)
@@ -27,21 +28,8 @@ const HistoryOrdersPage: React.FC = () => {
     dispatch(OrderActions.getUserOrders(data))
   }, [])
 
-  const handlePageIndexChange = (type: string) => {
-    switch (type) {
-      case 'increase': {
-        if (pageIndex == totalPage) setPageIndex(1)
-        else setPageIndex(pageIndex + 1)
-        break
-      }
-      case 'decrease': {
-        if (pageIndex == 1) setPageIndex(totalPage)
-        else setPageIndex(pageIndex - 1)
-        break
-      }
-      default:
-        break
-    }
+  const handlePageIndexChange = (page: number) => {
+    console.log(page)
   }
 
   const handleStatusChange = (status: string) => {
@@ -74,15 +62,11 @@ const HistoryOrdersPage: React.FC = () => {
               )}
             </div>
           </div>
-          <div className='join flex justify-end'>
-            <button className='join-item btn bg-blue-200' onClick={() => handlePageIndexChange('decrease')}>
-              «
-            </button>
-            <button className='join-item btn '>Page {pageIndex}</button>
-            <button className='join-item btn bg-blue-200' onClick={() => handlePageIndexChange('increase')}>
-              »
-            </button>
-          </div>
+          {totalPage > 1 && (
+            <div className='join flex justify-end'>
+              <Pagination totalPage={totalPage} handleChangePage={handlePageIndexChange} />
+            </div>
+          )}
         </div>
       </div>
     </>

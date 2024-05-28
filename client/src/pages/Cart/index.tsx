@@ -207,9 +207,11 @@ const CartPage: React.FC = () => {
               <h2 className='text-lg font-semibold'>
                 Total price: <span className='font-semibold text-red-500 text-2xl'>{totalPrice.toFixed(2)} VNĐ</span>
               </h2>
-              <ConfirmModal
-                orderItems={Array.from(bill).map((bookId) => cartList.find((item) => item.bookId === bookId)!)}
-              />
+              {bill.size > 0 && (
+                <ConfirmModal
+                  orderItems={Array.from(bill).map((bookId) => cartList.find((item) => item.bookId === bookId)!)}
+                />
+              )}
             </div>
           </div>
         )}

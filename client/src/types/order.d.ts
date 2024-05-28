@@ -39,8 +39,8 @@ export type UserOrder = {
   shipper?: Shipper
   note: string
   status: string
-  recieverName: string
-  recieverPhone: string
+  receiverName: string
+  receiverPhone: string
   address: string
   orderDate: string
   orderDetail: OrderInCart[]
