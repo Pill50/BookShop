@@ -4,12 +4,12 @@ import { IoLocationSharp } from 'react-icons/io5'
 import { FaStore } from 'react-icons/fa'
 import OrderItems from '../OrderItems'
 import { OrderInCart, UserOrder } from '~/types/order'
-
 interface IOrderDetail {
   ordersInfo: UserOrder
+  handleUpdateStatusOrder: (orderId: string) => void
 }
 
-const OrdersDetail: React.FC<IOrderDetail> = ({ ordersInfo }) => {
+const OrdersDetail: React.FC<IOrderDetail> = ({ ordersInfo, handleUpdateStatusOrder }) => {
   const orderStatus = ordersInfo.status
   return (
     <div className='shadow-lg p-2 rounded-md mt-2 mb-4'>
@@ -48,18 +48,24 @@ const OrdersDetail: React.FC<IOrderDetail> = ({ ordersInfo }) => {
           {ordersInfo.orderDetail.map((order: OrderInCart) => {
             return (
               <li key={order.id}>
-                <OrderItems
-                  orderItemInfo={order}
-                  isFeedback={orderStatus === 'COMPLETED'}
-                  isShipped={orderStatus === 'PENDING'}
-                />
+                <OrderItems orderItemInfo={order} isFeedback={orderStatus === 'COMPLETED'} />
               </li>
             )
           })}
         </ul>
-        <p className='text-right font-semibold my-2'>
-          Total price: <span className='text-red-500 text-xl'>{ordersInfo.totalPrice.toFixed(2)} VNĐ</span>
-        </p>
+        <div className='flex flex-col justify-end items-end gap-2 font-semibold my-2'>
+          <p>
+            Total price: <span className='text-red-500 text-xl'>{ordersInfo.totalPrice.toFixed(2)} VNĐ</span>
+          </p>
+          {orderStatus === 'PENDING' && (
+            <button
+              className='focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800 z-10'
+              onClick={() => handleUpdateStatusOrder(ordersInfo.id)}
+            >
+              Received Order
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )

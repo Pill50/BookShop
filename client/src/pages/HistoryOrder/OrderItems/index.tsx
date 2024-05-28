@@ -1,31 +1,14 @@
 import React from 'react'
-import { OrderInCart, UpdateStatusOrder } from '~/types/order'
+import { OrderInCart } from '~/types/order'
 import FeedbackModal from '../FeedbackModal'
-import { useAppDispatch } from '~/hooks/redux'
-import { OrderActions } from '~/redux/slices'
-import toast, { Toaster } from 'react-hot-toast'
+import { Toaster } from 'react-hot-toast'
 
 interface IOrderItems {
   orderItemInfo: OrderInCart
   isFeedback: boolean
-  isShipped: boolean
 }
 
-const OrderItems: React.FC<IOrderItems> = ({ orderItemInfo, isFeedback, isShipped }) => {
-  console.log(status)
-  const dispatch = useAppDispatch()
-
-  const handleUpdateStatusOrder = () => {
-    const data: UpdateStatusOrder = {
-      orderId: orderItemInfo.id,
-      status: 'COMPLETED'
-    }
-    dispatch(OrderActions.updateStatusOrder(data))
-      .then((res) => toast.success(res.payload?.message as string))
-      .catch((err) => toast.error(err.message))
-  }
-
-  console.log(isShipped)
+const OrderItems: React.FC<IOrderItems> = ({ orderItemInfo, isFeedback }) => {
   return (
     <>
       <Toaster />
@@ -59,20 +42,8 @@ const OrderItems: React.FC<IOrderItems> = ({ orderItemInfo, isFeedback, isShippe
               </p>
             </div>
             <div className='block bg-gray-200 h-[1px] my-1'></div>
-            <div
-              className={`${isFeedback || isShipped ? 'flex justify-between items-end' : 'text-right'}  mt-auto font-semibold`}
-            >
-              <div className='flex gap-2'>
-                {isFeedback && <FeedbackModal bookId={orderItemInfo.book.id} />}
-                {isShipped && (
-                  <button
-                    className='focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800 z-10'
-                    onClick={handleUpdateStatusOrder}
-                  >
-                    Received Order
-                  </button>
-                )}
-              </div>
+            <div className={`${isFeedback ? 'flex justify-between items-end' : 'text-right'}  mt-auto font-semibold`}>
+              <div className='flex gap-2'>{isFeedback && <FeedbackModal bookId={orderItemInfo.book.id} />}</div>
               <div className=''>
                 Total item's price:{' '}
                 <span className='text-red-500 font-bold italic'>{orderItemInfo.totalPrice} VNĐ</span>

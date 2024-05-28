@@ -19,6 +19,7 @@ import { FilterUserOrder } from './types/filterUserOrder.type';
 import { ResTransformInterceptor } from 'src/common/interceptors/response.interceptor';
 import { ResponseMessage } from 'src/common/decorators';
 import { RolesGuard } from 'src/common/guard/role.guard';
+import { OrderStatus } from '@prisma/client';
 
 @Controller('user')
 @UseInterceptors(ResTransformInterceptor)
@@ -58,8 +59,8 @@ export class UserController {
       ? parseInt(filter.page as string, 10)
       : undefined;
 
-    const status: string | undefined = filter.status
-      ? (filter.status as string)
+    const status: OrderStatus | undefined = filter.status
+      ? (filter.status as OrderStatus)
       : undefined;
 
     return await this.userService.getUserOrders(userId, pageIndex, status);

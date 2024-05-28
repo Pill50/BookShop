@@ -13,7 +13,7 @@ const Carousel: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prevSlide) => (prevSlide + 1) % slideCount)
-    }, 5000)
+    }, 2000)
 
     return () => clearInterval(interval)
   }, [slideCount])
@@ -29,12 +29,9 @@ const Carousel: React.FC = () => {
   }
 
   return (
-    <div className='carousel w-full h-full'>
+    <div className=' w-full h-full'>
       {slides.map((slide, index) => (
-        <div
-          key={index}
-          className={`carousel-item relative w-full h-full ${index === currentSlide ? 'block' : 'hidden'}`}
-        >
+        <div key={index} className={`relative w-full h-full ${index === currentSlide ? 'block' : 'hidden'}`}>
           <img src={slide} className='w-full h-full rounded-md object-cover' alt={`Slide ${index + 1}`} />
           <div className='absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2'>
             <button

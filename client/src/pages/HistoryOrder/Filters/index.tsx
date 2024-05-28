@@ -28,26 +28,26 @@ const FilterOrders: React.FC<IFilterOrder> = ({ onStatusChange }) => {
           All
         </div>
         <div
-          className={`px-4 py-2 ${filterBy == 'pending' ? 'border-l-red-600 bg-red-100 text-red-600' : 'bg-white'} shadow-md cursor-pointer rounded-md mb-4 font-medium border-l-4 hover:bg-red-100 `}
-          onClick={() => setFilterBy('pending')}
+          className={`px-4 py-2 ${filterBy == 'PENDING' ? 'border-l-red-600 bg-red-100 text-red-600' : 'bg-white'} shadow-md cursor-pointer rounded-md mb-4 font-medium border-l-4 hover:bg-red-100 `}
+          onClick={() => setFilterBy('PENDING')}
         >
           Pending
         </div>
         <div
-          className={`px-4 py-2 ${filterBy == 'shipped' ? 'border-l-red-600 bg-red-100 text-red-600' : 'bg-white'} shadow-md cursor-pointer rounded-md mb-4 font-medium border-l-4 hover:bg-red-100 `}
-          onClick={() => setFilterBy('shipped')}
+          className={`px-4 py-2 ${filterBy == 'SHIPPED' ? 'border-l-red-600 bg-red-100 text-red-600' : 'bg-white'} shadow-md cursor-pointer rounded-md mb-4 font-medium border-l-4 hover:bg-red-100 `}
+          onClick={() => setFilterBy('SHIPPED')}
         >
           Shipped
         </div>
         <div
-          className={`px-4 py-2 ${filterBy == 'success' ? 'border-l-red-600 bg-red-100 text-red-600' : 'bg-white'} shadow-md cursor-pointer rounded-md mb-4 font-medium border-l-4 hover:bg-red-100 `}
-          onClick={() => setFilterBy('success')}
+          className={`px-4 py-2 ${filterBy == 'COMPLETED' ? 'border-l-red-600 bg-red-100 text-red-600' : 'bg-white'} shadow-md cursor-pointer rounded-md mb-4 font-medium border-l-4 hover:bg-red-100 `}
+          onClick={() => setFilterBy('COMPLETED')}
         >
           Completed
         </div>
         <div
-          className={`px-4 py-2 ${filterBy == 'cancel' ? 'border-l-red-600 bg-red-100 text-red-600' : 'bg-white'} shadow-md cursor-pointer rounded-md mb-4 font-medium border-l-4 hover:bg-red-100 `}
-          onClick={() => setFilterBy('cancel')}
+          className={`px-4 py-2 ${filterBy == 'CANCELED' ? 'border-l-red-600 bg-red-100 text-red-600' : 'bg-white'} shadow-md cursor-pointer rounded-md mb-4 font-medium border-l-4 hover:bg-red-100 `}
+          onClick={() => setFilterBy('CANCELED')}
         >
           Cancel
         </div>

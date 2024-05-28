@@ -66,12 +66,12 @@ export const createOrder = createAsyncThunk<Response<null>, Order, { rejectValue
 
 export const updateStatusOrder = createAsyncThunk<Response<Order>, UpdateStatusOrder, { rejectValue: Response<null> }>(
   'order/updateStatusOrder',
-  async (body, ThunkAPI) => {
+  async (body, { rejectWithValue }) => {
     try {
       const response = await OrderApis.updateOrderStatus(body)
       return response.data as Response<Order>
     } catch (error: any) {
-      return ThunkAPI.rejectWithValue(error.data as Response<null>)
+      return rejectWithValue(error.data as Response<null>)
     }
   }
 )
