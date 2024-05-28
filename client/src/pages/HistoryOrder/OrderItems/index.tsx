@@ -1,11 +1,13 @@
 import React from 'react'
 import { OrderInCart } from '~/types/order'
+import FeedbackModal from '../FeedbackModal'
 
 interface IOrderItems {
   orderItemInfo: OrderInCart
+  isFeedback: boolean
 }
 
-const OrderItems: React.FC<IOrderItems> = ({ orderItemInfo }) => {
+const OrderItems: React.FC<IOrderItems> = ({ orderItemInfo, isFeedback }) => {
   return (
     <>
       <div className='border-2 rounded-lg p-2 shadow-lg border-blue-50 my-2 bg-blue-50'>
@@ -37,9 +39,13 @@ const OrderItems: React.FC<IOrderItems> = ({ orderItemInfo }) => {
                 <span> - {orderItemInfo.price.toFixed(2)} VNĐ</span>
               </p>
             </div>
-            <div className='divider my-1'></div>
-            <p className='text-right mt-auto font-semibold'>
-              Total item's price: <span className='text-red-500 font-bold italic'>{orderItemInfo.totalPrice} VNĐ</span>
+            <div className='block bg-gray-200 h-[1px] my-1'></div>
+            <p className={`${isFeedback ? 'flex justify-between items-end' : 'text-right'}  mt-auto font-semibold`}>
+              {isFeedback && <FeedbackModal id={orderItemInfo.book.bookId} />}
+              <div className=''>
+                Total item's price:{' '}
+                <span className='text-red-500 font-bold italic'>{orderItemInfo.totalPrice} VNĐ</span>
+              </div>
             </p>
           </div>
         </div>

@@ -47,7 +47,7 @@ const OrdersDetail: React.FC<IOrderDetail> = ({ ordersInfo }) => {
           <ul>
             {ordersInfo?.orderDetail.map((order: OrderInCart) => (
               <li key={order.id}>
-                <OrderItems orderItemInfo={order} />
+                <OrderItems orderItemInfo={order} isFeedback={ordersInfo.status === 'PENDING'} />
               </li>
             ))}
           </ul>

@@ -8,6 +8,7 @@ import { OrderActions } from '~/redux/slices'
 import { GetUserOrder, UserOrder } from '~/types/order'
 import { Toaster } from 'react-hot-toast'
 import Pagination from '~/components/Pagination'
+import NoResult from '~/assets/images/noResult.png'
 
 const HistoryOrdersPage: React.FC = () => {
   const urlParams = new URLSearchParams(window.location.search)
@@ -56,7 +57,10 @@ const HistoryOrdersPage: React.FC = () => {
                 <h2 className='font-bold text-xl'>Purchase History</h2>
               </div>
               {userOrders.length == 0 || totalRecord === 0 ? (
-                <h2>You don't have any orders!</h2>
+                <div className='text-center mx-auto flex justify-center flex-col items-center'>
+                  <img src={NoResult} alt='No Result' />
+                  <h2 className='font-bold text-red-600 text-2xl'>OOP!! You don't have any order!</h2>
+                </div>
               ) : (
                 userOrders?.map((order: UserOrder, index) => <OrdersDetail ordersInfo={order} key={index} />)
               )}
