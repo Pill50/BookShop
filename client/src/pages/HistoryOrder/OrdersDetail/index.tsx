@@ -57,7 +57,7 @@ const OrdersDetail: React.FC<IOrderDetail> = ({ ordersInfo, handleUpdateStatusOr
           <p>
             Total price: <span className='text-red-500 text-xl'>{ordersInfo.totalPrice.toFixed(2)} VNĐ</span>
           </p>
-          {orderStatus === 'PENDING' && (
+          {orderStatus === 'SHIPPED' && (
             <button
               className='focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800 z-10'
               onClick={() => handleUpdateStatusOrder(ordersInfo.id)}

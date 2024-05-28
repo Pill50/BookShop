@@ -36,6 +36,7 @@ const SearchPage: React.FC = () => {
   })
 
   useEffect(() => {
+    console.log('first')
     dispatch(BookActions.filterBooks(dataFilter))
   }, [dispatch, dataFilter])
 
@@ -108,15 +109,12 @@ const SearchPage: React.FC = () => {
                 <div className='w-1/2 md:w-36 mx-auto'>
                   <select
                     id='countries'
+                    onChange={(e) => setDataFilter({ ...dataFilter, sortByPrice: e.target.value })}
                     className='bg-gray-50 border border-blue-700 text-gray-900 font-semibold text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-blue-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
                   >
                     <option selected>Price</option>
-                    <option value='US' onClick={() => setDataFilter({ ...dataFilter, sortByPrice: 'asc' })}>
-                      Ascending
-                    </option>
-                    <option value='CA' onClick={() => setDataFilter({ ...dataFilter, sortByPrice: 'desc' })}>
-                      Descending
-                    </option>
+                    <option value='asc'>Ascending</option>
+                    <option value='desc'>Descending</option>
                   </select>
                 </div>
               </div>
@@ -152,20 +150,22 @@ const SearchPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className='flex justify-end'>
-          <button
-            className='w-20 text-md rounded-tl-md rounded-bl-md bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400'
-            onClick={() => handlePageIndexChange('decrease')}
-          >
-            Previous
-          </button>
-          <div className=' px-3 py-1 flex items-center justify-center border-t-[1px] border-b-[1px] border-gray-300'>
-            {pageIndex}
+        {totalPage > 1 && (
+          <div className='flex justify-end'>
+            <button
+              className='w-20 text-md rounded-tl-md rounded-bl-md bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400'
+              onClick={() => handlePageIndexChange('decrease')}
+            >
+              Previous
+            </button>
+            <div className=' px-3 py-1 flex items-center justify-center border-t-[1px] border-b-[1px] border-gray-300'>
+              {pageIndex}
+            </div>
+            <button className='w-20 text-md rounded-tr-md rounded-br-md bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400'>
+              Next
+            </button>
           </div>
-          <button className='w-20 text-md rounded-tr-md rounded-br-md bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400'>
-            Next
-          </button>
-        </div>
+        )}
       </div>
     </>
   )

@@ -11,7 +11,7 @@ const CategoryCart: React.FC<ICategoryCart> = ({ category }: ICategoryCart) => {
   return (
     <div
       className='w-44 p-2 border-2 rounded-lg hover:bg-green-100 hover:border-green-400 hover:cursor-pointer hover:scale-105 transition-all'
-      onClick={() => navigate(`/book?categories=${category.id}`)}
+      onClick={() => navigate(`/search?categories=${category.id}`)}
     >
       <div className='flex items-center justify-center flex-col'>
         <img src={category.thumbnail} alt={category.title} className='h-20 w-20 object-cover rounded-md' />
