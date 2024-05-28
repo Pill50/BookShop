@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { OrderApis, UserApis } from '~/apis'
-import { GetUserOrder, Order, UserOrder, UserOrderResponse } from '~/types/order'
+import { GetUserOrder, Order, UpdateStatusOrder, UserOrder, UserOrderResponse } from '~/types/order'
 import { Response } from '~/types/response'
 
 interface IOrder {
@@ -58,6 +58,18 @@ export const createOrder = createAsyncThunk<Response<null>, Order, { rejectValue
     try {
       const response = await OrderApis.createOrder(body)
       return response.data as Response<null>
+    } catch (error: any) {
+      return ThunkAPI.rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const updateStatusOrder = createAsyncThunk<Response<Order>, UpdateStatusOrder, { rejectValue: Response<null> }>(
+  'order/updateStatusOrder',
+  async (body, ThunkAPI) => {
+    try {
+      const response = await OrderApis.updateOrderStatus(body)
+      return response.data as Response<Order>
     } catch (error: any) {
       return ThunkAPI.rejectWithValue(error.data as Response<null>)
     }

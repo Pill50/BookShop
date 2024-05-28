@@ -62,7 +62,9 @@ const HistoryOrdersPage: React.FC = () => {
                   <h2 className='font-bold text-red-600 text-2xl'>OOP!! You don't have any order!</h2>
                 </div>
               ) : (
-                userOrders?.map((order: UserOrder, index) => <OrdersDetail ordersInfo={order} key={index} />)
+                userOrders.map((order) => {
+                  return <OrdersDetail ordersInfo={order} key={order.id} />
+                })
               )}
             </div>
           </div>
