@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Tab from '~/components/Tab'
 import { FaHistory } from 'react-icons/fa'
-// import OrdersDetail from './OrdersDetail'
+import OrdersDetail from './OrdersDetail'
 import FilterOrders from './Filters'
 import { useAppDispatch, useAppSelector } from '~/hooks/redux'
 import { OrderActions } from '~/redux/slices'
@@ -17,6 +17,15 @@ const HistoryOrdersPage: React.FC = () => {
   const totalPage = useAppSelector((state) => state.order.totalPage)
   const totalRecord = useAppSelector((state) => state.order.totalRecord)
   const [pageIndex, setPageIndex] = useState<number>(1)
+
+  useEffect(() => {
+    const data: GetUserOrder = {
+      pageIndex: Number(pageParam) || 1,
+      status: statusParam !== null ? statusParam : undefined
+    }
+    setPageIndex(Number(pageParam) || 1)
+    dispatch(OrderActions.getUserOrders(data))
+  }, [])
 
   const handlePageIndexChange = (type: string) => {
     switch (type) {
@@ -35,7 +44,13 @@ const HistoryOrdersPage: React.FC = () => {
     }
   }
 
-  const handleStatusChange = (status: string) => {}
+  const handleStatusChange = (status: string) => {
+    const data: GetUserOrder = {
+      pageIndex: pageIndex,
+      status: status
+    }
+    dispatch(OrderActions.getUserOrders(data))
+  }
 
   return (
     <>
@@ -55,8 +70,7 @@ const HistoryOrdersPage: React.FC = () => {
               {userOrders.length == 0 || totalRecord === 0 ? (
                 <h2>You don't have any orders!</h2>
               ) : (
-                <></>
-                // userOrders?.map((order: UserOrder, index) => <OrdersDetail ordersInfo={order} key={index} />)
+                userOrders?.map((order: UserOrder, index) => <OrdersDetail ordersInfo={order} key={index} />)
               )}
             </div>
           </div>
