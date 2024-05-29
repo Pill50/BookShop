@@ -7,6 +7,7 @@ import * as OrderApis from '../apis/order'
 import * as ShipperApis from '../apis/shipper'
 import * as PromotionApis from '../apis/promotion'
 import * as FeedbackApis from '../apis/feedback'
+import * as AboutApis from '../apis/about'
 
 export {
   AuthApis,
@@ -17,5 +18,6 @@ export {
   OrderApis,
   ShipperApis,
   PromotionApis,
-  FeedbackApis
+  FeedbackApis,
+  AboutApis
 }

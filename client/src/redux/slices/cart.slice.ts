@@ -76,10 +76,10 @@ export const addBookToCart = createAsyncThunk<BookInCart[], BookInCart, { reject
   async (body, { dispatch, rejectWithValue }) => {
     try {
       const items: BookInCart[] = JSON.parse(localStorage.getItem('cartItems') || '[]')
-      const isExistedItem = items.some((item) => item.bookId === body.bookId)
+      const isExistedItem = items.some((item) => item.id === body.id)
       if (isExistedItem) {
         items.forEach((item) => {
-          if (item.bookId === body.bookId) {
+          if (item.id === body.id) {
             item.amount += body.amount
           }
         })
@@ -101,7 +101,7 @@ export const updateBookInCart = createAsyncThunk<BookInCart[], UpdateBookInCart,
     try {
       const items: BookInCart[] = JSON.parse(localStorage.getItem('cartItems') || '[]')
       const updatedCart = items.map((item) => {
-        if (item.bookId === body.bookId) {
+        if (item.id === body.bookId) {
           if (body.amount <= 1) item.amount = 1
           else item.amount = body.amount
         }
@@ -122,7 +122,7 @@ export const deleteBookInCart = createAsyncThunk<BookInCart[], string, { rejectV
   async (body, { dispatch, rejectWithValue }) => {
     try {
       const items: BookInCart[] = JSON.parse(localStorage.getItem('cartItems') || '[]')
-      const newItems = items.filter((item) => item.bookId !== body)
+      const newItems = items.filter((item) => item.id !== body)
       localStorage.setItem('cartItems', JSON.stringify(newItems))
       dispatch(setCartLength(newItems.length))
       return newItems as BookInCart[]
