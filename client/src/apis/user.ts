@@ -1,4 +1,5 @@
 import { apiCaller } from '~/configs/apiCaller'
+import { GetUserOrder } from '~/types/order'
 import { UpdateInformation as UpdateInformationType } from '~/types/user'
 
 const getProfile = async () => {
@@ -13,4 +14,11 @@ const updateInformation = async (values: UpdateInformationType) => {
   return response
 }
 
-export { getProfile, updateInformation }
+const getUserOrders = async (filter: GetUserOrder) => {
+  let basePath: string = `/user/my-orders?page=${filter.pageIndex}`
+  if (filter.status !== undefined) basePath += `&status=${encodeURIComponent(filter.status)}`
+  const response = await apiCaller('GET', basePath)
+  return response
+}
+
+export { getProfile, updateInformation, getUserOrders }

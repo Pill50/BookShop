@@ -6,6 +6,9 @@ import PublisherSlice from './slices/publisher.slice'
 import ShipperSlice from './slices/shipper.slice'
 import PromotionSlice from './slices/promotion.slice'
 import OrderSlice from './slices/order.slice'
+import CartSlice from './slices/cart.slice'
+import FeedbackSlice from './slices/feedback.slice'
+import AboutSlice from './slices/about.slice'
 
 const store = configureStore({
   reducer: {
@@ -15,7 +18,10 @@ const store = configureStore({
     publisher: PublisherSlice.reducer,
     shipper: ShipperSlice.reducer,
     order: OrderSlice.reducer,
-    promotion: PromotionSlice.reducer
+    cart: CartSlice.reducer,
+    promotion: PromotionSlice.reducer,
+    feedback: FeedbackSlice.reducer,
+    about: AboutSlice.reducer
   }
 })
 

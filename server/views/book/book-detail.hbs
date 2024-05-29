@@ -15,11 +15,20 @@
                 <form class="relative bg-white rounded-lg shadow dark:bg-gray-700 p-4" method="POST" action="/admin/promotion/create?bookId={{book.id}}">
                     <h3 class="font-bold text-lg text-blue-500 text-center">CREATE PROMOTION</h3>
                     <!-- Modal header -->
-                    <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type</label>
-                    <select id="type" name="type" class="max-w-2xl g-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type</label>
+                    <select id="type" name="type" class="max-w-2xl bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onchange="toggleFlashSaleDiscount()">
                         <option selected value="POPULAR">Popular</option>
                         <option value="SALE">On Sale</option>
                     </select>
+                    <label for="flashSaleDiscount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" id="flashSaleDiscountLabel" style="display:none;">Flash Sale Discount</label>
+                    <div class="flex mb-2" id="flashSaleDiscountDiv" style="display:none;">
+                        <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                            <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6.2V5h11v1.2M8 5v14m-3 0h6m2-6.8V11h8v1.2M17 11v8m-1.5 0h3"/>
+                            </svg>
+                        </span>
+                        <input type="number" min="0" max="100" id="flashSaleDiscount" name="discountFlashSale" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    </div>
                     <label for="startDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Start Date</label>
                     <div class="relative max-w-2xl">
                         <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
@@ -27,7 +36,7 @@
                             <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
                             </svg>
                         </div>
-                        <input datepicker type="text" name="startDate" value="haha" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
+                        <input datepicker type="text" name="startDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
                     </div>
                     <label for="endDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">End Date</label>
                     <div class="relative max-w-2xl">
@@ -136,5 +145,20 @@
     </div>
   </div>
 
+  <script>
+    function toggleFlashSaleDiscount() {
+        var type = document.getElementById('type').value;
+        var flashSaleDiscountLabel = document.getElementById('flashSaleDiscountLabel');
+        var flashSaleDiscountDiv = document.getElementById('flashSaleDiscountDiv');
+        if (type === 'SALE') {
+            flashSaleDiscountLabel.style.display = 'block';
+            flashSaleDiscountDiv.style.display = 'flex';
+        } else {
+            flashSaleDiscountLabel.style.display = 'none';
+            flashSaleDiscountDiv.style.display = 'none';
+        }
+    }
+    document.addEventListener('DOMContentLoaded', toggleFlashSaleDiscount);
+  </script>
   {{/inline}}
 {{/app}}

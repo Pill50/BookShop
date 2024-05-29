@@ -118,6 +118,7 @@ Table orders {
 Table promotion {
   id String [pk]
   type PromotionType [not null]
+  discountFlashSale Float
   startDate DateTime
   endDate DateTime
   bookId String [not null]
@@ -133,8 +134,8 @@ Table order_details {
   book books [not null]
   bookId String [not null]
   amount Int [not null]
-  price Int [not null]
-  totalPrice Int [not null]
+  price Float [not null]
+  totalPrice Float [not null]
   discount Int [not null]
   orderDate DateTime [not null]
   createdAt DateTime [default: `now()`, not null]

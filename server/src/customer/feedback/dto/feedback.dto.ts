@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class FeedbackDto {
   @IsString({ message: 'UserId must be a string' })
@@ -12,4 +12,8 @@ export class FeedbackDto {
   @IsString({ message: 'Content must be a string' })
   @IsNotEmpty({ message: 'Content must not be empty' })
   content: string;
+
+  @IsNumber()
+  @IsNotEmpty({ message: 'Rating must not be empty' })
+  rating: number;
 }

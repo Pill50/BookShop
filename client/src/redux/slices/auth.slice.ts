@@ -63,10 +63,12 @@ const AuthSlice = createSlice({
       .addCase(login.pending, (state) => {
         state.isLoading = true
       })
-      .addCase(login.fulfilled, (state, action: PayloadAction<TokensType>) => {
-        Cookies.set('accessToken', action.payload.accessToken as string)
-        Cookies.set('refreshToken', action.payload.refreshToken as string)
-        state.isLogin = true
+      .addCase(login.fulfilled, (state, action: PayloadAction<TokensType | any>) => {
+        if (action.payload?.accessToken) {
+          Cookies.set('accessToken', action.payload.accessToken as string)
+          Cookies.set('refreshToken', action.payload.refreshToken as string)
+          state.isLogin = true
+        }
         state.isLoading = false
       })
       .addCase(login.rejected, (state) => {
@@ -168,11 +170,18 @@ export const OAuth = createAsyncThunk<TokensType, OAuthType, { rejectValue: Resp
     }
   }
 )
-export const login = createAsyncThunk<TokensType, LoginType, { rejectValue: Response<null> }>(
+export const login = createAsyncThunk<TokensType | Response<any>, LoginType, { rejectValue: Response<null> }>(
   'auth/login',
   async (body, { dispatch, rejectWithValue }) => {
     try {
       const response = await AuthApis.login(body)
+      if (response.data.errors) {
+        const dataError = {
+          statusCode: 400,
+          message: response.data.errors[0].message
+        }
+        return dataError
+      }
       if (response) {
         if (response.status >= 200 && response.status <= 299) {
           dispatch(setUser(response.data.data.login.user))
@@ -228,11 +237,18 @@ export const forgotPassword = createAsyncThunk<Response<null>, ForgotPasswordTyp
   }
 )
 
-export const resetPassword = createAsyncThunk<Response<User>, ResetPasswordType, { rejectValue: Response<null> }>(
+export const resetPassword = createAsyncThunk<Response<User | any>, ResetPasswordType, { rejectValue: Response<null> }>(
   'auth/reset-password',
   async (body, ThunkAPI) => {
     try {
       const response = await AuthApis.resetPassword(body)
+      if (response.data.errors) {
+        const dataError = {
+          statusCode: 400,
+          message: response.data.errors[0].message
+        }
+        return dataError
+      }
       return response.data.data.resetPassword as Response<User>
     } catch (error: any) {
       return ThunkAPI.rejectWithValue(error.data as Response<null>)

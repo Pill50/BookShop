@@ -35,13 +35,46 @@ export class FeedbackService {
 
   async createFeedback(feedbackData: FeedbackDto) {
     try {
-      const { bookId, userId, content } = feedbackData;
+      const { bookId, userId, content, rating } = feedbackData;
+      const existingFeedback = await this.prismaService.feedbacks.findFirst({
+        where: {
+          bookId: bookId,
+          userId: userId,
+        },
+      });
+
+      if (existingFeedback) {
+        throw new HttpException(
+          'You have already reviewed this items',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
 
       const feedback = await this.prismaService.feedbacks.create({
         data: {
           content,
           bookId,
           userId,
+          rating,
+        },
+      });
+
+      const allFeedbacks = await this.prismaService.feedbacks.findMany({
+        where: {
+          bookId: bookId,
+        },
+      });
+
+      const averageRating =
+        allFeedbacks.reduce((sum, feedback) => sum + feedback.rating, 0) /
+        allFeedbacks.length;
+
+      await this.prismaService.books.update({
+        where: {
+          id: bookId,
+        },
+        data: {
+          rating: averageRating,
         },
       });
 

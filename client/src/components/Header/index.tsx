@@ -12,6 +12,7 @@ const Header: React.FC = () => {
   const user = useAppSelector((state) => state.auth.user)
   const { pathname } = useLocation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [searchValue, setSearchValue] = useState<string>('')
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -20,6 +21,7 @@ const Header: React.FC = () => {
   useEffect(() => {
     dispatch(AuthActions.getMe(null))
   }, [])
+
   const handleLogout = async () => {
     const result = await dispatch(AuthActions.logout(null))
     try {
@@ -56,8 +58,13 @@ const Header: React.FC = () => {
             </div>
             <input
               type='text'
+              value={searchValue}
               className='block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
               placeholder='Search...'
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') navigate(`/search?keyword=${searchValue}`)
+              }}
+              onChange={(e) => setSearchValue(e.target.value)}
             />
             <Dropdown
               label={

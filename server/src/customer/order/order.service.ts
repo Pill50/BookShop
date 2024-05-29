@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { exceptionHandler } from 'src/common/errors';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { OrderDto } from './dto/order.dto';
+import { OrderStatus } from '@prisma/client';
 
 @Injectable()
 export class OrderService {
@@ -13,8 +14,10 @@ export class OrderService {
         amount: item.amount,
         discount: item.discount,
         price: item.price,
-        totalPrice: item.price * item.amount,
-        bookId: item.bookId,
+        totalPrice: Number(
+          ((item.price * item.amount * (100 - item.discount)) / 100).toFixed(2),
+        ),
+        bookId: item.id,
         orderDate: item.orderDate,
       }));
 
@@ -43,7 +46,7 @@ export class OrderService {
       await Promise.all(
         orderData.orderItem.map(async (item) => {
           await this.prismaService.books.update({
-            where: { id: item.bookId },
+            where: { id: item.id },
             data: {
               amount: {
                 decrement: item.amount,
@@ -52,6 +55,28 @@ export class OrderService {
           });
         }),
       );
+
+      return order;
+    } catch (error) {
+      throw exceptionHandler(error);
+    }
+  }
+
+  async updateOrderStatus(orderId: string, status: OrderStatus) {
+    try {
+      const order = await this.prismaService.orders.update({
+        where: { id: orderId },
+        data: {
+          status,
+        },
+        include: {
+          orderDetail: true,
+        },
+      });
+
+      if (!order) {
+        throw new HttpException('Order not found', HttpStatus.BAD_REQUEST);
+      }
 
       return order;
     } catch (error) {

@@ -13,4 +13,7 @@ export class PromotionDto {
   @IsString({ message: 'End date must be a string' })
   @IsNotEmpty({ message: 'End date must not be empty' })
   endDate: string;
+
+  @IsOptional()
+  discountFlashSale?: number;
 }

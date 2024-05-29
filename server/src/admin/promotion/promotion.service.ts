@@ -109,6 +109,7 @@ export class PromotionService {
       const promotion = await this.prismaService.promotions.create({
         data: {
           bookId,
+          discountFlashSale: data.discountFlashSale,
           type: data.type,
           startDate: data.startDate,
           endDate: data.endDate,

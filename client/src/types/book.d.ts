@@ -40,7 +40,7 @@ export type FilterBookResponse = {
 }
 
 export type BookInCart = {
-  bookId: string
+  id: string
   description: string
   thumbnail: string
   title: string

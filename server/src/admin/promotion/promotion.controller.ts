@@ -65,7 +65,8 @@ export class PromotionController {
     const data: PromotionDto = {
       type: body.type,
       startDate: new Date(body.startDate).toISOString(),
-      endDate: new Date(body.startDate).toISOString(),
+      endDate: new Date(body.endDate).toISOString(),
+      discountFlashSale: Number(body?.discountFlashSale) || null,
     };
     const promotion = await this.promotionService.createNewPromotion(
       bookId,

@@ -69,7 +69,7 @@ const CartPage: React.FC = () => {
     e.stopPropagation()
     const isChecked = e.target.checked
     if (isChecked) {
-      setBill(new Set(cartList.map((item) => item.bookId)))
+      setBill(new Set(cartList.map((item) => item.id)))
     } else {
       setBill(new Set())
     }
@@ -144,8 +144,8 @@ const CartPage: React.FC = () => {
                       <div className='flex items-center'>
                         <input
                           type='checkbox'
-                          checked={bill.has(item.bookId)}
-                          onChange={(e) => handleAddItemToBill(e, item.bookId)}
+                          checked={bill.has(item.id)}
+                          onChange={(e) => handleAddItemToBill(e, item.id)}
                           className='item-checkbox w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
                         />
                       </div>
@@ -153,7 +153,7 @@ const CartPage: React.FC = () => {
                     <td className='px-6 py-4'>
                       <div
                         className='flex items-center gap-3 hover:cursor-pointer'
-                        onClick={() => navigate(`/product/${item.bookId}`)}
+                        onClick={() => navigate(`/product/${item.id}`)}
                       >
                         <div className='avatar'>
                           <div className='mask mask-squircle w-12 h-12'>
@@ -176,7 +176,7 @@ const CartPage: React.FC = () => {
                       <div className='flex'>
                         <button
                           className='w-10 text-md rounded-tl-md rounded-bl-md bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400'
-                          onClick={(e) => handleUpdateItem(e, item.bookId, item.amount - 1)}
+                          onClick={(e) => handleUpdateItem(e, item.id, item.amount - 1)}
                         >
                           -
                         </button>
@@ -185,7 +185,7 @@ const CartPage: React.FC = () => {
                         </button>
                         <button
                           className='w-10 text-md rounded-tr-md rounded-br-md bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400 z-10'
-                          onClick={(e) => handleUpdateItem(e, item.bookId, item.amount + 1)}
+                          onClick={(e) => handleUpdateItem(e, item.id, item.amount + 1)}
                         >
                           +
                         </button>
@@ -197,7 +197,7 @@ const CartPage: React.FC = () => {
                       </p>
                     </td>
                     <td className='px-6 py-4'>
-                      <DeleteModal id={item.bookId} handleDeleteItem={handleDeleteItem} />
+                      <DeleteModal id={item.id} handleDeleteItem={handleDeleteItem} />
                     </td>
                   </tr>
                 ))}
@@ -207,9 +207,11 @@ const CartPage: React.FC = () => {
               <h2 className='text-lg font-semibold'>
                 Total price: <span className='font-semibold text-red-500 text-2xl'>{totalPrice.toFixed(2)} VNĐ</span>
               </h2>
-              <ConfirmModal
-                orderItems={Array.from(bill).map((bookId) => cartList.find((item) => item.bookId === bookId)!)}
-              />
+              {bill.size > 0 && (
+                <ConfirmModal
+                  orderItems={Array.from(bill).map((bookId) => cartList.find((item) => item.id === bookId)!)}
+                />
+              )}
             </div>
           </div>
         )}

@@ -5,6 +5,7 @@ import { AuthError } from 'src/common/errors/authError.enum';
 import { UserError } from 'src/common/errors/userError.enum';
 import { EditProfile } from './types/editProfile.type';
 import { exceptionHandler } from 'src/common/errors';
+import { OrderStatus } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -98,7 +99,7 @@ export class UserService {
     }
   }
 
-  async getUserOrders(userId: string, pageIndex: number, status: string) {
+  async getUserOrders(userId: string, pageIndex: number, status: OrderStatus) {
     try {
       let baseFilter: any = {
         userId,
@@ -122,6 +123,9 @@ export class UserService {
         },
         select: {
           orders: {
+            where: {
+              status,
+            },
             skip: skip,
             take: take,
             select: {

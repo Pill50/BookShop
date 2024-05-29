@@ -6,18 +6,20 @@ import { useAppDispatch, useAppSelector } from '~/hooks/redux'
 import { BookActions } from '~/redux/slices'
 import { Book, FilterBook } from '~/types/book'
 import NoResult from '~/assets/images/noResult.png'
+import useQuery from '~/hooks/useQuery'
+import { useLocation } from 'react-router-dom'
 
 const SearchPage: React.FC = () => {
   const dispatch = useAppDispatch()
-  const urlParams = new URLSearchParams(window.location.search)
-  const keyword = urlParams.get('keyword') as string
-  const ratingParam = urlParams.get('rating') as string
-  const categoriesParam = urlParams.get('categories') as string
-  const publisherIdParam = urlParams.get('publisherId') as string
-  const pageParam = urlParams.get('page') as string
-  const sortByPriceParam = urlParams.get('sortByPrice') as string
-  const sortBySoldAmountParam = urlParams.get('sortByAmount') as string
-  const sortByDateParam = urlParams.get('sortByDate') as string
+  const query = useQuery()
+  const keyword = new URLSearchParams(useLocation().search).get('keyword') as string
+  const ratingParam = query.get('rating') as string
+  const categoriesParam = query.get('categories') as string
+  const publisherIdParam = query.get('publisherId') as string
+  const pageParam = query.get('page') as string
+  const sortByPriceParam = query.get('sortByPrice') as string
+  const sortBySoldAmountParam = query.get('sortBySoldAmount') as string
+  const sortByDateParam = query.get('sortByDate') as string
 
   const bookList = useAppSelector((state) => state.book.bookList)
   const totalPage = useAppSelector((state) => state.book.totalPage)
@@ -25,7 +27,7 @@ const SearchPage: React.FC = () => {
 
   const [pageIndex, setPageIndex] = useState<number>(1)
   const [dataFilter, setDataFilter] = useState<FilterBook>({
-    keyword: keyword || undefined,
+    keyword: keyword === null ? keyword : undefined,
     pageIndex: Number(pageParam) || 1,
     categories: categoriesParam !== undefined ? [categoriesParam] : undefined,
     publisherId: publisherIdParam !== undefined ? [publisherIdParam] : undefined,
@@ -37,7 +39,14 @@ const SearchPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(BookActions.filterBooks(dataFilter))
-  }, [dispatch, dataFilter])
+  }, [dataFilter])
+
+  useEffect(() => {
+    setDataFilter({
+      ...dataFilter,
+      keyword
+    })
+  }, [keyword])
 
   const handleFiterChange = (categoriesId: string[], publisherId: string[], rating?: number) => {
     setDataFilter({
@@ -95,28 +104,24 @@ const SearchPage: React.FC = () => {
                   <select
                     id='countries'
                     className='bg-gray-50 border border-blue-700 text-gray-900 font-semibold text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-blue-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                    onChange={(e) => setDataFilter({ ...dataFilter, sortByDate: e.target.value })}
                   >
-                    <option selected>Publish Date</option>
-                    <option value='US' onClick={() => setDataFilter({ ...dataFilter, sortByDate: 'asc' })}>
+                    <option defaultValue={'desc'} value='desc'>
                       Newest
                     </option>
-                    <option value='CA' onClick={() => setDataFilter({ ...dataFilter, sortByDate: 'desc' })}>
-                      Latest
-                    </option>
+                    <option value='asc'>Oldest</option>
                   </select>
                 </div>
                 <div className='w-1/2 md:w-36 mx-auto'>
                   <select
                     id='countries'
+                    onChange={(e) => setDataFilter({ ...dataFilter, sortByPrice: e.target.value })}
                     className='bg-gray-50 border border-blue-700 text-gray-900 font-semibold text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-blue-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
                   >
-                    <option selected>Price</option>
-                    <option value='US' onClick={() => setDataFilter({ ...dataFilter, sortByPrice: 'asc' })}>
-                      Ascending
+                    <option defaultValue='asc' value='asc'>
+                      Price Ascending
                     </option>
-                    <option value='CA' onClick={() => setDataFilter({ ...dataFilter, sortByPrice: 'desc' })}>
-                      Descending
-                    </option>
+                    <option value='desc'>Price Descending</option>
                   </select>
                 </div>
               </div>
@@ -152,20 +157,22 @@ const SearchPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className='flex justify-end'>
-          <button
-            className='w-20 text-md rounded-tl-md rounded-bl-md bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400'
-            onClick={() => handlePageIndexChange('decrease')}
-          >
-            Previous
-          </button>
-          <div className=' px-3 py-1 flex items-center justify-center border-t-[1px] border-b-[1px] border-gray-300'>
-            {pageIndex}
+        {totalPage > 1 && (
+          <div className='flex justify-end'>
+            <button
+              className='w-20 text-md rounded-tl-md rounded-bl-md bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400'
+              onClick={() => handlePageIndexChange('decrease')}
+            >
+              Previous
+            </button>
+            <div className=' px-3 py-1 flex items-center justify-center border-t-[1px] border-b-[1px] border-gray-300'>
+              {pageIndex}
+            </div>
+            <button className='w-20 text-md rounded-tr-md rounded-br-md bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400'>
+              Next
+            </button>
           </div>
-          <button className='w-20 text-md rounded-tr-md rounded-br-md bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400'>
-            Next
-          </button>
-        </div>
+        )}
       </div>
     </>
   )

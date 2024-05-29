@@ -34,14 +34,20 @@ export type OrderInCart = {
 }
 
 export type UserOrder = {
+  id: string
   amount: number
   totalPrice: number
   shipper?: Shipper
   note: string
   status: string
-  recieverName: string
-  recieverPhone: string
+  receiverName: string
+  receiverPhone: string
   address: string
   orderDate: string
   orderDetail: OrderInCart[]
+}
+
+export type UpdateStatusOrder = {
+  orderId: string
+  status: string
 }

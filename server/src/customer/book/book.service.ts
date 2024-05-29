@@ -5,6 +5,19 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class BookService {
   constructor(private prismaService: PrismaService) {}
 
+  private calculateDiscount(book: any): number {
+    let discount = book.discount;
+    if (book.promotions && book.promotions.length > 0) {
+      book.promotions.forEach((promotion) => {
+        if (promotion.discountFlashSale > discount) {
+          discount = promotion.discount;
+        }
+      });
+    }
+
+    return discount;
+  }
+
   async getAllBooks(
     pageIndex: number,
     rating: number,
@@ -119,6 +132,21 @@ export class BookService {
               categories: true,
             },
           },
+          promotions: {
+            where: {
+              type: 'SALE',
+              startDate: {
+                lte: new Date(),
+              },
+              endDate: {
+                gte: new Date(),
+              },
+            },
+            select: {
+              type: true,
+              discountFlashSale: true,
+            },
+          },
         },
       });
 
@@ -127,6 +155,7 @@ export class BookService {
         categories: book.categories.map(
           (category) => category.categories.title,
         ),
+        discount: this.calculateDiscount(book),
       }));
 
       return { totalPage, totalRecord, books: formattedBooks };
@@ -181,6 +210,21 @@ export class BookService {
               categories: true,
             },
           },
+          promotions: {
+            where: {
+              type: 'SALE',
+              startDate: {
+                lte: new Date(),
+              },
+              endDate: {
+                gte: new Date(),
+              },
+            },
+            select: {
+              type: true,
+              discountFlashSale: true,
+            },
+          },
         },
       });
 
@@ -189,6 +233,7 @@ export class BookService {
         categories: book.categories.map(
           (category) => category.categories.title,
         ),
+        discount: this.calculateDiscount(book),
       }));
 
       return { books: formattedBooks };
@@ -258,6 +303,7 @@ export class BookService {
 
       const formattedBook = {
         ...book,
+        discount: this.calculateDiscount(book),
         categories: book.categories.map((category) => ({
           id: category.categories.id,
           title: category.categories.title,
@@ -331,6 +377,7 @@ export class BookService {
 
       const formattedBook = {
         ...book,
+        discount: this.calculateDiscount(book),
         categories: book.categories.map((category) => ({
           id: category.categories.id,
           title: category.categories.title,
@@ -374,11 +421,24 @@ export class BookService {
               },
             },
           },
+          promotions: {
+            where: {
+              endDate: {
+                gte: new Date(),
+              },
+            },
+            select: {
+              type: true,
+              startDate: true,
+              endDate: true,
+            },
+          },
         },
       });
 
       const formattedBooks = bookList.map((book) => ({
         ...book,
+        discount: this.calculateDiscount(book),
         categories: book.categories.map(
           (category) => category.categories.title,
         ),
@@ -421,11 +481,24 @@ export class BookService {
               },
             },
           },
+          promotions: {
+            where: {
+              endDate: {
+                gte: new Date(),
+              },
+            },
+            select: {
+              type: true,
+              startDate: true,
+              endDate: true,
+            },
+          },
         },
       });
 
       const formattedBooks = bookList.map((book) => ({
         ...book,
+        discount: this.calculateDiscount(book),
         categories: book.categories.map(
           (category) => category.categories.title,
         ),

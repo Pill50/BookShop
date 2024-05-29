@@ -63,7 +63,7 @@ const ConfirmModal: React.FC<IConfirmModal> = ({ orderItems }) => {
     const response = await dispatch(OrderActions.createOrder(orderData))
     if (response.payload?.statusCode === 200) {
       orderItems.forEach(async (item) => {
-        await dispatch(CartActions.deleteBookInCart(item.bookId))
+        await dispatch(CartActions.deleteBookInCart(item.id))
       })
       toast.success(response.payload.message, {
         duration: 1000
@@ -138,10 +138,7 @@ const ConfirmModal: React.FC<IConfirmModal> = ({ orderItems }) => {
               {/* cart item */}
               <div className='flex flex-col gap-2 mb-2'>
                 {orderItems?.map((order: BookInCart) => (
-                  <div
-                    className='flex justify-around gap-4 items-center bg-slate-100 rounded-lg p-2'
-                    key={order.bookId}
-                  >
+                  <div className='flex justify-around gap-4 items-center bg-slate-100 rounded-lg p-2' key={order.id}>
                     <img src={order.thumbnail} alt={order.title} className='w-10 h-10 rounded-full flex-2' />
                     <div className='flex-1'>
                       <h2 className='font-bold truncate ... max-w-[250px]'>{order.title}</h2>

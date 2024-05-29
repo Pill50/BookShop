@@ -230,7 +230,6 @@ const changePassword = async (values: ChangePasswordType) => {
     variables
   }
   const response = await apiCaller('POST', path, payload)
-  console.log(response)
   return response
 }
 

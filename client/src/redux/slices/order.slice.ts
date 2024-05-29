@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { OrderApis, UserApis } from '~/apis'
-import { GetUserOrder, Order, UserOrder, UserOrderResponse } from '~/types/order'
+import { GetUserOrder, Order, UpdateStatusOrder, UserOrder, UserOrderResponse } from '~/types/order'
 import { Response } from '~/types/response'
 
 interface IOrder {
@@ -36,6 +36,17 @@ const OrderSlice = createSlice({
       .addCase(createOrder.rejected, (state) => {
         state.isLoading = true
       })
+      .addCase(getUserOrders.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getUserOrders.fulfilled, (state, actions) => {
+        state.isLoading = false
+        state.totalPage = actions.payload.data?.totalPage as number
+        state.totalRecord = actions.payload.data?.totalRecord as number
+      })
+      .addCase(getUserOrders.rejected, (state) => {
+        state.isLoading = true
+      })
   }
 })
 
@@ -52,5 +63,35 @@ export const createOrder = createAsyncThunk<Response<null>, Order, { rejectValue
     }
   }
 )
+
+export const updateStatusOrder = createAsyncThunk<Response<Order>, UpdateStatusOrder, { rejectValue: Response<null> }>(
+  'order/updateStatusOrder',
+  async (body, { rejectWithValue }) => {
+    try {
+      const response = await OrderApis.updateOrderStatus(body)
+      return response.data as Response<Order>
+    } catch (error: any) {
+      return rejectWithValue(error.data as Response<null>)
+    }
+  }
+)
+
+export const getUserOrders = createAsyncThunk<
+  Response<UserOrderResponse>,
+  GetUserOrder,
+  { rejectValue: Response<null> }
+>('order/getUserOrders', async (body, { dispatch, rejectWithValue }) => {
+  try {
+    const response = await UserApis.getUserOrders(body)
+    if (response) {
+      if (response.status >= 200 && response.status <= 299) {
+        dispatch(setUserOrders(response.data.data.order.orders))
+      }
+    }
+    return response.data as Response<UserOrderResponse>
+  } catch (error: any) {
+    return rejectWithValue(error.data as Response<null>)
+  }
+})
 
 export default OrderSlice

@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Put,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -13,6 +14,7 @@ import { ResTransformInterceptor } from 'src/common/interceptors/response.interc
 import { OrderService } from './order.service';
 import { JwtAuthGuard } from 'src/common/guard/jwt.guard';
 import { OrderDto } from './dto/order.dto';
+import { UpdateOrderStatusDto } from './dto/updateOrderStatus.dto';
 
 @Controller('order')
 @UseInterceptors(ResTransformInterceptor)
@@ -28,5 +30,13 @@ export class OrderController {
     @Body() orderData: OrderDto,
   ) {
     return await this.orderService.createOrder(userId, orderData);
+  }
+
+  @Put('/update-status')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @ResponseMessage("Update order's status successfully")
+  async updateStatusOrder(@Body() body: UpdateOrderStatusDto) {
+    return await this.orderService.updateOrderStatus(body.orderId, body.status);
   }
 }

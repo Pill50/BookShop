@@ -143,14 +143,15 @@ model Orders {
 }
 
 model Promotions {
-  id        String        @id @default(uuid())
-  type      PromotionType
-  startDate DateTime?
-  endDate   DateTime?
-  bookId    String
-  book      Books         @relation(fields: [bookId], references: [id])
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @default(now())
+  id                String        @id @default(uuid())
+  type              PromotionType
+  discountFlashSale Float?
+  startDate         DateTime?
+  endDate           DateTime?
+  bookId            String
+  book              Books         @relation(fields: [bookId], references: [id])
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @default(now())
 
   @@map(name: "promotion")
 }
@@ -162,8 +163,8 @@ model OrderDetails {
   book       Books    @relation(fields: [bookId], references: [id])
   bookId     String
   amount     Int
-  price      Int
-  totalPrice Int
+  price      Float
+  totalPrice Float
   discount   Int
   orderDate  DateTime
   createdAt  DateTime @default(now())
