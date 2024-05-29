@@ -6,18 +6,20 @@ import { useAppDispatch, useAppSelector } from '~/hooks/redux'
 import { BookActions } from '~/redux/slices'
 import { Book, FilterBook } from '~/types/book'
 import NoResult from '~/assets/images/noResult.png'
+import useQuery from '~/hooks/useQuery'
 
 const SearchPage: React.FC = () => {
   const dispatch = useAppDispatch()
-  const urlParams = new URLSearchParams(window.location.search)
-  const keyword = urlParams.get('keyword') as string
-  const ratingParam = urlParams.get('rating') as string
-  const categoriesParam = urlParams.get('categories') as string
-  const publisherIdParam = urlParams.get('publisherId') as string
-  const pageParam = urlParams.get('page') as string
-  const sortByPriceParam = urlParams.get('sortByPrice') as string
-  const sortBySoldAmountParam = urlParams.get('sortByAmount') as string
-  const sortByDateParam = urlParams.get('sortByDate') as string
+  const query = useQuery()
+
+  const keyword = query.get('keyword') as string
+  const ratingParam = query.get('rating') as string
+  const categoriesParam = query.get('categories') as string
+  const publisherIdParam = query.get('publisherId') as string
+  const pageParam = query.get('page') as string
+  const sortByPriceParam = query.get('sortByPrice') as string
+  const sortBySoldAmountParam = query.get('sortBySoldAmount') as string
+  const sortByDateParam = query.get('sortByDate') as string
 
   const bookList = useAppSelector((state) => state.book.bookList)
   const totalPage = useAppSelector((state) => state.book.totalPage)
@@ -36,9 +38,15 @@ const SearchPage: React.FC = () => {
   })
 
   useEffect(() => {
-    console.log('first')
     dispatch(BookActions.filterBooks(dataFilter))
   }, [dispatch, dataFilter])
+
+  useEffect(() => {
+    setDataFilter({
+      ...dataFilter,
+      keyword
+    })
+  }, [keyword])
 
   const handleFiterChange = (categoriesId: string[], publisherId: string[], rating?: number) => {
     setDataFilter({
@@ -97,12 +105,15 @@ const SearchPage: React.FC = () => {
                     id='countries'
                     className='bg-gray-50 border border-blue-700 text-gray-900 font-semibold text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-blue-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
                   >
-                    <option selected>Publish Date</option>
-                    <option value='US' onClick={() => setDataFilter({ ...dataFilter, sortByDate: 'asc' })}>
+                    <option
+                      defaultValue={'desc'}
+                      value='desc'
+                      onClick={() => setDataFilter({ ...dataFilter, sortByDate: 'desc' })}
+                    >
                       Newest
                     </option>
-                    <option value='CA' onClick={() => setDataFilter({ ...dataFilter, sortByDate: 'desc' })}>
-                      Latest
+                    <option value='desc' onClick={() => setDataFilter({ ...dataFilter, sortByDate: 'asc' })}>
+                      Oldest
                     </option>
                   </select>
                 </div>
@@ -112,9 +123,10 @@ const SearchPage: React.FC = () => {
                     onChange={(e) => setDataFilter({ ...dataFilter, sortByPrice: e.target.value })}
                     className='bg-gray-50 border border-blue-700 text-gray-900 font-semibold text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-blue-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
                   >
-                    <option selected>Price</option>
-                    <option value='asc'>Ascending</option>
-                    <option value='desc'>Descending</option>
+                    <option defaultValue='asc' value='asc'>
+                      Price Ascending
+                    </option>
+                    <option value='desc'>Price Descending</option>
                   </select>
                 </div>
               </div>

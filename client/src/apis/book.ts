@@ -38,19 +38,20 @@ const getStatistic = async () => {
 }
 
 const filterBooks = async (values: FilterBook) => {
-  let basePath: string = `/book?page=${values.pageIndex}`
-  if (values.keyword !== undefined) basePath += `&keyword=${encodeURIComponent(values.keyword)}`
-  if (values.rating !== undefined) basePath += `&rating=${encodeURIComponent(values.rating)}`
-  if (values.categories !== undefined) basePath += `&categories=${values.categories}`
-  if (values.publisherId !== undefined) basePath += `&publisherId=${values.publisherId}`
-  if (values.sortByPrice !== undefined) basePath += `&sortByPrice=${encodeURIComponent(values.sortByPrice)}`
-  if (values.sortByDate !== undefined) basePath += `&sortByDate=${encodeURIComponent(values.sortByDate)}`
+  let apiPath: string = `/book?page=${values.pageIndex}`
+  if (values.keyword !== undefined) apiPath += `&keyword=${encodeURIComponent(values.keyword)}`
+  if (values.rating !== undefined) apiPath += `&rating=${encodeURIComponent(values.rating)}`
+  if (values.categories !== undefined) apiPath += `&categories=${values.categories}`
+  if (values.publisherId !== undefined) apiPath += `&publisherId=${values.publisherId}`
+  if (values.sortByPrice !== undefined) apiPath += `&sortByPrice=${encodeURIComponent(values.sortByPrice)}`
+  if (values.sortByDate !== undefined) apiPath += `&sortByDate=${encodeURIComponent(values.sortByDate)}`
   if (values.sortBySoldAmount !== undefined)
-    basePath += `&sortBySoldAmount=${encodeURIComponent(values.sortBySoldAmount)}`
+    apiPath += `&sortBySoldAmount=${encodeURIComponent(values.sortBySoldAmount)}`
 
+  const basePath = '/search' + apiPath.slice(5)
   window.history.pushState({}, '', basePath)
 
-  const response = await apiCaller('GET', basePath)
+  const response = await apiCaller('GET', apiPath)
   return response
 }
 

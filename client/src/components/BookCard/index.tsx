@@ -31,7 +31,7 @@ const BookCard: React.FC<IBookCart> = (props: IBookCart) => {
 
   const handleAddToCart = (id: string) => {
     const data: BookInCart = {
-      bookId: id,
+      id: id,
       thumbnail: props.thumbnail,
       description: props.description,
       title: props.title,
@@ -103,7 +103,7 @@ const BookCard: React.FC<IBookCart> = (props: IBookCart) => {
           <p className='text-gray-400 line-through text-sm xl:text-base'>Old price: {props.oldPrice} VNĐ</p>
           {props?.rating && (
             <div className='flex items-center'>
-              <span className='text-gray-600'>{props.rating} </span>
+              <span className='text-gray-600'>{props.rating.toFixed(1)} </span>
               <div className='flex ml-1'>{renderRatingStars(props.rating)}</div>
             </div>
           )}
