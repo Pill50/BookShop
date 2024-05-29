@@ -46,7 +46,7 @@ export const createFeedback = createAsyncThunk<Response<Feedback>, CreateFeedbac
       }
       return response.data as Response<Feedback>
     } catch (error: any) {
-      return rejectWithValue(error.data as Response<null>)
+      return rejectWithValue(error.response.data as Response<null>)
     }
   }
 )

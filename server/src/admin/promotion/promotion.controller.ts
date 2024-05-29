@@ -20,7 +20,7 @@ import { Roles } from 'src/common/decorators';
 
 @Controller('admin/promotion')
 @Roles(Role.ADMIN)
-// @UseGuards(SessionGuard)
+@UseGuards(SessionGuard)
 export class PromotionController {
   constructor(private readonly promotionService: PromotionService) {}
 
