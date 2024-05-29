@@ -31,7 +31,11 @@ const LoginPage: React.FC = () => {
   const handleOnSubmit = async (values: LoginType) => {
     const result = await dispatch(AuthActions.login(values))
     try {
-      if (result.meta.requestStatus === 'rejected') {
+      // @ts-ignore
+      if (result.payload?.statusCode === 400) {
+        // @ts-ignore
+        toast.error(result.payload?.message as string)
+      } else if (result.meta.requestStatus === 'rejected') {
         throw new Error('Invalid credentials')
       } else {
         await dispatch(AuthActions.getMe(null))

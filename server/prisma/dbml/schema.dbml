@@ -118,6 +118,7 @@ Table orders {
 Table promotion {
   id String [pk]
   type PromotionType [not null]
+  discountFlashSale Float
   startDate DateTime
   endDate DateTime
   bookId String [not null]

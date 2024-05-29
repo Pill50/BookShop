@@ -8,6 +8,23 @@ import { PromotionDto } from './dto/promotion.dto';
 export class PromotionService {
   constructor(private prismaService: PrismaService) {}
 
+  private formatPromotion(promotion: any): any {
+    const { type, discountFlashSale } = promotion;
+    const { book } = promotion;
+
+    if (type === PromotionType.SALE) {
+      book.discount = discountFlashSale;
+    }
+
+    return {
+      id: promotion.id,
+      type: promotion.type,
+      startDate: promotion.startDate,
+      endDate: promotion.endDate,
+      book,
+    };
+  }
+
   async filterPromotions(pageIndex: number = 1, type?: PromotionType) {
     try {
       const take = 10;
@@ -45,8 +62,13 @@ export class PromotionService {
 
       const totalPage = Math.ceil(totalRecord / take);
 
+      console.log(promotions);
+      const formattedPromotions = promotions.map((promotion) =>
+        this.formatPromotion(promotion),
+      );
+
       return {
-        promotions,
+        promotions: formattedPromotions,
         totalPage,
         totalRecord,
       };

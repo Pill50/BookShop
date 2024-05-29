@@ -26,12 +26,16 @@ const ResetPasswordPage: React.FC = () => {
 
   const handleOnSubmit = async (values: ResetPasswordType) => {
     const result = await dispatch(AuthActions.resetPassword(values))
+
     try {
-      if (result.meta.requestStatus === 'rejected') {
+      if (result.payload?.statusCode === 400) {
+        toast.error(result.payload.message)
+      } else if (result.meta.requestStatus === 'rejected') {
         throw new Error(result.payload?.message)
+      } else {
+        toast.success('Password reset successfully!')
+        navigate('/login')
       }
-      toast.success('Password reset successfully!')
-      navigate('/login')
     } catch (error: any) {
       toast.error(error.message)
     }

@@ -12,6 +12,25 @@ export class BookService {
     private cloudinaryService: CloudinaryService,
   ) {}
 
+  private formatBookWithPromotion(book: any, now: Date) {
+    const activePromotion = book.promotions.find((promotion) => {
+      return (
+        promotion.type === 'SALE' &&
+        new Date(promotion.startDate) <= now &&
+        now <= new Date(promotion.endDate)
+      );
+    });
+
+    if (activePromotion) {
+      book.discount = activePromotion.discountFlashSale;
+    }
+
+    return {
+      ...book,
+      categories: book.categories.map((category) => category.categories.title),
+    };
+  }
+
   async getAllBooks(
     pageIndex: number = 1,
     keyword?: string,
@@ -109,15 +128,22 @@ export class BookService {
               categories: true,
             },
           },
+          promotions: {
+            select: {
+              type: true,
+              discountFlashSale: true,
+              startDate: true,
+              endDate: true,
+            },
+          },
         },
       });
 
-      const formattedBooks = books.map((book) => ({
-        ...book,
-        categories: book.categories.map(
-          (category) => category.categories.title,
-        ),
-      }));
+      const now = new Date();
+
+      const formattedBooks = books.map((book) =>
+        this.formatBookWithPromotion(book, now),
+      );
 
       return { totalPage, totalRecord, books: formattedBooks };
     } catch (err) {
@@ -171,15 +197,22 @@ export class BookService {
               categories: true,
             },
           },
+          promotions: {
+            select: {
+              type: true,
+              discountFlashSale: true,
+              startDate: true,
+              endDate: true,
+            },
+          },
         },
       });
 
-      const formattedBooks = books.map((book) => ({
-        ...book,
-        categories: book.categories.map(
-          (category) => category.categories.title,
-        ),
-      }));
+      const now = new Date();
+
+      const formattedBooks = books.map((book) =>
+        this.formatBookWithPromotion(book, now),
+      );
 
       return { books: formattedBooks };
     } catch (err) {
@@ -241,13 +274,9 @@ export class BookService {
         throw new HttpException(BookError.BOOK_NOT_FOUND, HttpStatus.NOT_FOUND);
       }
 
-      const formattedBook = {
-        ...book,
-        categories: book.categories.map((category) => ({
-          id: category.categories.id,
-          title: category.categories.title,
-        })),
-      };
+      const now = new Date();
+
+      const formattedBook = this.formatBookWithPromotion(book, now);
 
       return formattedBook;
     } catch (err) {
@@ -295,6 +324,14 @@ export class BookService {
               },
             },
           },
+          promotions: {
+            select: {
+              type: true,
+              discountFlashSale: true,
+              startDate: true,
+              endDate: true,
+            },
+          },
         },
       });
 
@@ -302,13 +339,9 @@ export class BookService {
         throw new HttpException(BookError.BOOK_NOT_FOUND, HttpStatus.NOT_FOUND);
       }
 
-      const formattedBook = {
-        ...book,
-        categories: book.categories.map((category) => ({
-          id: category.categories.id,
-          title: category.categories.title,
-        })),
-      };
+      const now = new Date();
+
+      const formattedBook = this.formatBookWithPromotion(book, now);
 
       return { book: formattedBook };
     } catch (err) {
@@ -391,12 +424,9 @@ export class BookService {
         },
       });
 
-      const formattedBook = {
-        ...newBook,
-        categories: newBook.categories.map(
-          (category) => category.categories.title,
-        ),
-      };
+      const now = new Date();
+
+      const formattedBook = this.formatBookWithPromotion(newBook, now);
 
       return { book: formattedBook };
     } catch (err) {
@@ -478,15 +508,20 @@ export class BookService {
               },
             },
           },
+          promotions: {
+            select: {
+              type: true,
+              discountFlashSale: true,
+              startDate: true,
+              endDate: true,
+            },
+          },
         },
       });
 
-      const formattedBook = {
-        ...updatedBook,
-        categories: updatedBook.categories.map(
-          (category) => category.categories.title,
-        ),
-      };
+      const now = new Date();
+
+      const formattedBook = this.formatBookWithPromotion(updatedBook, now);
 
       return { book: formattedBook };
     } catch (err) {
@@ -620,15 +655,22 @@ export class BookService {
               },
             },
           },
+          promotions: {
+            select: {
+              type: true,
+              discountFlashSale: true,
+              startDate: true,
+              endDate: true,
+            },
+          },
         },
       });
 
-      const formattedBooks = bookList.map((book) => ({
-        ...book,
-        categories: book.categories.map(
-          (category) => category.categories.title,
-        ),
-      }));
+      const now = new Date();
+
+      const formattedBooks = bookList.map((book) =>
+        this.formatBookWithPromotion(book, now),
+      );
 
       return formattedBooks;
     } catch (error) {
