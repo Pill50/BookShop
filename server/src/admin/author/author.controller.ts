@@ -25,9 +25,8 @@ export class AuthorController {
   @Get('/')
   @Render('author/index')
   async renderAuthor(@Query('page') page: string) {
-    const authorList = await this.authorService.getAllAuthors();
-
     const pageIndex: number = page ? parseInt(page as string, 10) : 1;
+    const authorList = await this.authorService.getAllAuthors(pageIndex);
     const pagination = {
       currentPage: pageIndex,
       nextPage: pageIndex === authorList.totalPage ? 1 : pageIndex + 1,

@@ -25,9 +25,10 @@ export class PublisherController {
   @Get('/')
   @Render('publisher/index')
   async renderPublisher(@Query('page') page: string) {
-    const publisherList = await this.publisherService.getAllPublishers();
-
     const pageIndex: number = page ? parseInt(page as string, 10) : 1;
+    const publisherList =
+      await this.publisherService.getAllPublishers(pageIndex);
+
     const pagination = {
       currentPage: pageIndex,
       nextPage: pageIndex === publisherList.totalPage ? 1 : pageIndex + 1,

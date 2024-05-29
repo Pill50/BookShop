@@ -64,7 +64,7 @@ export class CategoryController {
     const newCategory = await this.categoryService.createCategory(
       req.body.title,
     );
-    if (newCategory) {
+    if (newCategory && file) {
       await this.categoryService.uploadThumbnail(file, newCategory.id);
     }
 

@@ -136,7 +136,8 @@ export class BookController {
       };
 
       const response = await this.bookService.createBook(data);
-      if (response) {
+
+      if (response && file) {
         await this.bookService.uploadThumbnail(file, response.book.id);
       }
       req.session.success_msg = 'Create book successfully';
