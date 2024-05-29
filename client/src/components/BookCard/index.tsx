@@ -96,7 +96,7 @@ const BookCard: React.FC<IBookCart> = (props: IBookCart) => {
             <span>Price: </span>
             <span className='text-red-500 font-bold'>{props.curPrice} VNĐ</span>
             <div className='bg-pink-100 text-pink-800 text-xs font-medium me-2 px-2.5 py-1 rounded dark:bg-pink-900 dark:text-pink-300'>
-              {props.discount}%
+              -{props.discount}%
             </div>
           </div>
 
