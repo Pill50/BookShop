@@ -263,6 +263,7 @@ export class AuthService {
           gender: true,
           authId: true,
           attempts: true,
+          updatedAt: true,
         },
       });
 
@@ -278,15 +279,34 @@ export class AuthService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      if (user.status === Status.BLOCKED) {
-        throw new HttpException(AuthError.USER_BLOCKED, HttpStatus.BAD_REQUEST);
-      }
-      if (user.authId !== null) {
+
+      if (user.authId !== null && user.authId !== '') {
         throw new HttpException(
           AuthError.USER_OAUTH_LOGIN,
           HttpStatus.BAD_REQUEST,
         );
       }
+
+      if (user.status === Status.BLOCKED) {
+        const timeBlock = new Date(user.updatedAt);
+        const unblockTime = new Date(timeBlock.getTime() + 60000); // unlock after 1 minute
+        const currentTime = new Date();
+
+        if (unblockTime <= currentTime) {
+          await this.prismaService.users.update({
+            where: { email },
+            data: {
+              status: Status.ACTIVE,
+            },
+          });
+        } else {
+          throw new HttpException(
+            AuthError.USER_BLOCKED,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+      }
+
       const isPasswordValid = await this.verifyHash(user.password, password);
 
       if (!isPasswordValid) {
@@ -357,7 +377,7 @@ export class AuthService {
           accessToken: null,
           refreshToken: null,
         },
-        true,
+        false,
       );
       return {
         accessToken: '',
