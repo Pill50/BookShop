@@ -2,7 +2,7 @@ import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class OrderDetailDto {
   @IsString()
-  bookId: string;
+  id: string;
 
   @IsString()
   orderId: string;

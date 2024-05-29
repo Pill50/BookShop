@@ -13,9 +13,11 @@ export class OrderService {
       const orderDetails = orderData.orderItem.map((item) => ({
         amount: item.amount,
         discount: item.discount,
-        price: 10,
-        totalPrice: 10,
-        bookId: item.bookId,
+        price: item.price,
+        totalPrice: Number(
+          ((item.price * item.amount * (100 - item.discount)) / 100).toFixed(2),
+        ),
+        bookId: item.id,
         orderDate: item.orderDate,
       }));
 
@@ -46,7 +48,7 @@ export class OrderService {
       await Promise.all(
         orderData.orderItem.map(async (item) => {
           await this.prismaService.books.update({
-            where: { id: item.bookId },
+            where: { id: item.id },
             data: {
               amount: {
                 decrement: item.amount,

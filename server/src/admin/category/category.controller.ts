@@ -28,9 +28,9 @@ export class CategoryController {
   @Get('/')
   @Render('category/index')
   async rendergGetAllCategories(@Query('page') page: string) {
-    const categoryList = await this.categoryService.getAllCategories();
-
     const pageIndex: number = page ? parseInt(page as string, 10) : 1;
+    const categoryList = await this.categoryService.getAllCategories(pageIndex);
+
     const pagination = {
       currentPage: pageIndex,
       nextPage: pageIndex === categoryList.totalPage ? 1 : pageIndex + 1,

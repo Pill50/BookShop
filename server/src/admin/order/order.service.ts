@@ -19,6 +19,9 @@ export class OrderService {
           include: {
             shipper: true,
           },
+          orderBy: {
+            createdAt: 'desc',
+          },
         }),
         this.prismaService.orders.count(),
       ]);
