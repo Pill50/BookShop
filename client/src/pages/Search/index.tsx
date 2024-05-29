@@ -7,12 +7,12 @@ import { BookActions } from '~/redux/slices'
 import { Book, FilterBook } from '~/types/book'
 import NoResult from '~/assets/images/noResult.png'
 import useQuery from '~/hooks/useQuery'
+import { useLocation } from 'react-router-dom'
 
 const SearchPage: React.FC = () => {
   const dispatch = useAppDispatch()
   const query = useQuery()
-
-  const keyword = query.get('keyword') as string
+  const keyword = new URLSearchParams(useLocation().search).get('keyword') as string
   const ratingParam = query.get('rating') as string
   const categoriesParam = query.get('categories') as string
   const publisherIdParam = query.get('publisherId') as string
@@ -27,7 +27,7 @@ const SearchPage: React.FC = () => {
 
   const [pageIndex, setPageIndex] = useState<number>(1)
   const [dataFilter, setDataFilter] = useState<FilterBook>({
-    keyword: keyword || undefined,
+    keyword: keyword === null ? keyword : undefined,
     pageIndex: Number(pageParam) || 1,
     categories: categoriesParam !== undefined ? [categoriesParam] : undefined,
     publisherId: publisherIdParam !== undefined ? [publisherIdParam] : undefined,
@@ -39,7 +39,7 @@ const SearchPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(BookActions.filterBooks(dataFilter))
-  }, [dispatch, dataFilter])
+  }, [dataFilter])
 
   useEffect(() => {
     setDataFilter({
@@ -104,17 +104,12 @@ const SearchPage: React.FC = () => {
                   <select
                     id='countries'
                     className='bg-gray-50 border border-blue-700 text-gray-900 font-semibold text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-blue-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                    onChange={(e) => setDataFilter({ ...dataFilter, sortByDate: e.target.value })}
                   >
-                    <option
-                      defaultValue={'desc'}
-                      value='desc'
-                      onClick={() => setDataFilter({ ...dataFilter, sortByDate: 'desc' })}
-                    >
+                    <option defaultValue={'desc'} value='desc'>
                       Newest
                     </option>
-                    <option value='desc' onClick={() => setDataFilter({ ...dataFilter, sortByDate: 'asc' })}>
-                      Oldest
-                    </option>
+                    <option value='asc'>Oldest</option>
                   </select>
                 </div>
                 <div className='w-1/2 md:w-36 mx-auto'>

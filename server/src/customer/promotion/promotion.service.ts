@@ -62,7 +62,6 @@ export class PromotionService {
 
       const totalPage = Math.ceil(totalRecord / take);
 
-      console.log(promotions);
       const formattedPromotions = promotions.map((promotion) =>
         this.formatPromotion(promotion),
       );

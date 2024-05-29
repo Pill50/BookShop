@@ -70,9 +70,12 @@ export class BookController {
     const pageIndex: number | undefined = filter.page
       ? parseInt(filter.page as string, 10)
       : undefined;
-    const keyword: string | undefined = filter.keyword
+    let keyword: string | undefined = filter.keyword
       ? (filter.keyword as string)
       : undefined;
+    if (filter.keyword == 'null') {
+      keyword = undefined;
+    }
     const rating: number | undefined = filter.rating
       ? parseInt(filter.rating as string)
       : undefined;

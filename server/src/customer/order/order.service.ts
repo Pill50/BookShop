@@ -43,8 +43,6 @@ export class OrderService {
         },
       });
 
-      console.log(order);
-
       await Promise.all(
         orderData.orderItem.map(async (item) => {
           await this.prismaService.books.update({

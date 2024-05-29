@@ -12,8 +12,6 @@ const PromotionPage: React.FC = () => {
   const totalPage = useAppSelector((state) => state.promotion.totalPage)
   const totalRecord = useAppSelector((state) => state.promotion.totalRecord)
 
-  console.log(promotionList)
-
   const urlParams = new URLSearchParams(window.location.search)
   const pageParam = urlParams.get('page') as string
   const typeParam = urlParams.get('type') as string

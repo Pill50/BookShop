@@ -36,7 +36,6 @@ export const getAboutPageContent = createAsyncThunk<Response<null>, null, { reje
     try {
       const response = await AboutApis.getAboutPageContent()
 
-      console.log(response)
       return response.data as Response<null>
     } catch (error: any) {
       return rejectWithValue(error.data as Response<null>)
