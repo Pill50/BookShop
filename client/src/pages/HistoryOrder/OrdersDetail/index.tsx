@@ -55,7 +55,7 @@ const OrdersDetail: React.FC<IOrderDetail> = ({ ordersInfo, handleUpdateStatusOr
         </ul>
         <div className='flex flex-col justify-end items-end gap-2 font-semibold my-2'>
           <p>
-            Total price: <span className='text-red-500 text-xl'>{ordersInfo.totalPrice.toFixed(2)} VNĐ</span>
+            Total price: <span className='text-red-500 text-xl'>{ordersInfo.totalPrice.toFixed(0)} VNĐ</span>
           </p>
           {orderStatus === 'SHIPPED' && (
             <button

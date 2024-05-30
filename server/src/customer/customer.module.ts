@@ -9,6 +9,7 @@ import { OrderModule } from './order/order.module';
 import { PromotionModule } from './promotion/promotion.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { AboutModule } from './about/about.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   controllers: [],
@@ -24,6 +25,7 @@ import { AboutModule } from './about/about.module';
     PromotionModule,
     FeedbackModule,
     AboutModule,
+    PaymentModule,
   ],
 })
 export class CustomerModule {}

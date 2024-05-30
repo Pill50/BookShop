@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { exceptionHandler } from 'src/common/errors';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { OrderDto } from './dto/order.dto';
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus, PaymentType } from '@prisma/client';
 
 @Injectable()
 export class OrderService {
@@ -15,11 +15,25 @@ export class OrderService {
         discount: item.discount,
         price: item.price,
         totalPrice: Number(
-          ((item.price * item.amount * (100 - item.discount)) / 100).toFixed(2),
+          ((item.price * item.amount * (100 - item.discount)) / 100).toFixed(0),
         ),
         bookId: item.id,
         orderDate: item.orderDate,
       }));
+
+      const paymentMethod = orderData.paymentMethod;
+      let paymentStatus: boolean;
+
+      if (paymentMethod === PaymentType.COD) {
+        paymentStatus = true;
+      } else if (paymentMethod === PaymentType.MOMO) {
+        paymentStatus = false;
+      } else {
+        throw new HttpException(
+          'Invalid payment method',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
 
       const order = await this.prismaService.orders.create({
         data: {
@@ -37,9 +51,16 @@ export class OrderService {
               data: orderDetails,
             },
           },
+          payments: {
+            create: {
+              method: paymentMethod,
+              status: paymentStatus,
+            },
+          },
         },
         include: {
           orderDetail: true,
+          payments: true,
         },
       });
 

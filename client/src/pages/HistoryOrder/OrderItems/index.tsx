@@ -36,9 +36,9 @@ const OrderItems: React.FC<IOrderItems> = ({ orderItemInfo, isFeedback }) => {
               <p className='font-bold text-red-500'>x{orderItemInfo.amount}</p>
               <p className='font-bold 0 text-red-500'>
                 <span className='text-gray-400 line-through italic'>
-                  {Math.round(orderItemInfo.price / (1 - orderItemInfo.discount / 100)).toFixed(2)}
+                  {Math.round(orderItemInfo.price / (1 - orderItemInfo.discount / 100)).toFixed(0)}
                 </span>
-                <span> - {orderItemInfo.price.toFixed(2)} VNĐ</span>
+                <span> - {orderItemInfo.price.toFixed(0)} VNĐ</span>
               </p>
             </div>
             <div className='block bg-gray-200 h-[1px] my-1'></div>

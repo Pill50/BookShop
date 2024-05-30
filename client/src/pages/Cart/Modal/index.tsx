@@ -3,10 +3,11 @@ import toast, { Toaster } from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import { IoIosArrowDown } from 'react-icons/io'
 import { useAppDispatch, useAppSelector } from '~/hooks/redux'
-import { CartActions, OrderActions, ShipperActions } from '~/redux/slices'
+import { CartActions, OrderActions, PaymentActions, ShipperActions } from '~/redux/slices'
 import { BookInCart } from '~/types/book'
 import { Order } from '~/types/order'
 import { Shipper } from '~/types/shipper'
+import { CreatePayment } from '~/types/payment'
 
 interface IConfirmModal {
   orderItems: BookInCart[]
@@ -31,7 +32,7 @@ const ConfirmModal: React.FC<IConfirmModal> = ({ orderItems }) => {
   useEffect(() => {
     setTotalPrice(
       orderItems.reduce((acc, cur) => {
-        return (acc += (cur.price * cur.amount * (100 - cur.discount)) / 100)
+        return +(acc += (cur.price * cur.amount * (100 - cur.discount)) / 100).toFixed(0)
       }, 0)
     )
   }, [orderItems])
@@ -44,36 +45,57 @@ const ConfirmModal: React.FC<IConfirmModal> = ({ orderItems }) => {
     setOpen(!open)
   }
 
-  const handleCreateOrder = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCreateOrder = async (e: React.MouseEvent<HTMLButtonElement>, paymentMethod: string) => {
     e.preventDefault()
     const totalBooks = orderItems.reduce((acc, cur) => {
       return acc + cur.amount
     }, 0)
     const orderData: Order = {
       amount: totalBooks,
-      totalPrice: totalPrice,
+      totalPrice: +totalPrice.toFixed(0),
       note: note,
       recieverName: infoReciever.recieverName,
       recieverPhone: infoReciever.recieverPhone,
       address: infoReciever.address,
       shipperId: shipper.id,
-      orderItem: orderItems
+      orderItem: orderItems,
+      paymentMethod
     }
 
-    const response = await dispatch(OrderActions.createOrder(orderData))
-    if (response.payload?.statusCode === 200) {
+    const orderResponse = await dispatch(OrderActions.createOrder(orderData))
+    if (orderResponse.payload?.statusCode === 200) {
       orderItems.forEach(async (item) => {
         await dispatch(CartActions.deleteBookInCart(item.id))
       })
-      toast.success(response.payload.message, {
-        duration: 1000
-      })
-      setOpen(false)
-      setTimeout(() => {
-        navigate('/')
-      }, 1000)
+      if (paymentMethod === 'COD') {
+        toast.success(orderResponse.payload.message, {
+          duration: 1000
+        })
+        setOpen(false)
+        setTimeout(() => {
+          navigate('/')
+        }, 1000)
+      } else if (paymentMethod === 'MOMO') {
+        const data: CreatePayment = {
+          orderInfo: 'pay with MoMo',
+          redirectUrl: 'http://localhost:3000/payment',
+          ipnUrl: 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b',
+          requestType: 'payWithMethod',
+          amount: totalPrice,
+          extraData: '',
+          autoCapture: true,
+          // @ts-ignore
+          orderId: orderResponse.payload?.data?.payments.id,
+          // @ts-ignore
+          paymentId: orderResponse.payload?.data?.payments.id
+        }
+        const response = await dispatch(PaymentActions.getPaymentUrl(data))
+        const momoData = response.payload?.data as any
+        const paymentUrl = momoData?.payUrl
+        window.open(paymentUrl, '_self')
+      }
     } else {
-      toast.error(response.payload?.message as string)
+      toast.error(orderResponse.payload?.message as string)
       setOpen(false)
     }
   }
@@ -148,7 +170,7 @@ const ConfirmModal: React.FC<IConfirmModal> = ({ orderItems }) => {
                       <h2 className=''>Discount: {order.discount}%</h2>
                       <span>Price: </span>
                       <span className='text-red-500 font-bold'>
-                        {((order.price * order.amount * (100 - order.discount)) / 100).toFixed(2)} VNĐ
+                        {((order.price * order.amount * (100 - order.discount)) / 100).toFixed(0)} VNĐ
                       </span>
                     </div>
                   </div>
@@ -158,7 +180,7 @@ const ConfirmModal: React.FC<IConfirmModal> = ({ orderItems }) => {
                     Total Items: <span className='text-lg text-red-500'>{orderItems.length}</span>
                   </p>
                   <p className='font-semibold'>
-                    Total Price: <span className='text-xl text-red-500'>{totalPrice.toFixed(2)} VNĐ</span>
+                    Total Price: <span className='text-xl text-red-500'>{totalPrice.toFixed(0)} VNĐ</span>
                   </p>
                 </div>
               </div>
@@ -213,10 +235,17 @@ const ConfirmModal: React.FC<IConfirmModal> = ({ orderItems }) => {
               </button>
               <button
                 className='focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-900'
-                onClick={handleCreateOrder}
+                onClick={(e) => handleCreateOrder(e, 'COD')}
                 type='submit'
               >
-                Submit
+                PAY WITH COD
+              </button>
+              <button
+                className='focus:outline-none text-white bg-pink-700 hover:bg-pink-800 focus:ring-4 focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-900'
+                onClick={(e) => handleCreateOrder(e, 'MOMO')}
+                type='submit'
+              >
+                PAY WITH MOMO
               </button>
             </div>
           </form>

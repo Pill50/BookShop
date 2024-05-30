@@ -111,6 +111,18 @@ Table orders {
   status OrderStatus [not null]
   amount Float [not null]
   totalPrice Float [not null]
+  payments payments
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+}
+
+Table payments {
+  id String [pk]
+  method PaymentType [not null]
+  transactionId String
+  order orders [not null]
+  orderId String [unique, not null]
+  status Boolean [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
 }
@@ -176,6 +188,11 @@ Enum PromotionType {
   POPULAR
 }
 
+Enum PaymentType {
+  COD
+  MOMO
+}
+
 Ref: books.authorId > authors.id [delete: Set Null]
 
 Ref: books.publisherId > publishers.id [delete: Set Null]
@@ -187,6 +204,8 @@ Ref: feedbacks.userId > users.id
 Ref: orders.userId > users.id
 
 Ref: orders.shipperId > shippers.id
+
+Ref: payments.orderId - orders.id
 
 Ref: promotion.bookId > books.id
 
