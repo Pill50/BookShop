@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
-import { redirect, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { IoIosArrowDown } from 'react-icons/io'
 import { useAppDispatch, useAppSelector } from '~/hooks/redux'
 import { CartActions, OrderActions, PaymentActions, ShipperActions } from '~/redux/slices'
@@ -64,10 +64,10 @@ const ConfirmModal: React.FC<IConfirmModal> = ({ orderItems }) => {
 
     const orderResponse = await dispatch(OrderActions.createOrder(orderData))
     if (orderResponse.payload?.statusCode === 200) {
+      orderItems.forEach(async (item) => {
+        await dispatch(CartActions.deleteBookInCart(item.id))
+      })
       if (paymentMethod === 'COD') {
-        orderItems.forEach(async (item) => {
-          await dispatch(CartActions.deleteBookInCart(item.id))
-        })
         toast.success(orderResponse.payload.message, {
           duration: 1000
         })
@@ -92,7 +92,7 @@ const ConfirmModal: React.FC<IConfirmModal> = ({ orderItems }) => {
         const response = await dispatch(PaymentActions.getPaymentUrl(data))
         const momoData = response.payload?.data as any
         const paymentUrl = momoData?.payUrl
-        window.open(paymentUrl, '_blank')
+        window.open(paymentUrl, '_self')
       }
     } else {
       toast.error(orderResponse.payload?.message as string)
