@@ -10,6 +10,7 @@ import {
   Home,
   Login,
   NotFound,
+  Payment,
   Profile,
   Promotion,
   Register,
@@ -47,6 +48,7 @@ function App() {
                 <Route path='orders' element={<HistoryOrder />}></Route>
               </Route>
               <Route path={'/cart'} element={<Cart />}></Route>
+              <Route path={'/payment'} element={<Payment />}></Route>
             </Route>
           </Route>
           <Route path={'*'} element={<NotFound />}></Route>

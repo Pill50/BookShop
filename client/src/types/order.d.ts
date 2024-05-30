@@ -9,6 +9,7 @@ export type Order = {
   recieverName: string
   recieverPhone: string
   address: string
+  paymentMethod: string
   orderItem: BookInCart[]
 }
 

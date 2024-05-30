@@ -136,10 +136,25 @@ model Orders {
   status        OrderStatus
   amount        Float
   totalPrice    Float
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @default(now())
+  payments      Payments?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   @@map(name: "orders")
+}
+
+model Payments {
+  id            String      @id @default(uuid())
+  method        PaymentType
+  transactionId String?
+  order         Orders      @relation(fields: [orderId], references: [id])
+  orderId       String      @unique
+  status        Boolean // 0: not paied, 1: paied
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @default(now())
+
+  @@map(name: "payments")
 }
 
 model Promotions {
@@ -204,4 +219,9 @@ enum Gender {
 enum PromotionType {
   SALE
   POPULAR
+}
+
+enum PaymentType {
+  COD
+  MOMO
 }

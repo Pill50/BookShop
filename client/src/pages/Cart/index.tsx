@@ -167,7 +167,7 @@ const CartPage: React.FC = () => {
                       </div>
                     </td>
                     <td className='px-6 py-4'>
-                      <span className=''>{item.price.toFixed(2)} VNĐ</span>
+                      <span className=''>{item.price.toFixed(0)} VNĐ</span>
                     </td>
                     <td className='px-6 py-4'>
                       <span className=''>{item.discount}%</span>
@@ -193,7 +193,7 @@ const CartPage: React.FC = () => {
                     </td>
                     <td className='px-6 py-4'>
                       <p className='font-semibold'>
-                        {((item.price * item.amount * (100 - item.discount)) / 100).toFixed(2)} VNĐ
+                        {((item.price * item.amount * (100 - item.discount)) / 100).toFixed(0)} VNĐ
                       </p>
                     </td>
                     <td className='px-6 py-4'>
@@ -205,7 +205,7 @@ const CartPage: React.FC = () => {
             </table>
             <div className='flex justify-end my-4 gap-2 items-end flex-col'>
               <h2 className='text-lg font-semibold'>
-                Total price: <span className='font-semibold text-red-500 text-2xl'>{totalPrice.toFixed(2)} VNĐ</span>
+                Total price: <span className='font-semibold text-red-500 text-2xl'>{totalPrice.toFixed(0)} VNĐ</span>
               </h2>
               {bill.size > 0 && (
                 <ConfirmModal

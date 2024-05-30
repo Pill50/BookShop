@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { OrderDetailDto } from './orderDetail.dto';
+import { PaymentType } from '@prisma/client';
 
 export class OrderDto {
   @IsNotEmpty({ message: 'Amount must not be empty' })
@@ -33,6 +34,10 @@ export class OrderDto {
   @IsOptional()
   @IsString()
   note: string;
+
+  @IsNotEmpty({ message: 'Payment method must not be empty' })
+  @IsString()
+  paymentMethod: PaymentType;
 
   @IsNotEmpty({ message: 'Order item must not be empty' })
   orderItem: OrderDetailDto[];
