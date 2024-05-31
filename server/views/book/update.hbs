@@ -99,17 +99,37 @@
                 </div>
             </div>
         </div>
-        <label for="file" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Thumbnail</label>
+        <label for="thumbnail" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Thumbnail</label>
         <div class="mb-2">
             <img src="{{book.thumbnail}}" alt="{{book.title}}" class="w-40 h-40 border-[1px] mb-2 rounded-md object-cover">
-            <input name="file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="thumbnail" type="file">
+            <input name="thumbnail" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="thumbnail" type="file" accept="image/*">
         </div>
+        <div class="flex gap-2">
+            {{#each subImgList}}
+                <img src="{{this.url}}" alt="{{this.id}}" class="rounded-lg w-[160px] object-cover">
+            {{/each}}
+        </div>
+        <label for="subImgs" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sub Images</label>
+        <div class="flex mb-2">
+            <input name="subImgs" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="subImgs" type="file" accept="image/*" multiple onchange="validateSubImages(this)">
+        </div>
+        <p id="file-error" class="text-red-500 text-sm mt-1 hidden">You can only upload up to 3 image files.</p>
         <div class="w-full flex justify-end gap-2">
             <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
         </div>
     </form>    
   </div>
     <script>
+        function validateSubImages(input) {
+            const maxFiles = 3;
+            const fileError = document.getElementById('file-error');
+            if (input.files.length > maxFiles) {
+                fileError.classList.remove('hidden');
+                input.value = ''; 
+            } else {
+                fileError.classList.add('hidden');
+            }
+        }
         document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('updateBookForm').addEventListener('submit', function(e) {
             e.preventDefault(); 

@@ -111,17 +111,18 @@ export class BookController {
   async renderUpdateBook(@Req() req: any, @Param('id') id: string) {
     try {
       const book = await this.bookService.getBookById(id);
+      const subImgList = await this.bookService.getBookSubImgs(id);
       const categoryList = await this.categorySerive.getAllCategories();
       const authorList = await this.authorService.getAllAuthors();
       const publisherList = await this.publisherService.getAllPublishers();
-      return { book, categoryList, authorList, publisherList };
+
+      return { book, categoryList, authorList, publisherList, subImgList };
     } catch (err) {
       req.session.error_msg = err.message;
     }
   }
 
   @Post('/create')
-  // @UseInterceptors(FileInterceptor('file'))
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'thumbnail', maxCount: 1 },
@@ -175,27 +176,46 @@ export class BookController {
   }
 
   @Post('/update/:id')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'thumbnail', maxCount: 1 },
+      { name: 'subImgs', maxCount: 3 },
+    ]),
+  )
   async updateBook(
     @Req() req: any,
     @Res() res: Response,
     @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles()
+    files: {
+      thumbnail?: Express.Multer.File[];
+      subImgs?: Express.Multer.File[];
+    },
   ) {
     try {
       const data: BookDto = {
         title: req.body.title,
         slug: req.body.title,
         amount: Number(req.body.amount),
-        authorId: req.body.author,
-        publisherId: req.body.publisher,
+        authorId: req.body.authorId,
+        publisherId: req.body.publisherId,
         description: req.body.description,
         discount: Number(req.body.discount),
         price: Number(req.body.price),
         categories: req.body.categories,
       };
 
-      await this.bookService.updateBook(id, file, data);
+      if (files.thumbnail && files.thumbnail[0]) {
+        await this.bookService.updateBook(id, files.thumbnail[0], data);
+      } else {
+        await this.bookService.updateBook(id, null, data);
+      }
+
+      if (files.subImgs) {
+        for (const file of files.subImgs) {
+          await this.bookService.uploadSubImage(file, id);
+        }
+      }
 
       req.session.success_msg = 'Update book successfully';
       res.redirect('/admin/book');

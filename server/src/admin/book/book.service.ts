@@ -449,24 +449,21 @@ export class BookService {
         );
       }
 
-      let url;
+      let url = process.env.DEFAULT_CATEGORY_IMAGE;
+
       if (thumbnail) {
         if (thumbnail.size > parseInt(process.env.MAX_FILE_SIZE)) {
           throw new HttpException(
             BookError.FILE_TOO_LARGE,
             HttpStatus.BAD_REQUEST,
           );
-        } else if (thumbnail.size > 0) {
-          const thumbnail_upload =
-            await this.cloudinaryService.uploadFile(thumbnail);
-          url = thumbnail_upload.secure_url;
-        } else {
-          url = process.env.DEFAULT_CATEGORY_IMAGE;
         }
+
+        const thumbnail_upload =
+          await this.cloudinaryService.uploadFile(thumbnail);
+        url = thumbnail_upload.secure_url;
       } else if (isExistedBook && isExistedBook.thumbnail) {
         url = isExistedBook.thumbnail;
-      } else {
-        url = process.env.DEFAULT_CATEGORY_IMAGE;
       }
 
       const updatedBook = await this.prismaService.books.update({
@@ -504,22 +501,10 @@ export class BookService {
               },
             },
           },
-          promotions: {
-            select: {
-              type: true,
-              discountFlashSale: true,
-              startDate: true,
-              endDate: true,
-            },
-          },
         },
       });
 
-      const now = new Date();
-
-      const formattedBook = this.formatBookWithPromotion(updatedBook, now);
-
-      return { book: formattedBook };
+      return { book: updatedBook };
     } catch (err) {
       return exceptionHandler(err);
     }
