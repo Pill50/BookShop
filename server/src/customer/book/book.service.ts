@@ -247,7 +247,6 @@ export class BookService {
       const book = await this.prismaService.books.findFirst({
         where: {
           id,
-          isDeleted: false,
         },
         include: {
           author: {
@@ -321,7 +320,6 @@ export class BookService {
       const book = await this.prismaService.books.findFirst({
         where: {
           slug: slug,
-          isDeleted: false,
         },
         include: {
           author: {

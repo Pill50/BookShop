@@ -16,10 +16,30 @@ const CartPage: React.FC = () => {
   const [bill, setBill] = useState<Set<string>>(new Set())
 
   useEffect(() => {
-    const totalPrice = cartList.reduce((acc, cur) => {
-      acc += (cur.price * cur.amount * (100 - cur.discount)) / 100
-      return acc
-    }, 0)
+    const getBookInCart = async () => {
+      const res = await dispatch(CartActions.getBookInCart(null))
+      const items = res.payload as BookInCart[]
+
+      const updatedItems = await Promise.all(
+        items.map(async (item) => {
+          const response = await dispatch(BookActions.getBookById(item.id))
+          const bookData = response.payload?.data
+          return { ...item, isDeleted: bookData?.isDeleted }
+        })
+      )
+
+      setCartList(updatedItems)
+    }
+    getBookInCart()
+  }, [])
+
+  useEffect(() => {
+    const totalPrice = cartList
+      .filter((item) => !item.isDeleted)
+      .reduce((acc, cur) => {
+        acc += (cur.price * cur.amount * (100 - cur.discount)) / 100
+        return acc
+      }, 0)
 
     setTotalPrice(totalPrice)
   }, [cartList])
@@ -55,11 +75,24 @@ const CartPage: React.FC = () => {
     dispatch(BookActions.getBookById(bookId)).then((res) => {
       const stockAmount = res.payload?.data?.amount as number
 
+      if (amount < 1) {
+        return
+      }
+
       if (amount > stockAmount) {
         toast.error(`You can buy maximum ${stockAmount} books`)
+        return
       } else {
-        dispatch(CartActions.updateBookInCart(data)).then((res) => {
-          setCartList(res.payload as BookInCart[])
+        dispatch(CartActions.updateBookInCart(data)).then(() => {
+          setCartList((prevCartList) => {
+            const updatedCartList = prevCartList.map((item) => {
+              if (item.id === bookId) {
+                return { ...item, amount }
+              }
+              return item
+            })
+            return updatedCartList
+          })
         })
       }
     })
@@ -68,8 +101,11 @@ const CartPage: React.FC = () => {
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation()
     const isChecked = e.target.checked
+
+    const nonDeletedItems = cartList.filter((item) => !item.isDeleted)
+
     if (isChecked) {
-      setBill(new Set(cartList.map((item) => item.id)))
+      setBill(new Set(nonDeletedItems.map((item) => item.id)))
     } else {
       setBill(new Set())
     }
@@ -109,7 +145,9 @@ const CartPage: React.FC = () => {
                         id='checkbox-all-search'
                         type='checkbox'
                         onChange={handleSelectAll}
-                        checked={bill.size === cartList.length && cartList.length !== 0}
+                        checked={
+                          bill.size === cartList.filter((item) => !item.isDeleted).length && cartList.length !== 0
+                        }
                         className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
                       />
                       <label htmlFor='checkbox-all-search' className='sr-only'>
@@ -135,20 +173,25 @@ const CartPage: React.FC = () => {
                   <th scope='col' className='px-6 py-3 font-bold text-lg text-blue-600'>
                     Actions
                   </th>
+                  <th scope='col' className='px-6 py-3 font-bold text-lg text-blue-600'>
+                    Note
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {cartList.map((item, index) => (
                   <tr key={index} className='hover:bg-blue-50 transition-all bg-white border-b'>
                     <td className='w-4 p-4'>
-                      <div className='flex items-center'>
-                        <input
-                          type='checkbox'
-                          checked={bill.has(item.id)}
-                          onChange={(e) => handleAddItemToBill(e, item.id)}
-                          className='item-checkbox w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-                        />
-                      </div>
+                      {!item.isDeleted && (
+                        <div className='flex items-center'>
+                          <input
+                            type='checkbox'
+                            checked={bill.has(item.id)}
+                            onChange={(e) => handleAddItemToBill(e, item.id)}
+                            className='item-checkbox w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
+                          />
+                        </div>
+                      )}
                     </td>
                     <td className='px-6 py-4'>
                       <div
@@ -198,6 +241,13 @@ const CartPage: React.FC = () => {
                     </td>
                     <td className='px-6 py-4'>
                       <DeleteModal id={item.id} handleDeleteItem={handleDeleteItem} />
+                    </td>
+                    <td className='px-6 py-4'>
+                      {item.isDeleted ? (
+                        <p className='text-blue-600 break-words'>Please order the same book!</p>
+                      ) : (
+                        <></>
+                      )}
                     </td>
                   </tr>
                 ))}

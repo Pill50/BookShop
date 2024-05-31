@@ -48,8 +48,8 @@ const filterBooks = async (values: FilterBook) => {
   if (values.sortBySoldAmount !== undefined)
     apiPath += `&sortBySoldAmount=${encodeURIComponent(values.sortBySoldAmount)}`
 
-  const basePath = '/search' + apiPath.slice(5)
-  window.history.pushState({}, '', basePath)
+  // const basePath = '/search' + apiPath.slice(5)
+  // window.history.pushState({}, '', basePath)
 
   const response = await apiCaller('GET', apiPath)
   return response

@@ -20,6 +20,7 @@ export type Book = {
   rating: number
   price: number
   discount: number
+  isDeleted: boolean
 }
 
 export type FilterBook = {
@@ -49,6 +50,7 @@ export type BookInCart = {
   price: number
   discount: number
   orderDate: string
+  isDeleted?: boolean
 }
 
 export type UpdateBookInCart = {
