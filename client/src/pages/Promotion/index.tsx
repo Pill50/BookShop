@@ -82,7 +82,7 @@ const PromotionPage: React.FC = () => {
                   />
                 ))}
             </div>
-            <Pagination totalPage={totalPage} handleChangePage={handleChangePage} />
+            {totalPage > 1 && <Pagination totalPage={totalPage} handleChangePage={handleChangePage} />}
           </>
         )}
       </div>
