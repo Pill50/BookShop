@@ -99,7 +99,8 @@ export class BookController {
   async renderBookDetail(@Req() req: any, @Param('id') id: string) {
     try {
       const book = await this.bookService.getBookById(id);
-      return { book };
+      const subImgList = await this.bookService.getBookSubImgs(id);
+      return { book, subImgList };
     } catch (err) {
       req.session.error_msg = err.message;
     }
@@ -130,7 +131,6 @@ export class BookController {
   async createBook(
     @Req() req: any,
     @Res() res: Response,
-    // @UploadedFile() file: Express.Multer.File,
     @UploadedFiles()
     files: {
       thumbnail?: Express.Multer.File[];

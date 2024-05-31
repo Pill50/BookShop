@@ -658,6 +658,20 @@ export class BookService {
     }
   }
 
+  async getBookSubImgs(bookId: string) {
+    try {
+      const subImgList = await this.prismaService.bookImages.findMany({
+        where: {
+          bookId,
+        },
+      });
+
+      return subImgList;
+    } catch (error) {
+      throw exceptionHandler(error);
+    }
+  }
+
   async getTop10BestSeller() {
     try {
       const bookList = await this.prismaService.books.findMany({
