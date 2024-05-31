@@ -373,6 +373,12 @@ export class BookService {
         throw new HttpException(BookError.BOOK_NOT_FOUND, HttpStatus.NOT_FOUND);
       }
 
+      const subImgList = await this.prismaService.bookImages.findMany({
+        where: {
+          bookId: book.id,
+        },
+      });
+
       const formattedBook = {
         ...book,
         discount: this.calculateDiscount(book),
@@ -380,6 +386,7 @@ export class BookService {
           id: category.categories.id,
           title: category.categories.title,
         })),
+        subImgList: subImgList,
       };
 
       return { book: formattedBook };

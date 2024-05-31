@@ -43,10 +43,15 @@ const DetailBookInfo: React.FC<IDetailBookInfo> = ({ book }) => {
     <>
       <Toaster />
       <div className='flex flex-col md:justify-center gap-4 lg:flex-row bg-gray-100 rounded-xl p-4'>
-        <div className='w-full sm:w-1/2 mx-auto lg:mx-0 lg:w-[400px] lg:h-[400px] my-auto'>
+        <div className='w-full sm:w-1/2 mx-auto lg:mx-0 lg:w-[400px] my-auto flex flex-col gap-2'>
           <figure className='w-full h-full'>
-            <img src={book.thumbnail} alt={book.title} className='rounded-lg object-cover w-full h-full' />
+            <img src={book.thumbnail} alt={book.title} className='rounded-lg object-cover w-full' />
           </figure>
+          <div className='flex justify-between'>
+            {book.subImgList?.map((item) => (
+              <img src={item.url} alt={item.id} className='rounded-lg object-cover w-[32%]' key={item.id} />
+            ))}
+          </div>
         </div>
         <div className='flex flex-col gap-2 justify-center'>
           <h2 className='font-bold text-2xl text-blue-600 truncate'>{book.title}</h2>
