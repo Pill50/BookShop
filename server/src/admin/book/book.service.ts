@@ -424,11 +424,7 @@ export class BookService {
         },
       });
 
-      const now = new Date();
-
-      const formattedBook = this.formatBookWithPromotion(newBook, now);
-
-      return { book: formattedBook };
+      return { book: newBook };
     } catch (err) {
       return exceptionHandler(err);
     }
@@ -622,6 +618,41 @@ export class BookService {
           author: true,
         },
       });
+    } catch (error) {
+      return exceptionHandler(error);
+    }
+  }
+
+  async uploadSubImage(subimg: Express.Multer.File, id: string) {
+    try {
+      const book = await this.prismaService.books.findUnique({
+        where: { id },
+      });
+
+      if (!book) {
+        throw new HttpException(BookError.BOOK_NOT_FOUND, HttpStatus.NOT_FOUND);
+      }
+
+      if (subimg.size > parseInt(process.env.MAX_FILE_SIZE)) {
+        throw new HttpException(
+          BookError.FILE_TOO_LARGE,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const { secure_url } = await this.cloudinaryService.uploadFile(subimg);
+
+      const newSubimg = await this.prismaService.bookImages.create({
+        data: {
+          url: secure_url,
+          bookId: id,
+        },
+      });
+
+      return {
+        id: newSubimg.id,
+        url: newSubimg.url,
+      };
     } catch (error) {
       return exceptionHandler(error);
     }

@@ -9,13 +9,17 @@ import {
   Req,
   Res,
   UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { BookService } from './book.service';
 import { Response } from 'express';
 import { CategoryService } from '../category/category.service';
-import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 import { BookDto } from './dto/book.dto';
 import { SessionGuard } from 'src/common/guard/session.guard';
 import { Roles } from 'src/common/decorators';
@@ -25,7 +29,7 @@ import { PublisherService } from '../publisher/publisher.service';
 
 @Controller('admin/book')
 @Roles(Role.ADMIN)
-@UseGuards(SessionGuard)
+// @UseGuards(SessionGuard)
 export class BookController {
   constructor(
     private bookService: BookService,
@@ -116,11 +120,22 @@ export class BookController {
   }
 
   @Post('/create')
-  @UseInterceptors(FileInterceptor('file'))
+  // @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'thumbnail', maxCount: 1 },
+      { name: 'subImgs', maxCount: 3 },
+    ]),
+  )
   async createBook(
     @Req() req: any,
     @Res() res: Response,
-    @UploadedFile() file: Express.Multer.File,
+    // @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles()
+    files: {
+      thumbnail?: Express.Multer.File[];
+      subImgs?: Express.Multer.File[];
+    },
   ) {
     try {
       const data: BookDto = {
@@ -132,18 +147,30 @@ export class BookController {
         description: req.body.description,
         discount: Number(req.body.discount),
         price: Number(req.body.price),
-        categories: req.body.categories,
+        categories: JSON.parse(req.body.selectedCategories),
       };
 
       const response = await this.bookService.createBook(data);
 
-      if (response && file) {
-        await this.bookService.uploadThumbnail(file, response.book.id);
+      if (response) {
+        if (files.thumbnail && files.thumbnail[0]) {
+          await this.bookService.uploadThumbnail(
+            files.thumbnail[0],
+            response.book.id,
+          );
+        }
+        if (files.subImgs) {
+          for (const file of files.subImgs) {
+            await this.bookService.uploadSubImage(file, response.book.id);
+          }
+        }
       }
+
       req.session.success_msg = 'Create book successfully';
       res.redirect('/admin/book');
     } catch (err) {
       req.session.error_msg = err.message;
+      res.redirect('/admin/book/create');
     }
   }
 
