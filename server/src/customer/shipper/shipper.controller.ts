@@ -30,34 +30,4 @@ export class ShipperController {
   async getAllShippers() {
     return await this.shipperService.getAllShippers();
   }
-
-  @Post('/create')
-  @HttpCode(HttpStatus.CREATED)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
-  @ResponseMessage('Create shipper successfully')
-  async createShipper(@Body() shipperData: ShipperDto) {
-    return await this.shipperService.createShipper(shipperData);
-  }
-
-  @Put('/update/:id')
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
-  @ResponseMessage('Update shipper information successfully')
-  async updateShipperInfo(
-    @Param('id') id: string,
-    @Body() shipperData: ShipperDto,
-  ) {
-    return await this.shipperService.updateShipper(id, shipperData);
-  }
-
-  @Delete('/delete/:id')
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
-  @ResponseMessage('Delete shipper successfully')
-  async deleteShipper(@Param('id') id: string) {
-    return await this.shipperService.deleteShipper(id);
-  }
 }
