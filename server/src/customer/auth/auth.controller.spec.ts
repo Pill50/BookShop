@@ -8,6 +8,8 @@ import { Role, Status } from './types';
 import { Gender } from '@prisma/client';
 import { AppModule } from 'src/app.module';
 import { AuthError } from 'src/common/errors';
+import { OAuthDto } from './dto/OAuth.dto';
+import { LoginDto } from './dto/login.dto';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -63,14 +65,14 @@ describe('AuthService', () => {
   });
 
   describe('register', () => {
-    it('should successfully register a new user', async () => {
-      const registerDto: RegisterDto = {
-        email: 'test@example.com',
-        password: 'password123',
-        confirmPassword: 'password123',
-        displayName: 'Test User',
-      };
+    const mockRequest: RegisterDto = {
+      email: 'test@example.com',
+      password: 'password123',
+      confirmPassword: 'password123',
+      displayName: 'Test User',
+    };
 
+    it('should successfully register a new user', async () => {
       const confirmToken = 'confirmationToken';
 
       jest.spyOn(prismaService.users, 'findUnique').mockResolvedValueOnce(null);
@@ -82,19 +84,19 @@ describe('AuthService', () => {
         .mockResolvedValueOnce(confirmToken);
       jest.spyOn(mailerService, 'sendMail').mockResolvedValueOnce(undefined);
 
-      const result = await service.register(registerDto);
+      const result = await service.register(mockRequest);
 
       expect(result).toEqual(true);
       expect(prismaService.users.findUnique).toHaveBeenCalledWith({
         where: {
-          email: registerDto.email,
+          email: mockRequest.email,
         },
       });
       expect(prismaService.users.create).toHaveBeenCalledWith({
         data: {
-          email: registerDto.email,
+          email: mockRequest.email,
           password: expect.any(String),
-          displayName: registerDto.displayName,
+          displayName: mockRequest.displayName,
           isLogin: false,
           status: Status.INACTIVE,
           role: Role.Customer,
@@ -105,14 +107,12 @@ describe('AuthService', () => {
     });
 
     it('should throw an error if password and confirmPassword do not match', async () => {
-      const registerDto: RegisterDto = {
-        email: 'test@example.com',
-        password: 'password123',
-        confirmPassword: 'differentPassword',
-        displayName: 'Test User',
-      };
-
-      await expect(service.register(registerDto)).rejects.toThrow(
+      await expect(
+        service.register({
+          ...mockRequest,
+          confirmPassword: 'confirmPassword',
+        }),
+      ).rejects.toThrow(
         new HttpException(
           'Password do not match confirm password',
           HttpStatus.BAD_REQUEST,
@@ -121,18 +121,11 @@ describe('AuthService', () => {
     });
 
     it('should throw an error if the user already exists and is active', async () => {
-      const registerDto: RegisterDto = {
-        email: 'existing@example.com',
-        password: 'password123',
-        confirmPassword: 'password123',
-        displayName: 'Test User',
-      };
-
       jest
         .spyOn(prismaService.users, 'findUnique')
         .mockResolvedValueOnce(userResponse);
 
-      await expect(service.register(registerDto)).rejects.toThrow(
+      await expect(service.register(mockRequest)).rejects.toThrow(
         new HttpException(
           'User is already activate login',
           HttpStatus.BAD_REQUEST,
@@ -141,18 +134,11 @@ describe('AuthService', () => {
     });
 
     it('should throw an error if the user already exists and is inactive', async () => {
-      const registerDto: RegisterDto = {
-        email: 'existing@example.com',
-        password: 'password123',
-        confirmPassword: 'password123',
-        displayName: 'Test User',
-      };
-
       jest
         .spyOn(prismaService.users, 'findUnique')
         .mockResolvedValueOnce(userResponse);
 
-      await expect(service.register(registerDto)).rejects.toThrow(
+      await expect(service.register(mockRequest)).rejects.toThrow(
         new HttpException(
           'User is already activate login',
           HttpStatus.BAD_REQUEST,
@@ -162,10 +148,12 @@ describe('AuthService', () => {
   });
 
   describe('login', () => {
-    it('should login successfully', async () => {
-      const email = 'user1@gmail.com';
-      const password = 'password123';
+    const mockRequest: LoginDto = {
+      email: 'user1@gmail.com',
+      password: 'password123',
+    };
 
+    it('should login successfully', async () => {
       jest
         .spyOn(prismaService.users, 'findUnique')
         .mockResolvedValueOnce(userResponse);
@@ -181,13 +169,13 @@ describe('AuthService', () => {
           refreshToken: 'refreshToken',
         });
 
-      const result = await service.login({ email, password });
+      const result = await service.login(mockRequest);
 
       expect(result).toEqual({
         accessToken: 'accessToken',
         refreshToken: 'refreshToken',
         user: {
-          email,
+          email: mockRequest.email,
           id: '1',
           status: Status.ACTIVE,
           address: 'Long An',
@@ -202,67 +190,166 @@ describe('AuthService', () => {
     });
 
     it('should throw an error if user not found', async () => {
-      const email = 'user2@gmail.com';
-      const password = 'password1234';
-
       jest.spyOn(prismaService.users, 'findUnique').mockResolvedValueOnce(null);
 
-      await expect(service.login({ email, password })).rejects.toThrow(
-        AuthError.USER_INVALID_CREDENTIALS,
-      );
+      await expect(
+        service.login({ ...mockRequest, email: 'user2@gmail.com' }),
+      ).rejects.toThrow(AuthError.USER_INVALID_CREDENTIALS);
     });
 
     it('should throw an error if user is not activated', async () => {
-      const email = 'test@gmail.com';
-      const password = 'password123';
-
       jest
         .spyOn(prismaService.users, 'findUnique')
         .mockResolvedValueOnce({ ...userResponse, status: Status.INACTIVE });
 
-      await expect(service.login({ email, password })).rejects.toThrow(
+      await expect(service.login(mockRequest)).rejects.toThrow(
         AuthError.USER_NOT_ACTIVATED,
       );
     });
 
     it('should throw an error if user is blocked', async () => {
-      const email = 'user1@gmail.com';
-      const password = 'password123';
-
       jest
         .spyOn(prismaService.users, 'findUnique')
         .mockResolvedValueOnce({ ...userResponse, status: Status.BLOCKED });
 
-      await expect(service.login({ email, password })).rejects.toThrow(
+      await expect(service.login(mockRequest)).rejects.toThrow(
         AuthError.USER_BLOCKED,
       );
     });
 
     it('should throw an error if user is using OAuth login', async () => {
-      const email = 'user1@gmail.com';
-      const password = 'password123';
-
       jest
         .spyOn(prismaService.users, 'findUnique')
         .mockResolvedValueOnce({ ...userResponse, authId: 'authId' });
 
-      await expect(service.login({ email, password })).rejects.toThrow(
+      await expect(service.login(mockRequest)).rejects.toThrow(
         AuthError.USER_OAUTH_LOGIN,
       );
     });
 
     it('should throw an error if password is incorrect', async () => {
-      const email = 'user1@gmail.com';
-      const password = 'wrongPassword';
-
       jest
         .spyOn(prismaService.users, 'findUnique')
         .mockResolvedValueOnce(userResponse);
       jest.spyOn(service, 'verifyHash').mockResolvedValueOnce(false);
 
-      await expect(service.login({ email, password })).rejects.toThrow(
-        AuthError.USER_INVALID_CREDENTIALS,
-      );
+      await expect(
+        service.login({ ...mockRequest, password: 'wrongPassword' }),
+      ).rejects.toThrow(AuthError.USER_INVALID_CREDENTIALS);
+    });
+  });
+
+  describe('oauth', () => {
+    const mockRequest: OAuthDto = {
+      authId: 'auth123',
+      avatar: 'avatarUrl',
+      displayName: 'Vinh Phuc',
+      email: 'user1@gmail.com',
+      loginFrom: 'google',
+    };
+
+    it('should create a new user if not found', async () => {
+      jest.spyOn(prismaService.users, 'findUnique').mockResolvedValueOnce(null);
+      jest
+        .spyOn(prismaService.users, 'create')
+        .mockResolvedValueOnce({ ...userResponse, avatar: mockRequest.avatar });
+      jest.spyOn(service, 'generateTokens').mockResolvedValueOnce({
+        accessToken: 'accessToken',
+        refreshToken: 'refreshToken',
+      });
+
+      const result = await service.OAuth(mockRequest);
+
+      expect(result).toEqual({
+        accessToken: 'accessToken',
+        refreshToken: 'refreshToken',
+        user: {
+          id: '1',
+          email: 'user1@gmail.com',
+          role: Role.Customer,
+          avatar: 'avatarUrl',
+          address: 'Long An',
+          phone: '0123456789',
+          gender: Gender.MALE,
+          displayName: 'Vinh Phuc',
+          status: Status.ACTIVE,
+        },
+      });
+    });
+
+    it('should update an inactive user to active', async () => {
+      jest.spyOn(prismaService.users, 'findUnique').mockResolvedValueOnce({
+        ...userResponse,
+        status: Status.INACTIVE,
+        avatar: mockRequest.avatar,
+      });
+      jest.spyOn(prismaService.users, 'update').mockResolvedValueOnce({
+        ...userResponse,
+        status: Status.ACTIVE,
+        avatar: mockRequest.avatar,
+      });
+      jest.spyOn(service, 'generateTokens').mockResolvedValueOnce({
+        accessToken: 'accessToken',
+        refreshToken: 'refreshToken',
+      });
+
+      const result = await service.OAuth(mockRequest);
+
+      expect(result).toEqual({
+        accessToken: 'accessToken',
+        refreshToken: 'refreshToken',
+        user: {
+          id: '1',
+          email: 'user1@gmail.com',
+          role: Role.Customer,
+          avatar: 'avatarUrl',
+          address: 'Long An',
+          phone: '0123456789',
+          gender: Gender.MALE,
+          displayName: 'Vinh Phuc',
+          status: Status.ACTIVE,
+        },
+      });
+    });
+
+    it('should return existing active user tokens', async () => {
+      jest.spyOn(prismaService.users, 'findUnique').mockResolvedValueOnce({
+        ...userResponse,
+        status: Status.ACTIVE,
+        avatar: mockRequest.avatar,
+      });
+      jest.spyOn(service, 'generateTokens').mockResolvedValueOnce({
+        accessToken: 'accessToken',
+        refreshToken: 'refreshToken',
+      });
+
+      const result = await service.OAuth(mockRequest);
+
+      expect(result).toEqual({
+        accessToken: 'accessToken',
+        refreshToken: 'refreshToken',
+        user: {
+          id: '1',
+          email: 'user1@gmail.com',
+          role: Role.Customer,
+          avatar: 'avatarUrl',
+          address: 'Long An',
+          phone: '0123456789',
+          gender: Gender.MALE,
+          displayName: 'Vinh Phuc',
+          status: Status.ACTIVE,
+        },
+      });
+    });
+
+    it('should handle errors correctly', async () => {
+      const errorMessage = 'An error occurred';
+
+      jest
+        .spyOn(prismaService.users, 'findUnique')
+        .mockRejectedValueOnce(new Error(errorMessage));
+
+      await expect(service.OAuth(mockRequest)).rejects.toThrow(errorMessage);
     });
   });
 });
