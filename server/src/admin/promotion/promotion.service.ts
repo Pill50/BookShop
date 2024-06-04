@@ -115,6 +115,7 @@ export class PromotionService {
           endDate: data.endDate,
         },
       });
+
       return promotion;
     } catch (error) {
       throw exceptionHandler(error);

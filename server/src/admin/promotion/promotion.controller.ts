@@ -20,7 +20,7 @@ import { Roles } from 'src/common/decorators';
 
 @Controller('admin/promotion')
 @Roles(Role.ADMIN)
-@UseGuards(SessionGuard)
+// @UseGuards(SessionGuard)
 export class PromotionController {
   constructor(private readonly promotionService: PromotionService) {}
 
@@ -63,15 +63,17 @@ export class PromotionController {
     @Res() res: Response,
   ) {
     const data: PromotionDto = {
-      type: body.type,
+      type: body.type || 'SALE',
       startDate: new Date(body.startDate).toISOString(),
       endDate: new Date(body.endDate).toISOString(),
       discountFlashSale: Number(body?.discountFlashSale) || null,
     };
+
     const promotion = await this.promotionService.createNewPromotion(
       bookId,
       data,
     );
+
     if (promotion) {
       res.redirect(`/admin/book/${bookId}`);
     }

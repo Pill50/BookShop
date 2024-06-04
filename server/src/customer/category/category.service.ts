@@ -1,15 +1,10 @@
 import { PrismaService } from 'src/prisma/prisma.service';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CategoryError, exceptionHandler } from 'src/common/errors';
-import { CategoryDto } from './dto/category.dto';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { Injectable } from '@nestjs/common';
+import { exceptionHandler } from 'src/common/errors';
 
 @Injectable()
 export class CategoryService {
-  constructor(
-    private prismaService: PrismaService,
-    private cloudinaryService: CloudinaryService,
-  ) {}
+  constructor(private prismaService: PrismaService) {}
 
   async getAllCategories() {
     try {

@@ -18,7 +18,6 @@ import { Response } from 'express';
 import { CategoryService } from '../category/category.service';
 import {
   FileFieldsInterceptor,
-  FileInterceptor,
 } from '@nestjs/platform-express';
 import { BookDto } from './dto/book.dto';
 import { SessionGuard } from 'src/common/guard/session.guard';
@@ -38,47 +37,16 @@ export class BookController {
     private publisherService: PublisherService,
   ) {}
 
-  @Get('/')
-  @Render('book/index')
-  async renderAllBooks(@Query() filter: FilterBookDto) {
-    const pageIndex: number | undefined = filter.page
-      ? parseInt(filter.page as string, 10)
-      : 1;
-    const keyword: string | undefined = filter.keyword
-      ? (filter.keyword as string)
-      : undefined;
-    const publisherId: string[] | undefined = filter.publisherId
-      ? (filter.publisherId.split(',') as string[])
-      : undefined;
-    const categories: string[] | undefined = filter.categories
-      ? (filter.categories.split(',') as string[])
-      : undefined;
-    const sortByPrice: string | undefined = filter.sortByPrice
-      ? (filter.sortByPrice as string)
-      : undefined;
-    const sortBySoldAmount: string | undefined = filter.sortBySoldAmount
-      ? (filter.sortBySoldAmount as string)
-      : undefined;
-    const sortByDate: string | undefined = filter.sortByDate
-      ? (filter.sortByDate as string)
-      : undefined;
-
-    const bookList = await this.bookService.getAllBooks(
-      pageIndex,
-      keyword,
-      publisherId,
-      categories,
-      sortByPrice,
-      sortBySoldAmount,
-      sortByDate,
-    );
-
-    const pagination = {
-      currentPage: pageIndex,
-      nextPage: pageIndex === bookList.totalPage ? 1 : pageIndex + 1,
-      previousPage: pageIndex === 1 ? bookList.totalPage : pageIndex - 1,
-    };
-    return { bookList, pagination };
+  @Get('/:id')
+  @Render('book/book-detail')
+  async renderBookDetail(@Req() req: any, @Param('id') id: string) {
+    try {
+      const book = await this.bookService.getBookById(id);
+      const subImgList = await this.bookService.getBookSubImgs(id);
+      return { book, subImgList };
+    } catch (err) {
+      req.session.error_msg = err.message;
+    }
   }
 
   @Get('/create')
@@ -89,18 +57,6 @@ export class BookController {
       const authorList = await this.authorService.getAllAuthors();
       const publisherList = await this.publisherService.getAllPublishers();
       return { categoryList, authorList, publisherList };
-    } catch (err) {
-      req.session.error_msg = err.message;
-    }
-  }
-
-  @Get('/:id')
-  @Render('book/book-detail')
-  async renderBookDetail(@Req() req: any, @Param('id') id: string) {
-    try {
-      const book = await this.bookService.getBookById(id);
-      const subImgList = await this.bookService.getBookSubImgs(id);
-      return { book, subImgList };
     } catch (err) {
       req.session.error_msg = err.message;
     }
@@ -173,6 +129,49 @@ export class BookController {
       req.session.error_msg = err.message;
       res.redirect('/admin/book/create');
     }
+  }
+
+  @Get('/')
+  @Render('book/index')
+  async renderAllBooks(@Query() filter: FilterBookDto) {
+    const pageIndex: number | undefined = filter.page
+      ? parseInt(filter.page as string, 10)
+      : 1;
+    const keyword: string | undefined = filter.keyword
+      ? (filter.keyword as string)
+      : undefined;
+    const publisherId: string[] | undefined = filter.publisherId
+      ? (filter.publisherId.split(',') as string[])
+      : undefined;
+    const categories: string[] | undefined = filter.categories
+      ? (filter.categories.split(',') as string[])
+      : undefined;
+    const sortByPrice: string | undefined = filter.sortByPrice
+      ? (filter.sortByPrice as string)
+      : undefined;
+    const sortBySoldAmount: string | undefined = filter.sortBySoldAmount
+      ? (filter.sortBySoldAmount as string)
+      : undefined;
+    const sortByDate: string | undefined = filter.sortByDate
+      ? (filter.sortByDate as string)
+      : undefined;
+
+    const bookList = await this.bookService.getAllBooks(
+      pageIndex,
+      keyword,
+      publisherId,
+      categories,
+      sortByPrice,
+      sortBySoldAmount,
+      sortByDate,
+    );
+
+    const pagination = {
+      currentPage: pageIndex,
+      nextPage: pageIndex === bookList.totalPage ? 1 : pageIndex + 1,
+      previousPage: pageIndex === 1 ? bookList.totalPage : pageIndex - 1,
+    };
+    return { bookList, pagination };
   }
 
   @Post('/update/:id')
