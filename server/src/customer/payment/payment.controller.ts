@@ -44,8 +44,6 @@ export class PaymentController {
       '',
     ).trim();
 
-    // const orderId = 'MOMO' + Date.now().toString();
-
     const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=MOMO&redirectUrl=${redirectUrl}&requestId=${orderId}&requestType=payWithMethod`;
 
     const signature = crypto
