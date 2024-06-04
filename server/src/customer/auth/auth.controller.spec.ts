@@ -13,6 +13,7 @@ import { LoginDto } from './dto/login.dto';
 import { TokenDto } from './dto/token.dto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
+import { ChangePasswordDto } from './dto/changePassword.dto';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -631,5 +632,100 @@ describe('AuthService', () => {
     });
   });
 
-  describe('changePassword', () => {});
+  describe('changePassword', () => {
+    const mockRequest: ChangePasswordDto = {
+      oldPassword: 'oldPassword123',
+      newPassword: 'newPassword123',
+      confirmPassword: 'newPassword123',
+    };
+
+    const userId = '1';
+
+    it('should throw an error if new password and confirm password do not match', async () => {
+      const dto = { ...mockRequest, confirmPassword: 'differentPassword' };
+
+      await expect(service.changePassword(dto, userId)).rejects.toThrow(
+        new HttpException(
+          AuthError.USER_PASSWORDS_NOT_MATCH,
+          HttpStatus.BAD_REQUEST,
+        ),
+      );
+    });
+
+    it('should throw an error if user is not found', async () => {
+      jest.spyOn(prismaService.users, 'findUnique').mockResolvedValueOnce(null);
+
+      await expect(service.changePassword(mockRequest, userId)).rejects.toThrow(
+        new HttpException(AuthError.USER_NOT_FOUND, HttpStatus.BAD_REQUEST),
+      );
+    });
+
+    it('should throw an error if user cannot change password due to OAuth login', async () => {
+      jest
+        .spyOn(prismaService.users, 'findUnique')
+        .mockResolvedValueOnce({ ...userResponse, loginFrom: 'oauth' });
+
+      await expect(service.changePassword(mockRequest, userId)).rejects.toThrow(
+        new HttpException(
+          AuthError.USER_OAUTH_CHANGE_PASSWORD,
+          HttpStatus.BAD_REQUEST,
+        ),
+      );
+    });
+
+    it('should throw an error if old password is invalid', async () => {
+      jest.spyOn(prismaService.users, 'findUnique').mockResolvedValueOnce({
+        ...userResponse,
+        authId: null,
+        loginFrom: null,
+      });
+      jest.spyOn(service, 'verifyHash').mockResolvedValueOnce(false);
+
+      await expect(service.changePassword(mockRequest, userId)).rejects.toThrow(
+        new HttpException(
+          AuthError.USER_OLD_PASSWORD_INVALID,
+          HttpStatus.BAD_REQUEST,
+        ),
+      );
+    });
+
+    it('should change password successfully', async () => {
+      const hashedPassword = 'hashedNewPassword';
+      jest.spyOn(prismaService.users, 'findUnique').mockResolvedValueOnce({
+        ...userResponse,
+        authId: null,
+        loginFrom: null,
+      });
+      jest.spyOn(service, 'verifyHash').mockResolvedValueOnce(true);
+      jest.spyOn(service, 'hashData').mockResolvedValueOnce(hashedPassword);
+
+      const updateSpy = jest
+        .spyOn(prismaService.users, 'update')
+        .mockResolvedValueOnce({
+          ...userResponse,
+          password: hashedPassword,
+          resetToken: null,
+        });
+
+      const result = await service.changePassword(mockRequest, userId);
+
+      expect(result).toBe('Password changed successfully');
+      expect(updateSpy).toHaveBeenCalledWith({
+        where: { id: userId },
+        data: { password: hashedPassword },
+      });
+    });
+
+    it('should handle errors correctly', async () => {
+      const errorMessage = 'An error occurred';
+
+      jest
+        .spyOn(prismaService.users, 'findUnique')
+        .mockRejectedValueOnce(new Error(errorMessage));
+
+      await expect(service.changePassword(mockRequest, userId)).rejects.toThrow(
+        errorMessage,
+      );
+    });
+  });
 });
