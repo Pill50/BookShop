@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PromotionType } from '@prisma/client';
 import { exceptionHandler } from 'src/common/errors';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -131,12 +131,12 @@ export class PromotionService {
 
   async getPromotionById(id: string) {
     try {
-      const promotions = await this.prismaService.promotions.findMany({
+      const promotion = await this.prismaService.promotions.findUnique({
         where: {
           id,
         },
       });
-      return promotions;
+      return promotion;
     } catch (error) {
       throw exceptionHandler(error);
     }
@@ -162,12 +162,22 @@ export class PromotionService {
 
   async deletePromotion(id: string) {
     try {
-      const promotions = await this.prismaService.promotions.delete({
+      const promotion = await this.prismaService.promotions.findUnique({
+        where: {
+          id
+        }
+      })
+
+      if(promotion.startDate.getTime() <= Date.now()) {
+        throw new HttpException("You can not delete promotion when it has already started", HttpStatus.BAD_REQUEST)
+      }
+
+      await this.prismaService.promotions.delete({
         where: {
           id,
         },
       });
-      return promotions;
+      return promotion;
     } catch (error) {
       throw exceptionHandler(error);
     }
@@ -180,7 +190,20 @@ export class PromotionService {
     endDate: string,
   ) {
     try {
-      const promotions = await this.prismaService.promotions.update({
+      const promotion = await this.prismaService.promotions.findUnique({
+        where: {
+          id,
+          startDate: {
+            gt: new Date()
+          }
+        }
+      })
+      
+      if(!promotion) {
+        return null
+      }
+
+      const updatedPromotion = await this.prismaService.promotions.update({
         where: {
           id,
         },
@@ -190,7 +213,8 @@ export class PromotionService {
           endDate,
         },
       });
-      return promotions;
+      
+      return updatedPromotion;
     } catch (error) {
       throw exceptionHandler(error);
     }
