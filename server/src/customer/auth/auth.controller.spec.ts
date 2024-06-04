@@ -11,6 +11,7 @@ import { AuthError, JwtError } from 'src/common/errors';
 import { OAuthDto } from './dto/OAuth.dto';
 import { LoginDto } from './dto/login.dto';
 import { TokenDto } from './dto/token.dto';
+import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -428,6 +429,93 @@ describe('AuthService', () => {
 
       await expect(service.confirmEmail(dto)).rejects.toThrow(
         new HttpException(JwtError.INVALID_TOKEN, HttpStatus.BAD_REQUEST),
+      );
+    });
+  });
+
+  describe('forgotPassword', () => {
+    const mockRequest: ForgotPasswordDto = { email: 'user1@gmail.com' };
+
+    it('should throw an error if user is not found', async () => {
+      jest.spyOn(prismaService.users, 'findUnique').mockResolvedValueOnce(null);
+
+      await expect(service.forgotPassword(mockRequest)).rejects.toThrow(
+        new HttpException(
+          AuthError.USER_EMAIL_NOT_FOUND,
+          HttpStatus.BAD_REQUEST,
+        ),
+      );
+    });
+
+    it('should throw an error if user is not activated', async () => {
+      jest
+        .spyOn(prismaService.users, 'findUnique')
+        .mockResolvedValueOnce({ ...userResponse, status: Status.INACTIVE });
+
+      await expect(service.forgotPassword(mockRequest)).rejects.toThrow(
+        new HttpException(AuthError.USER_NOT_ACTIVATED, HttpStatus.BAD_REQUEST),
+      );
+    });
+
+    it('should throw an error if user is using OAuth login', async () => {
+      jest
+        .spyOn(prismaService.users, 'findUnique')
+        .mockResolvedValueOnce({ ...userResponse, authId: 'authId' });
+
+      await expect(service.forgotPassword(mockRequest)).rejects.toThrow(
+        new HttpException(
+          AuthError.USER_OAUTH_CHANGE_PASSWORD,
+          HttpStatus.BAD_REQUEST,
+        ),
+      );
+    });
+
+    it('should send a reset password link successfully', async () => {
+      jest
+        .spyOn(prismaService.users, 'findUnique')
+        .mockResolvedValueOnce({ ...userResponse, authId: null });
+      jest
+        .spyOn(service, 'generateUserIdToken')
+        .mockResolvedValueOnce('resetToken');
+      jest.spyOn(service, 'updateResetToken').mockResolvedValueOnce(undefined);
+      jest.spyOn(mailerService, 'sendMail').mockResolvedValueOnce(undefined);
+
+      const result = await service.forgotPassword(mockRequest);
+
+      expect(result).toBe('Reset password link sent successfully');
+      expect(prismaService.users.findUnique).toHaveBeenCalledWith({
+        where: { email: mockRequest.email },
+        select: {
+          email: true,
+          id: true,
+          displayName: true,
+          status: true,
+          authId: true,
+        },
+      });
+      expect(service.generateUserIdToken).toHaveBeenCalledWith(userResponse.id);
+      expect(service.updateResetToken).toHaveBeenCalledWith(
+        userResponse.id,
+        'resetToken',
+      );
+      expect(mailerService.sendMail).toHaveBeenCalledWith({
+        to: userResponse.email,
+        subject: '[TVPBookShop Reset Password]',
+        displayName: userResponse.displayName,
+        token: 'resetToken',
+        type: 'reset',
+      });
+    });
+
+    it('should handle errors correctly', async () => {
+      const errorMessage = 'An error occurred';
+
+      jest
+        .spyOn(prismaService.users, 'findUnique')
+        .mockRejectedValueOnce(new Error(errorMessage));
+
+      await expect(service.forgotPassword(mockRequest)).rejects.toThrow(
+        errorMessage,
       );
     });
   });
