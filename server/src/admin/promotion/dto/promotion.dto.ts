@@ -2,8 +2,8 @@ import { PromotionType } from '@prisma/client';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class PromotionDto {
-  @IsOptional()
   @IsString({ message: 'Type must be a string' })
+  @IsNotEmpty({ message: 'Type must not be empty' })
   type: PromotionType;
 
   @IsString({ message: 'Start date must be a string' })
