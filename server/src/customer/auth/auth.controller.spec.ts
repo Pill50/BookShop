@@ -12,6 +12,7 @@ import { OAuthDto } from './dto/OAuth.dto';
 import { LoginDto } from './dto/login.dto';
 import { TokenDto } from './dto/token.dto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
+import { ResetPasswordDto } from './dto/resetPassword.dto';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -519,4 +520,116 @@ describe('AuthService', () => {
       );
     });
   });
+
+  describe('resetPassword', () => {
+    const mockRequest: ResetPasswordDto = {
+      password: 'newPassword123',
+      confirmPassword: 'newPassword123',
+      token: 'resetToken',
+    };
+
+    it('should throw an error if passwords do not match', async () => {
+      const dto = { ...mockRequest, confirmPassword: 'differentPassword' };
+
+      await expect(service.resetPassword(dto)).rejects.toThrow(
+        new HttpException(
+          AuthError.USER_PASSWORDS_NOT_MATCH,
+          HttpStatus.BAD_REQUEST,
+        ),
+      );
+    });
+
+    it('should throw an error if token is invalid', async () => {
+      jest
+        .spyOn(service, 'verifyToken')
+        .mockRejectedValueOnce(new Error(JwtError.INVALID_TOKEN));
+
+      await expect(service.resetPassword(mockRequest)).rejects.toThrow(
+        new HttpException(JwtError.INVALID_TOKEN, HttpStatus.BAD_REQUEST),
+      );
+    });
+
+    it('should throw an error if user is not found', async () => {
+      jest.spyOn(service, 'verifyToken').mockResolvedValueOnce({ id: '1' });
+      jest.spyOn(prismaService.users, 'findUnique').mockResolvedValueOnce(null);
+
+      await expect(service.resetPassword(mockRequest)).rejects.toThrow(
+        new HttpException(JwtError.INVALID_TOKEN, HttpStatus.BAD_REQUEST),
+      );
+    });
+
+    it('should throw an error if user is not activated', async () => {
+      jest.spyOn(service, 'verifyToken').mockResolvedValueOnce({ id: '1' });
+      jest
+        .spyOn(prismaService.users, 'findUnique')
+        .mockResolvedValueOnce({ ...userResponse, status: Status.INACTIVE });
+
+      await expect(service.resetPassword(mockRequest)).rejects.toThrow(
+        new HttpException(AuthError.USER_NOT_ACTIVATED, HttpStatus.BAD_REQUEST),
+      );
+    });
+
+    it('should throw an error if reset token does not match', async () => {
+      jest.spyOn(service, 'verifyToken').mockResolvedValueOnce({ id: '1' });
+      jest.spyOn(prismaService.users, 'findUnique').mockResolvedValueOnce({
+        ...userResponse,
+        resetToken: 'differentToken',
+      });
+
+      await expect(service.resetPassword(mockRequest)).rejects.toThrow(
+        new HttpException(JwtError.INVALID_TOKEN, HttpStatus.BAD_REQUEST),
+      );
+    });
+
+    it('should reset password successfully', async () => {
+      const hashedPassword = 'hashedPassword';
+      jest.spyOn(service, 'verifyToken').mockResolvedValueOnce({ id: '1' });
+      jest
+        .spyOn(prismaService.users, 'findUnique')
+        .mockResolvedValueOnce(userResponse);
+      jest.spyOn(service, 'hashData').mockResolvedValueOnce(hashedPassword);
+      jest.spyOn(prismaService.users, 'update').mockResolvedValueOnce({
+        ...userResponse,
+        password: hashedPassword,
+        resetToken: null,
+      });
+      jest.spyOn(service, 'generateTokens').mockResolvedValueOnce({
+        accessToken: 'accessToken',
+        refreshToken: 'refreshToken',
+      });
+
+      const result = await service.resetPassword(mockRequest);
+
+      expect(result).toEqual({
+        accessToken: 'accessToken',
+        refreshToken: 'refreshToken',
+        user: {
+          id: userResponse.id,
+          email: userResponse.email,
+          displayName: userResponse.displayName,
+          avatar: userResponse.avatar,
+          role: userResponse.role,
+          address: userResponse.address,
+          phone: userResponse.phone,
+          gender: userResponse.gender,
+          status: userResponse.status,
+        },
+      });
+      expect(prismaService.users.findUnique).toHaveBeenCalledWith({
+        where: { id: '1' },
+        select: { id: true, status: true, resetToken: true },
+      });
+      expect(service.hashData).toHaveBeenCalledWith(mockRequest.password);
+      expect(prismaService.users.update).toHaveBeenCalledWith({
+        where: { id: '1' },
+        data: {
+          password: hashedPassword,
+          resetToken: null,
+          status: Status.ACTIVE,
+        },
+      });
+    });
+  });
+
+  describe('changePassword', () => {});
 });
