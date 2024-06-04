@@ -1,0 +1,19 @@
+{{#each onSaleList.promotions}}
+    <div class="max-w-full bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col">
+        <img class="rounded-t-lg h-40 object-cover" src="{{book.thumbnail}}" alt="{{book.title}}" />
+        <div class="p-5 flex-grow">
+            <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{book.title}}</h5>
+            <p class="font-normal text-gray-700 dark:text-gray-400 truncate ...">{{book.description}}</p>
+            <p class="italic">Author: {{book.author.name}}</p>
+            <p class="italic">Publisher: {{book.publisher.name}}</p>
+            <p class="font-semibold">Flash Sale: <span class="text-xl text-green-600">{{this.discountFlashSale}}%</span></p>
+        </div>
+        <div class="p-2 rounded-md bg-red-100 mt-auto mx-4 mb-4">
+            <p class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                {{type}}
+            </p>
+            <p class="font-semibold">Start date: <span class="text-red-600">{{formatDate startDate}}</span></p>
+            <p class="font-semibold">End date: <span class="text-red-600">{{formatDate endDate}}</span></p>
+        </div>
+    </div>
+{{/each}}

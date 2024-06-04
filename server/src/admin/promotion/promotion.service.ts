@@ -8,7 +8,7 @@ import { PromotionDto } from './dto/promotion.dto';
 export class PromotionService {
   constructor(private prismaService: PrismaService) {}
 
-  async getAllPromotions(pageIndex: number = 1, type?: PromotionType) {
+  async getAllOnSaleItems(pageIndex: number = 1, type?: PromotionType) {
     try {
       const take = 10;
       const skip = (pageIndex - 1) * take;
@@ -26,6 +26,8 @@ export class PromotionService {
                 title: true,
                 thumbnail: true,
                 description: true,
+                author: true,
+                publisher: true
               },
             },
           },
@@ -47,17 +49,63 @@ export class PromotionService {
     }
   }
 
+  async getPopularList() {
+    try {
+      const popularList = await this.prismaService.books.findMany({
+        take: 10,
+        orderBy: {
+          soldNumber: 'desc',
+        },
+        select: {
+          id: true,
+          title: true,
+          thumbnail: true,
+          author: true,
+          publisher: true,
+          description: true,
+          soldNumber: true,
+        },
+      });
+
+      return popularList;
+    } catch (error) {
+      throw exceptionHandler(error);
+    }
+  }
+
+  async getRecommendList() {
+    try {
+      const recommendList = await this.prismaService.books.findMany({
+        take: 10,
+        where: {
+          isDeleted: false
+        },
+        orderBy: {
+          rating: 'desc',
+        },
+        select: {
+          id: true,
+          title: true,
+          thumbnail: true,
+          author: true,
+          publisher: true,
+          rating: true,
+          description: true,
+          soldNumber: true,
+        },
+      });
+
+      return recommendList;
+    } catch (error) {
+      throw exceptionHandler(error);
+    }
+  }
+
   async getStatisticPromotion() {
     try {
       const onSale = await this.prismaService.promotions.count({
         where: {
           type: 'SALE',
-        },
-      });
-
-      const popular = await this.prismaService.promotions.count({
-        where: {
-          type: 'POPULAR',
         },
       });
 
@@ -69,20 +117,10 @@ export class PromotionService {
         },
       });
 
-      const onPopularExpired = await this.prismaService.promotions.count({
-        where: {
-          endDate: {
-            lte: new Date(),
-          },
-        },
-      });
-
       const statisticPromotion = {
-        totalPromotions: onSale + popular,
+        totalPromotions: onSale,
         onSale,
-        popular,
         onSaleExpired,
-        onPopularExpired,
       };
 
       return statisticPromotion;

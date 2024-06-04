@@ -230,7 +230,6 @@ enum Gender {
 
 enum PromotionType {
   SALE
-  POPULAR
 }
 
 enum PaymentType {
