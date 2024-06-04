@@ -7,9 +7,10 @@ import { HttpStatus, HttpException } from '@nestjs/common';
 import { Role, Status } from './types';
 import { Gender } from '@prisma/client';
 import { AppModule } from 'src/app.module';
-import { AuthError } from 'src/common/errors';
+import { AuthError, JwtError } from 'src/common/errors';
 import { OAuthDto } from './dto/OAuth.dto';
 import { LoginDto } from './dto/login.dto';
+import { TokenDto } from './dto/token.dto';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -31,10 +32,10 @@ describe('AuthService', () => {
     password: '',
     isLogin: true,
     attempts: 0,
-    accessToken: '',
-    refreshToken: '',
-    resetToken: '',
-    confirmToken: '',
+    accessToken: 'accessToken',
+    refreshToken: 'refreshToken',
+    resetToken: 'resetToken',
+    confirmToken: 'confirmToken',
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -350,6 +351,84 @@ describe('AuthService', () => {
         .mockRejectedValueOnce(new Error(errorMessage));
 
       await expect(service.OAuth(mockRequest)).rejects.toThrow(errorMessage);
+    });
+  });
+
+  describe('confirmEmail', () => {
+    it('should confirm email for a new user and return tokens', async () => {
+      const dto: TokenDto = { token: 'confirmToken' };
+      const decodedToken = { id: '1' };
+
+      const updatedUserResponse = {
+        ...userResponse,
+        status: Status.ACTIVE,
+        confirmToken: null,
+      };
+
+      jest.spyOn(service, 'verifyToken').mockResolvedValueOnce(decodedToken);
+      jest
+        .spyOn(prismaService.users, 'findUnique')
+        .mockResolvedValueOnce({ ...userResponse, status: Status.INACTIVE });
+      jest
+        .spyOn(prismaService.users, 'update')
+        .mockResolvedValueOnce(updatedUserResponse);
+      jest.spyOn(service, 'generateTokens').mockResolvedValueOnce({
+        accessToken: 'accessToken',
+        refreshToken: 'refreshToken',
+      });
+
+      const result = await service.confirmEmail(dto);
+
+      expect(result).toEqual({
+        accessToken: 'accessToken',
+        refreshToken: 'refreshToken',
+        user: updatedUserResponse,
+      });
+    });
+
+    it('should throw an error if user is already active', async () => {
+      const dto: TokenDto = { token: 'confirmToken' };
+      const decodedToken = { id: '1' };
+
+      jest.spyOn(service, 'verifyToken').mockResolvedValueOnce(decodedToken);
+      jest
+        .spyOn(prismaService.users, 'findUnique')
+        .mockResolvedValueOnce(userResponse);
+
+      await expect(service.confirmEmail(dto)).rejects.toThrow(
+        new HttpException(
+          AuthError.USER_ALREADY_ACTIVATED,
+          HttpStatus.BAD_REQUEST,
+        ),
+      );
+    });
+
+    it('should throw an error if user is blocked', async () => {
+      const dto: TokenDto = { token: 'confirmToken' };
+      const decodedToken = { id: '1' };
+
+      jest.spyOn(service, 'verifyToken').mockResolvedValueOnce(decodedToken);
+      jest
+        .spyOn(prismaService.users, 'findUnique')
+        .mockResolvedValueOnce({ ...userResponse, status: Status.BLOCKED });
+
+      await expect(service.confirmEmail(dto)).rejects.toThrowError(
+        new HttpException(AuthError.USER_BLOCKED, HttpStatus.BAD_REQUEST),
+      );
+    });
+
+    it('should throw an error if confirm token is invalid', async () => {
+      const dto: TokenDto = { token: 'invalidToken' };
+      const decodedToken = { id: '1' };
+
+      jest.spyOn(service, 'verifyToken').mockResolvedValueOnce(decodedToken);
+      jest
+        .spyOn(prismaService.users, 'findUnique')
+        .mockResolvedValueOnce({ ...userResponse, status: Status.INACTIVE });
+
+      await expect(service.confirmEmail(dto)).rejects.toThrow(
+        new HttpException(JwtError.INVALID_TOKEN, HttpStatus.BAD_REQUEST),
+      );
     });
   });
 });
