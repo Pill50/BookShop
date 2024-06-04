@@ -195,7 +195,6 @@ Enum Gender {
 
 Enum PromotionType {
   SALE
-  POPULAR
 }
 
 Enum PaymentType {

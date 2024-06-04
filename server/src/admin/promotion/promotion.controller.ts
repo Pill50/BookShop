@@ -30,26 +30,36 @@ export class PromotionController {
     const pageIndex: number | 1 = filter.page
       ? parseInt(filter.page as string, 10)
       : 1;
-    const type: PromotionType | undefined = filter.type
+    const type = filter.type
       ? filter.type
       : undefined;
+    
+    const tab = type ? type : 'SALE';
 
-    const promotionList = await this.promotionService.getAllPromotions(
-      pageIndex,
-      type,
-    );
+    if(tab === 'SALE') {
+      const onSaleList = await this.promotionService.getAllOnSaleItems(
+        pageIndex,
+        type,
+      );
 
-    const pagination = {
-      currentPage: pageIndex,
-      nextPage: pageIndex === promotionList.totalPage ? 1 : pageIndex + 1,
-      previousPage: pageIndex === 1 ? promotionList.totalPage : pageIndex - 1,
-    };
+      const pagination = {
+        totalPage: onSaleList.totalPage,
+        currentPage: pageIndex,
+        nextPage: pageIndex === onSaleList.totalPage ? 1 : pageIndex + 1,
+        previousPage: pageIndex === 1 ? onSaleList.totalPage : pageIndex - 1,
+      };
 
-    const statistic = await this.promotionService.getStatisticPromotion();
-
-    const tab = type ? type : 'ALL';
-
-    return { promotionList, pagination, tab, statistic };
+      const statistic = await this.promotionService.getStatisticPromotion();
+  
+      return { onSaleList, pagination, tab, statistic };
+    }
+    else if(tab === "POPULAR") {
+      const popularList = await this.promotionService.getPopularList()
+      return {popularList, tab}
+    } else if(tab === "RECOMMEND") {
+      const recommendList = await this.promotionService.getRecommendList()
+      return {recommendList, tab}
+    }
   }
 
   @Get('/create')
@@ -68,12 +78,10 @@ export class PromotionController {
       endDate: new Date(body.endDate).toISOString(),
       discountFlashSale: Number(body?.discountFlashSale) || null,
     };
-
     const promotion = await this.promotionService.createNewPromotion(
       bookId,
       data,
     );
-
     if (promotion) {
       res.redirect(`/admin/book/${bookId}`);
     }

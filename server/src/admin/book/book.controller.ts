@@ -8,7 +8,6 @@ import {
   Render,
   Req,
   Res,
-  UploadedFile,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -28,7 +27,7 @@ import { PublisherService } from '../publisher/publisher.service';
 
 @Controller('admin/book')
 @Roles(Role.ADMIN)
-// @UseGuards(SessionGuard)
+@UseGuards(SessionGuard)
 export class BookController {
   constructor(
     private bookService: BookService,
