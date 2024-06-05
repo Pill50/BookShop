@@ -45,6 +45,7 @@ export type UserOrder = {
   receiverPhone: string
   address: string
   orderDate: string
+  payments?: any
   orderDetail: OrderInCart[]
 }
 

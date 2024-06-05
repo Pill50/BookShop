@@ -154,6 +154,11 @@ export class UserService {
                   companyName: true,
                 },
               },
+              payments: {
+                select: {
+                  method: true,
+                },
+              },
             },
           },
         },

@@ -25,7 +25,7 @@ export class PromotionService {
     };
   }
 
-  async filterPromotions(pageIndex: number = 1, type?: PromotionType) {
+  async getAllOnSaleItems(pageIndex: number = 1, type?: PromotionType) {
     try {
       const take = 10;
       const skip = (pageIndex - 1) * take;
@@ -71,6 +71,61 @@ export class PromotionService {
         totalPage,
         totalRecord,
       };
+    } catch (error) {
+      throw exceptionHandler(error);
+    }
+  }
+
+  async getPopularList() {
+    try {
+      const popularList = await this.prismaService.books.findMany({
+        where: {
+          isDeleted: false,
+        },
+        take: 10,
+        orderBy: {
+          soldNumber: 'desc',
+        },
+        select: {
+          id: true,
+          title: true,
+          thumbnail: true,
+          author: true,
+          publisher: true,
+          description: true,
+          soldNumber: true,
+        },
+      });
+
+      return popularList;
+    } catch (error) {
+      throw exceptionHandler(error);
+    }
+  }
+
+  async getRecommendList() {
+    try {
+      const recommendList = await this.prismaService.books.findMany({
+        take: 10,
+        where: {
+          isDeleted: false,
+        },
+        orderBy: {
+          rating: 'desc',
+        },
+        select: {
+          id: true,
+          title: true,
+          thumbnail: true,
+          author: true,
+          publisher: true,
+          rating: true,
+          description: true,
+          soldNumber: true,
+        },
+      });
+
+      return recommendList;
     } catch (error) {
       throw exceptionHandler(error);
     }

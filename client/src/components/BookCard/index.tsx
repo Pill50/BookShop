@@ -19,6 +19,7 @@ interface IBookCart {
   amount: number
   discount: number
   rating?: number
+  tag?: string
   promotions?: Promotion
   soldNumber: number
   categories: Category[]
@@ -70,6 +71,11 @@ const BookCard: React.FC<IBookCart> = (props: IBookCart) => {
           <div className='absolute bg-red-200 px-2 rounded-lg left-[-10px] top-[-5px]'>
             <p className='font-bold text-red-700'>{props.promotions.type}</p>
             <p className='text-sm font-semibold'>End at: {props.promotions.endDate.slice(0, 10)}</p>
+          </div>
+        )}
+        {props.tag && (
+          <div className='absolute bg-red-200 px-2 rounded-lg left-[-10px] top-[-5px]'>
+            <p className='font-bold text-red-700'>{props.tag}</p>
           </div>
         )}
         <figure className='px-2 pt-2 md:px-4 md:pt-4'>

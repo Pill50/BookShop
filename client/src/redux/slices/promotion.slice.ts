@@ -52,7 +52,13 @@ export const filterPromotions = createAsyncThunk<
     const response = await PromotionApis.filterPromotions(body)
     if (response) {
       if (response.status >= 200 && response.status <= 299) {
-        dispatch(setPromotionList(response.data.data.promotions))
+        if (body.type === 'SALE') {
+          dispatch(setPromotionList(response.data.data.onSaleList.promotions))
+        } else if (body.type === 'RECOMMEND') {
+          dispatch(setPromotionList(response.data.data.recommendList))
+        } else if (body.type === 'POPULAR') {
+          dispatch(setPromotionList(response.data.data.popularList))
+        }
       }
     }
     return response.data as Response<FilterPromotionResponse>

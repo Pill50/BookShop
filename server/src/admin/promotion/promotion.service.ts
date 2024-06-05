@@ -59,15 +59,6 @@ export class PromotionService {
         orderBy: {
           soldNumber: 'desc',
         },
-        select: {
-          id: true,
-          title: true,
-          thumbnail: true,
-          author: true,
-          publisher: true,
-          description: true,
-          soldNumber: true,
-        },
       });
 
       return popularList;
@@ -85,16 +76,6 @@ export class PromotionService {
         },
         orderBy: {
           rating: 'desc',
-        },
-        select: {
-          id: true,
-          title: true,
-          thumbnail: true,
-          author: true,
-          publisher: true,
-          rating: true,
-          description: true,
-          soldNumber: true,
         },
       });
 
