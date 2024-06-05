@@ -4,14 +4,28 @@
     <h1 class="font-bold text-2xl text-blue-500 text-center mb-2">MANAGE PROMOTION PAGE</h1>
     {{!-- STATISTIC --}}
     <div class="flex justify-center gap-3 my-3">
-      {{!-- <div class="shadow-md p-6 bg-red-50 text-center w-[250px]">
-        <h2 class="font-bold text-xl uppercase text-red-600">Total Promotion</h2>
-        <p class="font-semibold text-4xl">{{statistic.totalPromotions}}</p>
-      </div> --}}
+      <div class="shadow-md p-6 bg-red-50 text-center w-[250px]">
+        <h2 class="font-bold text-xl uppercase text-red-600">Most Popular</h2>
+        <div class="flex flex-col justify-center items-center">
+            <img src="{{statistic.mostPopularItem.thumbnail}}" alt="{{statistic.mostPopularItem.title}}" class="w-10 h-10 rounded-md object-cover">
+            <p class="font-semibold text-lg">{{statistic.mostPopularItem.title}}</p>
+            <p class="italic">{{statistic.mostPopularItem.author.name}}</p>
+            <p class="text-lg font-semibold">Sold: <span class="text-xl text-red-600">{{statistic.mostPopularItem.soldNumber}}</span></p>
+        </div>
+      </div>
       <div class="shadow-md p-6 bg-green-50 text-center w-[250px]">
         <h2 class="font-bold text-xl uppercase text-green-600">On Sale</h2>
         <p class="font-semibold text-4xl">{{statistic.onSale}}</p>
         <p>Expired: <span>{{statistic.onSaleExpired}}</span></p>
+      </div>
+      <div class="shadow-md p-6 bg-yellow-50 text-center w-[250px]">
+        <h2 class="font-bold text-xl uppercase text-yellow-600">Most Recommend</h2>
+        <div class="flex flex-col justify-center items-center">
+            <img src="{{statistic.mostRecommendItem.thumbnail}}" alt="{{statistic.mostRecommendItem.title}}" class="w-10 h-10 rounded-md object-cover">
+            <p class="font-semibold text-lg">{{statistic.mostRecommendItem.title}}</p>
+            <p class="italic">{{statistic.mostRecommendItem.author.name}}</p>
+            <p class="text-lg font-semibold">Rating: <span class="text-xl text-yellow-600">{{statistic.mostRecommendItem.rating}}</span>/5</p>
+        </div>
       </div>
     </div>
     {{!-- ACTION --}}

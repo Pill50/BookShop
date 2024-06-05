@@ -32,7 +32,9 @@ export class PromotionController {
       const formattedStartDate = promotion.startDate.toISOString().slice(0, 10);
       const formattedEndDate = promotion.endDate.toISOString().slice(0, 10);
 
-      return { promotion: { ...promotion, formattedStartDate, formattedEndDate } };
+      return {
+        promotion: { ...promotion, formattedStartDate, formattedEndDate },
+      };
     } catch (err) {
       req.session.error_msg = err.message;
     }
@@ -44,13 +46,13 @@ export class PromotionController {
     const pageIndex: number | 1 = filter.page
       ? parseInt(filter.page as string, 10)
       : 1;
-    const type = filter.type
-      ? filter.type
-      : undefined;
-    
-    const tab = type ? type : 'SALE';
+    const type = filter.type ? filter.type : undefined;
 
-    if(tab === 'SALE') {
+    const tab = type ? type : 'SALE';
+    const statistic = await this.promotionService.getStatisticPromotion();
+    console.log(statistic);
+
+    if (tab === 'SALE') {
       const onSaleList = await this.promotionService.getAllOnSaleItems(
         pageIndex,
         type,
@@ -63,16 +65,13 @@ export class PromotionController {
         previousPage: pageIndex === 1 ? onSaleList.totalPage : pageIndex - 1,
       };
 
-      const statistic = await this.promotionService.getStatisticPromotion();
-  
       return { onSaleList, pagination, tab, statistic };
-    }
-    else if(tab === "POPULAR") {
-      const popularList = await this.promotionService.getPopularList()
-      return {popularList, tab}
-    } else if(tab === "RECOMMEND") {
-      const recommendList = await this.promotionService.getRecommendList()
-      return {recommendList, tab}
+    } else if (tab === 'POPULAR') {
+      const popularList = await this.promotionService.getPopularList();
+      return { popularList, tab, statistic };
+    } else if (tab === 'RECOMMEND') {
+      const recommendList = await this.promotionService.getRecommendList();
+      return { recommendList, tab, statistic };
     }
   }
 
@@ -107,7 +106,7 @@ export class PromotionController {
     @Param('id') id: string,
     @Res() res: Response,
     @Body() body: any,
-    @Req() req: any
+    @Req() req: any,
   ) {
     try {
       const updatedPromotion = await this.promotionService.updatePromotion(
@@ -117,28 +116,31 @@ export class PromotionController {
         new Date(body.endDate).toISOString(),
       );
 
-      if(updatedPromotion) {
+      if (updatedPromotion) {
         req.session.success_msg = 'Update promotion successfully';
       } else {
         req.session.error_msg = 'You can not update promotion!';
       }
-      res.redirect('/admin/promotion')
-    
-    } catch(err) {
+      res.redirect('/admin/promotion');
+    } catch (err) {
       req.session.error_msg = err.message;
     }
   }
 
   @Get('/delete/:id')
-  async deletePromotion(@Param('id') id: string, @Req() req: any, @Res() res: Response) {
+  async deletePromotion(
+    @Param('id') id: string,
+    @Req() req: any,
+    @Res() res: Response,
+  ) {
     try {
       const deletedPromotion = await this.promotionService.deletePromotion(id);
-      if(deletedPromotion) {
+      if (deletedPromotion) {
         req.session.success_msg = 'Delete promotion successfully';
-        res.redirect('/admin/promotion')
+        res.redirect('/admin/promotion');
       }
-    } catch(err) {
-        req.session.error_msg = err.message;
+    } catch (err) {
+      req.session.error_msg = err.message;
     }
   }
 }

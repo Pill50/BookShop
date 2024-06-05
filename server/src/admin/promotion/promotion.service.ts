@@ -27,7 +27,7 @@ export class PromotionService {
                 thumbnail: true,
                 description: true,
                 author: true,
-                publisher: true
+                publisher: true,
               },
             },
           },
@@ -52,6 +52,9 @@ export class PromotionService {
   async getPopularList() {
     try {
       const popularList = await this.prismaService.books.findMany({
+        where: {
+          isDeleted: false,
+        },
         take: 10,
         orderBy: {
           soldNumber: 'desc',
@@ -78,7 +81,7 @@ export class PromotionService {
       const recommendList = await this.prismaService.books.findMany({
         take: 10,
         where: {
-          isDeleted: false
+          isDeleted: false,
         },
         orderBy: {
           rating: 'desc',
@@ -117,8 +120,47 @@ export class PromotionService {
         },
       });
 
+      const mostRecommendItem = await this.prismaService.books.findFirst({
+        where: {
+          isDeleted: false,
+        },
+        orderBy: {
+          rating: 'desc',
+        },
+        select: {
+          id: true,
+          title: true,
+          thumbnail: true,
+          author: true,
+          publisher: true,
+          rating: true,
+          description: true,
+          soldNumber: true,
+        },
+      });
+
+      const mostPopularItem = await this.prismaService.books.findFirst({
+        where: {
+          isDeleted: false,
+        },
+        orderBy: {
+          soldNumber: 'desc',
+        },
+        select: {
+          id: true,
+          title: true,
+          thumbnail: true,
+          author: true,
+          publisher: true,
+          description: true,
+          soldNumber: true,
+        },
+      });
+
       const statisticPromotion = {
         totalPromotions: onSale,
+        mostRecommendItem,
+        mostPopularItem,
         onSale,
         onSaleExpired,
       };
@@ -164,12 +206,15 @@ export class PromotionService {
     try {
       const promotion = await this.prismaService.promotions.findUnique({
         where: {
-          id
-        }
-      })
+          id,
+        },
+      });
 
-      if(promotion.startDate.getTime() <= Date.now()) {
-        throw new HttpException("You can not delete promotion when it has already started", HttpStatus.BAD_REQUEST)
+      if (promotion.startDate.getTime() <= Date.now()) {
+        throw new HttpException(
+          'You can not delete promotion when it has already started',
+          HttpStatus.BAD_REQUEST,
+        );
       }
 
       await this.prismaService.promotions.delete({
@@ -194,13 +239,13 @@ export class PromotionService {
         where: {
           id,
           startDate: {
-            gt: new Date()
-          }
-        }
-      })
-      
-      if(!promotion) {
-        return null
+            gt: new Date(),
+          },
+        },
+      });
+
+      if (!promotion) {
+        return null;
       }
 
       const updatedPromotion = await this.prismaService.promotions.update({
@@ -213,7 +258,7 @@ export class PromotionService {
           endDate,
         },
       });
-      
+
       return updatedPromotion;
     } catch (error) {
       throw exceptionHandler(error);
