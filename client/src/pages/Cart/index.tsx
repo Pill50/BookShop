@@ -76,11 +76,10 @@ const CartPage: React.FC = () => {
       const stockAmount = res.payload?.data?.amount as number
 
       if (amount < 1) {
+        toast.error(`Order's amount must be greater and equal than 1`)
         return
-      }
-
-      if (amount > stockAmount) {
-        toast.error(`You can buy maximum ${stockAmount} books`)
+      } else if (amount > stockAmount) {
+        toast.error(`You can buy maximum ${stockAmount} books! Please try again!`)
         return
       } else {
         dispatch(CartActions.updateBookInCart(data)).then(() => {

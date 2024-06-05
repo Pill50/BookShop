@@ -51,6 +51,13 @@ export class UserService {
     body: EditProfile,
   ) {
     try {
+      if (!body.displayName) {
+        throw new HttpException(
+          UserError.DISPLAY_NAME_CANNOT_BE_EMPTY,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       let url;
       const user = await this.prismaService.users.findUnique({
         where: {
@@ -73,13 +80,6 @@ export class UserService {
           url = image.secure_url;
         }
       } else url = user.avatar;
-
-      if (!body.displayName) {
-        throw new HttpException(
-          UserError.DISPLAY_NAME_CANNOT_BE_EMPTY,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
 
       const updatedUser = await this.prismaService.users.update({
         where: {
