@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PromotionType } from '@prisma/client';
 import { exceptionHandler } from 'src/common/errors';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -126,6 +126,44 @@ export class PromotionService {
       });
 
       return recommendList;
+    } catch (error) {
+      throw exceptionHandler(error);
+    }
+  }
+
+  async findExpiredPromotions() {
+    try {
+      const expiredPromotions = await this.prismaService.promotions.findMany({
+        where: {
+          endDate: {
+            lt: new Date(),
+          },
+        },
+      });
+      return expiredPromotions;
+    } catch (error) {
+      throw exceptionHandler(error);
+    }
+  }
+
+  async deletePromotions(id: string) {
+    try {
+      const promotion = await this.prismaService.promotions.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!promotion)
+        throw new HttpException('Promotion not found', HttpStatus.BAD_REQUEST);
+
+      await this.prismaService.promotions.delete({
+        where: {
+          id,
+        },
+      });
+
+      return null;
     } catch (error) {
       throw exceptionHandler(error);
     }

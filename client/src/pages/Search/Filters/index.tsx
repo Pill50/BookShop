@@ -73,6 +73,7 @@ const FilterProducts: React.FC<IFilterBook> = ({ onFilterChange, initCategory, i
   const handleClearFilter = () => {
     setCategoryFilter([])
     setPublisherFilter([])
+    setRating(0)
   }
 
   return (
@@ -140,6 +141,7 @@ const FilterProducts: React.FC<IFilterBook> = ({ onFilterChange, initCategory, i
               <input
                 type='radio'
                 name='rating'
+                checked={rating === 5}
                 onChange={() => setRating(5)}
                 className='mr-2 w-4 h-4 text-blue-600 bg-gray-100 border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
               />
@@ -153,6 +155,7 @@ const FilterProducts: React.FC<IFilterBook> = ({ onFilterChange, initCategory, i
               <input
                 type='radio'
                 name='rating'
+                checked={rating === 4}
                 onChange={() => setRating(4)}
                 className='mr-2 w-4 h-4 text-blue-600 bg-gray-100 border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
               />
@@ -166,6 +169,7 @@ const FilterProducts: React.FC<IFilterBook> = ({ onFilterChange, initCategory, i
               <input
                 type='radio'
                 name='rating'
+                checked={rating === 3}
                 onChange={() => setRating(3)}
                 className='mr-2 w-4 h-4 text-blue-600 bg-gray-100 border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
               />
@@ -179,6 +183,7 @@ const FilterProducts: React.FC<IFilterBook> = ({ onFilterChange, initCategory, i
               <input
                 type='radio'
                 name='rating'
+                checked={rating === 2}
                 onChange={() => setRating(2)}
                 className='mr-2 w-4 h-4 text-blue-600 bg-gray-100 border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
               />
@@ -192,6 +197,7 @@ const FilterProducts: React.FC<IFilterBook> = ({ onFilterChange, initCategory, i
               <input
                 type='radio'
                 name='rating'
+                checked={rating === 1}
                 onChange={() => setRating(1)}
                 className='mr-2 w-4 h-4 text-blue-600 bg-gray-100 border-blue-500 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
               />

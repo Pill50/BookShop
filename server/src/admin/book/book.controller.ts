@@ -15,9 +15,7 @@ import {
 import { BookService } from './book.service';
 import { Response } from 'express';
 import { CategoryService } from '../category/category.service';
-import {
-  FileFieldsInterceptor,
-} from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { BookDto } from './dto/book.dto';
 import { SessionGuard } from 'src/common/guard/session.guard';
 import { Roles } from 'src/common/decorators';
@@ -35,18 +33,6 @@ export class BookController {
     private authorService: AuthorService,
     private publisherService: PublisherService,
   ) {}
-
-  @Get('/:id')
-  @Render('book/book-detail')
-  async renderBookDetail(@Req() req: any, @Param('id') id: string) {
-    try {
-      const book = await this.bookService.getBookById(id);
-      const subImgList = await this.bookService.getBookSubImgs(id);
-      return { book, subImgList };
-    } catch (err) {
-      req.session.error_msg = err.message;
-    }
-  }
 
   @Get('/create')
   @Render('book/create')
@@ -72,6 +58,33 @@ export class BookController {
       const publisherList = await this.publisherService.getAllPublishers();
 
       return { book, categoryList, authorList, publisherList, subImgList };
+    } catch (err) {
+      req.session.error_msg = err.message;
+    }
+  }
+
+  @Get('/delete/:id')
+  async deleteBook(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Res() res: Response,
+  ) {
+    try {
+      await this.bookService.deleteBook(id);
+      req.session.success_msg = 'Delete Book successfully';
+      res.redirect('/admin/book');
+    } catch (err) {
+      req.session.error_msg = err.message;
+    }
+  }
+
+  @Get('/:id')
+  @Render('book/book-detail')
+  async renderBookDetail(@Req() req: any, @Param('id') id: string) {
+    try {
+      const book = await this.bookService.getBookById(id);
+      const subImgList = await this.bookService.getBookSubImgs(id);
+      return { book, subImgList };
     } catch (err) {
       req.session.error_msg = err.message;
     }
@@ -216,21 +229,6 @@ export class BookController {
       }
 
       req.session.success_msg = 'Update book successfully';
-      res.redirect('/admin/book');
-    } catch (err) {
-      req.session.error_msg = err.message;
-    }
-  }
-
-  @Get('/delete/:id')
-  async deleteBook(
-    @Req() req: any,
-    @Param('id') id: string,
-    @Res() res: Response,
-  ) {
-    try {
-      await this.bookService.deleteBook(id);
-      req.session.success_msg = 'Delete Book successfully';
       res.redirect('/admin/book');
     } catch (err) {
       req.session.error_msg = err.message;

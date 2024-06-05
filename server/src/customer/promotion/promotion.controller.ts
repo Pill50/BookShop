@@ -10,11 +10,29 @@ import { PromotionService } from './promotion.service';
 import { FilterPromotionDto } from './dto/filterPromotion.dto';
 import { ResTransformInterceptor } from 'src/common/interceptors/response.interceptor';
 import { ResponseMessage } from 'src/common/decorators';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Controller('promotion')
 @UseInterceptors(ResTransformInterceptor)
 export class PromotionController {
   constructor(private readonly promotionService: PromotionService) {}
+
+  @Cron(CronExpression.EVERY_30_SECONDS)
+  async deleteExpiredPromotions() {
+    console.log('Checking for expired promotions...');
+
+    const expiredPromotions =
+      await this.promotionService.findExpiredPromotions();
+
+    if (expiredPromotions.length > 0) {
+      console.log('Deleting expired promotions:', expiredPromotions);
+      expiredPromotions.forEach(async (promotion) => {
+        await this.promotionService.deletePromotions(promotion.id);
+      });
+    } else {
+      console.log('No expired promotions found.');
+    }
+  }
 
   @Get('')
   @HttpCode(HttpStatus.OK)

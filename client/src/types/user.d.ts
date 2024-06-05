@@ -4,9 +4,15 @@ export type User = {
   displayName: string
   email: string
   phone?: string
-  gender?: string
+  gender?: Gender
   address?: string
   role: string
+}
+
+enum Gender {
+  MALE,
+  FEMALE,
+  ANOTHER
 }
 
 export type UpdateInformation = {

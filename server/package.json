@@ -30,6 +30,7 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.3.8",
+    "@nestjs/schedule": "^4.0.2",
     "@prisma/client": "^5.13.0",
     "argon2": "^0.40.1",
     "class-transformer": "^0.5.1",

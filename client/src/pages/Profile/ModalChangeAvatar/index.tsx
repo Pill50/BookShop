@@ -2,6 +2,8 @@ import React, { useRef, useState } from 'react'
 import { useAppDispatch } from '~/hooks/redux'
 import { User } from '~/types/user'
 import DefaultAvatar from '~/assets/images/defaultAvatar.png'
+import { UserActions } from '~/redux/slices'
+import toast, { Toaster } from 'react-hot-toast'
 
 type props = {
   urlAvatar: string
@@ -64,15 +66,23 @@ const ModalChangeAvatar: React.FC<props> = (props) => {
       formData.set('displayName', (props.user.displayName as string) || '')
       formData.set('phone', props.user.phone as string)
       formData.set('address', props.user.address as string)
-      formData.set('gender', props.user.gender as string)
-      // @ts-ignore
-      //   const result = await dispatch(updateInformation(formData))
+      try {
+        // @ts-ignore
+        const result = await dispatch(UserActions.updateInformation(formData))
+        if (result.payload?.statusCode && result.payload?.statusCode >= 200 && result.payload?.statusCode < 300) {
+          toast.success(result.payload.message)
+        }
+      } catch (err: any) {
+        toast.error(err.message)
+      }
+      closeModal()
     } else {
       setErrorImage(FILE_IS_EMPTY)
     }
   }
   return (
     <>
+      <Toaster />
       <div className=''>
         <img
           ref={avatarRef}
@@ -111,11 +121,15 @@ const ModalChangeAvatar: React.FC<props> = (props) => {
             <></>
           )}
           {errorImage === FILE_IS_EMPTY ? <p className={`text-error italic font-medium mt-1`}>File is Empty</p> : <></>}
-          <div className='modal-action flex justify-center'>
-            <button className={`btn text-lg`} type='button' onClick={closeModal}>
+          <div className='modal-action flex justify-center gap-2 mt-2'>
+            <button
+              className='bg-gray-500 py-2 px-3 rounded-md font-bold hover:bg-gray-300'
+              type='button'
+              onClick={closeModal}
+            >
               Close
             </button>
-            <button className={`btn btn-success text-lg`} type='submit'>
+            <button className='bg-blue-500 py-2 px-3 rounded-md font-bold hover:bg-blue-300' type='submit'>
               Save
             </button>
           </div>
