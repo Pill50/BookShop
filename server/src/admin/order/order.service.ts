@@ -56,6 +56,11 @@ export class OrderService {
               },
             },
           },
+          payments: {
+            select: {
+              method: true,
+            },
+          },
         },
       });
       return order;

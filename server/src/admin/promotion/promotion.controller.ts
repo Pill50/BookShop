@@ -50,7 +50,6 @@ export class PromotionController {
 
     const tab = type ? type : 'SALE';
     const statistic = await this.promotionService.getStatisticPromotion();
-    console.log(statistic);
 
     if (tab === 'SALE') {
       const onSaleList = await this.promotionService.getAllOnSaleItems(

@@ -39,6 +39,7 @@ export class OrderController {
   @Render('order/order_detail')
   async renderOrderById(@Param('id') id: string, @Res() res: Response) {
     const order = await this.orderService.getOrderById(id);
+    console.log(order);
     const totalBook = order.orderDetail.reduce(
       (acc, orderItem) => acc + orderItem.amount,
       0,
