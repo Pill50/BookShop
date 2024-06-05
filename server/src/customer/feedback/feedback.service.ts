@@ -7,7 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class FeedbackService {
   constructor(private prismaService: PrismaService) {}
 
-  async getBookFbacks(bookId: string) {
+  async getBookFeedbacks(bookId: string) {
     try {
       const book = await this.prismaService.books.findUnique({
         where: {
@@ -16,7 +16,7 @@ export class FeedbackService {
       });
 
       if (!book)
-        return new HttpException(
+        throw new HttpException(
           BookError.BOOK_NOT_FOUND,
           HttpStatus.BAD_REQUEST,
         );

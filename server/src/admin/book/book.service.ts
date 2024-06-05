@@ -424,11 +424,7 @@ export class BookService {
         },
       });
 
-      const now = new Date();
-
-      const formattedBook = this.formatBookWithPromotion(newBook, now);
-
-      return { book: formattedBook };
+      return { book: newBook };
     } catch (err) {
       return exceptionHandler(err);
     }
@@ -453,24 +449,21 @@ export class BookService {
         );
       }
 
-      let url;
+      let url = process.env.DEFAULT_CATEGORY_IMAGE;
+
       if (thumbnail) {
         if (thumbnail.size > parseInt(process.env.MAX_FILE_SIZE)) {
           throw new HttpException(
             BookError.FILE_TOO_LARGE,
             HttpStatus.BAD_REQUEST,
           );
-        } else if (thumbnail.size > 0) {
-          const thumbnail_upload =
-            await this.cloudinaryService.uploadFile(thumbnail);
-          url = thumbnail_upload.secure_url;
-        } else {
-          url = process.env.DEFAULT_CATEGORY_IMAGE;
         }
+
+        const thumbnail_upload =
+          await this.cloudinaryService.uploadFile(thumbnail);
+        url = thumbnail_upload.secure_url;
       } else if (isExistedBook && isExistedBook.thumbnail) {
         url = isExistedBook.thumbnail;
-      } else {
-        url = process.env.DEFAULT_CATEGORY_IMAGE;
       }
 
       const updatedBook = await this.prismaService.books.update({
@@ -508,22 +501,10 @@ export class BookService {
               },
             },
           },
-          promotions: {
-            select: {
-              type: true,
-              discountFlashSale: true,
-              startDate: true,
-              endDate: true,
-            },
-          },
         },
       });
 
-      const now = new Date();
-
-      const formattedBook = this.formatBookWithPromotion(updatedBook, now);
-
-      return { book: formattedBook };
+      return { book: updatedBook };
     } catch (err) {
       return exceptionHandler(err);
     }
@@ -624,6 +605,55 @@ export class BookService {
       });
     } catch (error) {
       return exceptionHandler(error);
+    }
+  }
+
+  async uploadSubImage(subimg: Express.Multer.File, id: string) {
+    try {
+      const book = await this.prismaService.books.findUnique({
+        where: { id },
+      });
+
+      if (!book) {
+        throw new HttpException(BookError.BOOK_NOT_FOUND, HttpStatus.NOT_FOUND);
+      }
+
+      if (subimg.size > parseInt(process.env.MAX_FILE_SIZE)) {
+        throw new HttpException(
+          BookError.FILE_TOO_LARGE,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const { secure_url } = await this.cloudinaryService.uploadFile(subimg);
+
+      const newSubimg = await this.prismaService.bookImages.create({
+        data: {
+          url: secure_url,
+          bookId: id,
+        },
+      });
+
+      return {
+        id: newSubimg.id,
+        url: newSubimg.url,
+      };
+    } catch (error) {
+      return exceptionHandler(error);
+    }
+  }
+
+  async getBookSubImgs(bookId: string) {
+    try {
+      const subImgList = await this.prismaService.bookImages.findMany({
+        where: {
+          bookId,
+        },
+      });
+
+      return subImgList;
+    } catch (error) {
+      throw exceptionHandler(error);
     }
   }
 

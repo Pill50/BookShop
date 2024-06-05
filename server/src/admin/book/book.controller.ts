@@ -8,14 +8,16 @@ import {
   Render,
   Req,
   Res,
-  UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { BookService } from './book.service';
 import { Response } from 'express';
 import { CategoryService } from '../category/category.service';
-import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+} from '@nestjs/platform-express';
 import { BookDto } from './dto/book.dto';
 import { SessionGuard } from 'src/common/guard/session.guard';
 import { Roles } from 'src/common/decorators';
@@ -33,6 +35,100 @@ export class BookController {
     private authorService: AuthorService,
     private publisherService: PublisherService,
   ) {}
+
+  @Get('/:id')
+  @Render('book/book-detail')
+  async renderBookDetail(@Req() req: any, @Param('id') id: string) {
+    try {
+      const book = await this.bookService.getBookById(id);
+      const subImgList = await this.bookService.getBookSubImgs(id);
+      return { book, subImgList };
+    } catch (err) {
+      req.session.error_msg = err.message;
+    }
+  }
+
+  @Get('/create')
+  @Render('book/create')
+  async renderCreateBook(@Req() req: any) {
+    try {
+      const categoryList = await this.categorySerive.getAllCategories();
+      const authorList = await this.authorService.getAllAuthors();
+      const publisherList = await this.publisherService.getAllPublishers();
+      return { categoryList, authorList, publisherList };
+    } catch (err) {
+      req.session.error_msg = err.message;
+    }
+  }
+
+  @Get('/update/:id')
+  @Render('book/update')
+  async renderUpdateBook(@Req() req: any, @Param('id') id: string) {
+    try {
+      const book = await this.bookService.getBookById(id);
+      const subImgList = await this.bookService.getBookSubImgs(id);
+      const categoryList = await this.categorySerive.getAllCategories();
+      const authorList = await this.authorService.getAllAuthors();
+      const publisherList = await this.publisherService.getAllPublishers();
+
+      return { book, categoryList, authorList, publisherList, subImgList };
+    } catch (err) {
+      req.session.error_msg = err.message;
+    }
+  }
+
+  @Post('/create')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'thumbnail', maxCount: 1 },
+      { name: 'subImgs', maxCount: 3 },
+    ]),
+  )
+  async createBook(
+    @Req() req: any,
+    @Res() res: Response,
+    @UploadedFiles()
+    files: {
+      thumbnail?: Express.Multer.File[];
+      subImgs?: Express.Multer.File[];
+    },
+  ) {
+    try {
+      const data: BookDto = {
+        title: req.body.title,
+        slug: req.body.title,
+        amount: Number(req.body.amount),
+        authorId: req.body.authorId,
+        publisherId: req.body.publisherId,
+        description: req.body.description,
+        discount: Number(req.body.discount),
+        price: Number(req.body.price),
+        categories: JSON.parse(req.body.selectedCategories),
+      };
+
+      const response = await this.bookService.createBook(data);
+
+      if (response) {
+        if (files.thumbnail && files.thumbnail[0]) {
+          await this.bookService.uploadThumbnail(
+            files.thumbnail[0],
+            response.book.id,
+          );
+        }
+        if (files.subImgs) {
+          for (const file of files.subImgs) {
+            await this.bookService.uploadSubImage(file, response.book.id);
+          }
+        }
+      }
+
+      req.session.success_msg = 'Create book successfully';
+      res.redirect('/admin/book');
+    } catch (err) {
+      req.session.error_msg = err.message;
+      res.redirect('/admin/book/create');
+    }
+  }
 
   @Get('/')
   @Render('book/index')
@@ -77,50 +173,22 @@ export class BookController {
     return { bookList, pagination };
   }
 
-  @Get('/create')
-  @Render('book/create')
-  async renderCreateBook(@Req() req: any) {
-    try {
-      const categoryList = await this.categorySerive.getAllCategories();
-      const authorList = await this.authorService.getAllAuthors();
-      const publisherList = await this.publisherService.getAllPublishers();
-      return { categoryList, authorList, publisherList };
-    } catch (err) {
-      req.session.error_msg = err.message;
-    }
-  }
-
-  @Get('/:id')
-  @Render('book/book-detail')
-  async renderBookDetail(@Req() req: any, @Param('id') id: string) {
-    try {
-      const book = await this.bookService.getBookById(id);
-      return { book };
-    } catch (err) {
-      req.session.error_msg = err.message;
-    }
-  }
-
-  @Get('/update/:id')
-  @Render('book/update')
-  async renderUpdateBook(@Req() req: any, @Param('id') id: string) {
-    try {
-      const book = await this.bookService.getBookById(id);
-      const categoryList = await this.categorySerive.getAllCategories();
-      const authorList = await this.authorService.getAllAuthors();
-      const publisherList = await this.publisherService.getAllPublishers();
-      return { book, categoryList, authorList, publisherList };
-    } catch (err) {
-      req.session.error_msg = err.message;
-    }
-  }
-
-  @Post('/create')
-  @UseInterceptors(FileInterceptor('file'))
-  async createBook(
+  @Post('/update/:id')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'thumbnail', maxCount: 1 },
+      { name: 'subImgs', maxCount: 3 },
+    ]),
+  )
+  async updateBook(
     @Req() req: any,
     @Res() res: Response,
-    @UploadedFile() file: Express.Multer.File,
+    @Param('id') id: string,
+    @UploadedFiles()
+    files: {
+      thumbnail?: Express.Multer.File[];
+      subImgs?: Express.Multer.File[];
+    },
   ) {
     try {
       const data: BookDto = {
@@ -135,40 +203,17 @@ export class BookController {
         categories: req.body.categories,
       };
 
-      const response = await this.bookService.createBook(data);
-
-      if (response && file) {
-        await this.bookService.uploadThumbnail(file, response.book.id);
+      if (files.thumbnail && files.thumbnail[0]) {
+        await this.bookService.updateBook(id, files.thumbnail[0], data);
+      } else {
+        await this.bookService.updateBook(id, null, data);
       }
-      req.session.success_msg = 'Create book successfully';
-      res.redirect('/admin/book');
-    } catch (err) {
-      req.session.error_msg = err.message;
-    }
-  }
 
-  @Post('/update/:id')
-  @UseInterceptors(FileInterceptor('file'))
-  async updateBook(
-    @Req() req: any,
-    @Res() res: Response,
-    @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    try {
-      const data: BookDto = {
-        title: req.body.title,
-        slug: req.body.title,
-        amount: Number(req.body.amount),
-        authorId: req.body.author,
-        publisherId: req.body.publisher,
-        description: req.body.description,
-        discount: Number(req.body.discount),
-        price: Number(req.body.price),
-        categories: req.body.categories,
-      };
-
-      await this.bookService.updateBook(id, file, data);
+      if (files.subImgs) {
+        for (const file of files.subImgs) {
+          await this.bookService.uploadSubImage(file, id);
+        }
+      }
 
       req.session.success_msg = 'Update book successfully';
       res.redirect('/admin/book');

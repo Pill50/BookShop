@@ -5,8 +5,13 @@
     {{!-- STATISTIC --}}
     <div class="flex justify-center gap-3 my-3">
       <div class="shadow-md p-6 bg-red-50 text-center w-[250px]">
-        <h2 class="font-bold text-xl uppercase text-red-600">Total Promotion</h2>
-        <p class="font-semibold text-4xl">{{statistic.totalPromotions}}</p>
+        <h2 class="font-bold text-xl uppercase text-red-600">Most Popular</h2>
+        <div class="flex flex-col justify-center items-center">
+            <img src="{{statistic.mostPopularItem.thumbnail}}" alt="{{statistic.mostPopularItem.title}}" class="w-10 h-10 rounded-md object-cover">
+            <p class="font-semibold text-lg">{{statistic.mostPopularItem.title}}</p>
+            <p class="italic">{{statistic.mostPopularItem.author.name}}</p>
+            <p class="text-lg font-semibold">Sold: <span class="text-xl text-red-600">{{statistic.mostPopularItem.soldNumber}}</span></p>
+        </div>
       </div>
       <div class="shadow-md p-6 bg-green-50 text-center w-[250px]">
         <h2 class="font-bold text-xl uppercase text-green-600">On Sale</h2>
@@ -14,9 +19,13 @@
         <p>Expired: <span>{{statistic.onSaleExpired}}</span></p>
       </div>
       <div class="shadow-md p-6 bg-yellow-50 text-center w-[250px]">
-        <h2 class="font-bold text-xl uppercase text-yellow-600">Popular</h2>
-        <p class="font-semibold text-4xl">{{statistic.popular}}</p>
-        <p>Expired: <span>{{statistic.onPopularExpired}}</span></p>
+        <h2 class="font-bold text-xl uppercase text-yellow-600">Most Recommend</h2>
+        <div class="flex flex-col justify-center items-center">
+            <img src="{{statistic.mostRecommendItem.thumbnail}}" alt="{{statistic.mostRecommendItem.title}}" class="w-10 h-10 rounded-md object-cover">
+            <p class="font-semibold text-lg">{{statistic.mostRecommendItem.title}}</p>
+            <p class="italic">{{statistic.mostRecommendItem.author.name}}</p>
+            <p class="text-lg font-semibold">Rating: <span class="text-xl text-yellow-600">{{statistic.mostRecommendItem.rating}}</span>/5</p>
+        </div>
       </div>
     </div>
     {{!-- ACTION --}}
@@ -25,49 +34,44 @@
       <div class="ml-[50%] translate-x-[-50%] text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
           <ul class="flex flex-wrap -mb-px">
               <li class="me-2">
-                  <a href="/admin/promotion?page={{pagination.currentPage}}" class="{{getTypePromotion this.tab 'ALL'}}">All</a>
-              </li>
-              <li class="me-2">
                   <a href="/admin/promotion?page={{pagination.currentPage}}&type=SALE" class="{{getTypePromotion this.tab 'SALE'}}">On Sale</a>
               </li>
               <li class="me-2">
-                  <a href="/admin/promotion?page={{pagination.currentPage}}&type=POPULAR" class="{{getTypePromotion this.tab 'POPULAR'}}" data-tab="POPULAR">Popular</a>
+                  <a href="/admin/promotion?page={{pagination.currentPage}}&type=RECOMMEND" class="{{getTypePromotion this.tab 'RECOMMEND'}}">Recommend</a>
+              </li>
+              <li class="me-2">
+                  <a href="/admin/promotion?page={{pagination.currentPage}}&type=POPULAR" class="{{getTypePromotion this.tab 'POPULAR'}}">Popular</a>
               </li>
           </ul>
       </div>
       {{!-- PAGINATION --}}
-      <nav class="text-right">
-        <ul class="inline-flex -space-x-px text-sm">
-            <li>
-                <a href="/admin/promotion?page={{pagination.previousPage}}" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+        {{#if (gte pagination.totalPage 2)}}
+            <nav class="text-right">
+            <ul class="inline-flex -space-x-px text-sm">
+                <li>
+                    <a href="/admin/promotion?page={{pagination.previousPage}}" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+                    </li>
+                <li>
+                    <p class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-blue-100 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{{pagination.currentPage}}</p>
                 </li>
-            <li>
-                <p class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-blue-100 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{{pagination.currentPage}}</p>
-            </li>
-            <li>
-                <a href="/admin/promotion?page={{pagination.nextPage}}" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
-            </li>
-        </ul>
-        </nav>
+                <li>
+                    <a href="/admin/promotion?page={{pagination.nextPage}}" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
+                </li>
+            </ul>
+            </nav>
+        {{/if}}
     </div>
     {{!-- ITEMS --}}
-    <div class="grid grid-cols-3 md:grid-cols-4 gap-4">
-        {{#each promotionList.promotions}}
-            <div class="max-w-full bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col">
-                <img class="rounded-t-lg" src="{{book.thumbnail}}" alt="{{book.title}}" />
-                <div class="p-5 flex-grow">
-                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{book.title}}</h5>
-                    <p class="font-normal text-gray-700 dark:text-gray-400 truncate ...">{{book.description}}</p>
-                </div>
-                <div class="p-2 rounded-md bg-red-100 mt-auto mx-4 mb-4">
-                    <p class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        {{type}}
-                    </p>
-                    <p class="font-semibold">Start date: <span class="text-red-600">{{formatDate startDate}}</span></p>
-                    <p class="font-semibold">End date: <span class="text-red-600">{{formatDate endDate}}</span></p>
-                </div>
-            </div>
-        {{/each}}
+    <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {{#if (eq this.tab "SALE")}}
+            {{> _onSaleList}}
+        {{/if}}
+        {{#if (eq this.tab "POPULAR")}}
+            {{> _popularList}}
+        {{/if}}
+        {{#if (eq this.tab "RECOMMEND")}}
+            {{> _recommendList}}
+        {{/if}}
     </div>
   </div>
   {{/inline}}

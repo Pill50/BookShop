@@ -29,6 +29,12 @@ const OrdersDetail: React.FC<IOrderDetail> = ({ ordersInfo, handleUpdateStatusOr
             {orderStatus}
           </div>
         </div>
+        <p className='list-item ml-4'>
+          Payment method:{' '}
+          <span className='bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded'>
+            {ordersInfo.payments?.method}
+          </span>
+        </p>
       </div>
       <div className='my-2'>
         <div className='flex gap-1'>

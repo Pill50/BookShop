@@ -18,14 +18,13 @@ const HistoryOrdersPage: React.FC = () => {
   const userOrders = useAppSelector((state) => state.order.userOrders)
   const totalPage = useAppSelector((state) => state.order.totalPage)
   const totalRecord = useAppSelector((state) => state.order.totalRecord)
-  const [pageIndex, setPageIndex] = useState<number>(1)
+  const [status, setStatus] = useState<string>('')
 
   const fetchOrderData = () => {
     const data: GetUserOrder = {
       pageIndex: Number(pageParam) || 1,
       status: statusParam !== null ? statusParam : undefined
     }
-    setPageIndex(Number(pageParam) || 1)
     dispatch(OrderActions.getUserOrders(data))
   }
 
@@ -47,15 +46,20 @@ const HistoryOrdersPage: React.FC = () => {
     }
   }
 
-  const handlePageIndexChange = (page: number) => {
-    console.log(page)
+  const handlePageIndexChange = async (page: number) => {
+    const data: GetUserOrder = {
+      pageIndex: page,
+      status: status
+    }
+    await dispatch(OrderActions.getUserOrders(data))
   }
 
   const handleFilterStatusChange = async (status: string) => {
     const data: GetUserOrder = {
-      pageIndex: pageIndex,
+      pageIndex: 1,
       status: status
     }
+    setStatus(status)
     await dispatch(OrderActions.getUserOrders(data))
   }
 

@@ -11,6 +11,7 @@ export type Book = {
   publisher: Publisher
   feedbacks: Feedback[]
   promotions: Promotion[]
+  subImgList?: SubImgList[]
   thumbnail: string
   slug: string
   title: string
@@ -20,6 +21,7 @@ export type Book = {
   rating: number
   price: number
   discount: number
+  isDeleted: boolean
 }
 
 export type FilterBook = {
@@ -31,6 +33,11 @@ export type FilterBook = {
   sortByPrice?: string
   sortBySoldAmount?: string
   sortByDate?: string
+}
+
+export type SubImgList = {
+  id: string
+  url: string
 }
 
 export type FilterBookResponse = {
@@ -49,6 +56,7 @@ export type BookInCart = {
   price: number
   discount: number
   orderDate: string
+  isDeleted?: boolean
 }
 
 export type UpdateBookInCart = {

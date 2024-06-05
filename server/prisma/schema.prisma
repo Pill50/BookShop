@@ -49,6 +49,7 @@ model Books {
   feedbacks    Feedbacks[]
   OrderDetails OrderDetails[]
   promotions   Promotions[]
+  bookImages   BookImages[]
   thumbnail    String
   title        String
   slug         String
@@ -75,6 +76,17 @@ model Categories {
   updatedAt DateTime          @updatedAt
 
   @@map(name: "categories")
+}
+
+model BookImages {
+  id        String   @id @default(uuid())
+  book      Books    @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId    String
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map(name: "book_images")
 }
 
 model Publishers {
@@ -218,7 +230,6 @@ enum Gender {
 
 enum PromotionType {
   SALE
-  POPULAR
 }
 
 enum PaymentType {

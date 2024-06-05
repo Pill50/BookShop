@@ -67,6 +67,9 @@ async function bootstrap() {
   hbsUtilsInstance.registerWatchedPartials(
     join(__dirname, '..', 'views', 'dashboard'),
   );
+  hbsUtilsInstance.registerWatchedPartials(
+    join(__dirname, '..', 'views', 'promotion'),
+  );
   app.setViewEngine('hbs');
 
   app.use(

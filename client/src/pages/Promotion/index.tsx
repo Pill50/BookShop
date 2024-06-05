@@ -13,12 +13,12 @@ const PromotionPage: React.FC = () => {
   const totalRecord = useAppSelector((state) => state.promotion.totalRecord)
 
   const urlParams = new URLSearchParams(window.location.search)
-  const pageParam = urlParams.get('page') as string
-  const typeParam = urlParams.get('type') as string
+  const pageParam = urlParams.get('page')
+  const typeParam = urlParams.get('type') || ('SALE' as string)
 
   const [dataFilter, setDataFilter] = useState<FilterPromotion>({
     pageIndex: Number(pageParam) || 1,
-    type: typeParam || ''
+    type: typeParam || 'SALE'
   })
 
   useEffect(() => {
@@ -34,16 +34,16 @@ const PromotionPage: React.FC = () => {
       <div className='max-w-screen-xl p-4 mx-auto'>
         <div className='flex justify-center items-center'>
           <div
-            className={`${typeParam === null ? 'text-white bg-green-500' : 'bg-green-300'} w-1/3 md:w-40 text-center py-3 md:py-4 md:px-10 rounded-tl-lg rounded-bl-lg font-semibold cursor-pointer hover:bg-green-500 transition-all`}
-            onClick={() => setDataFilter({ ...dataFilter, type: undefined })}
-          >
-            ALL
-          </div>
-          <div
-            className={`${typeParam === 'SALE' ? 'text-white bg-green-500' : 'bg-green-300'} w-1/3 md:w-40 text-center py-3 md:py-4 md:px-10 font-semibold cursor-pointer hover:bg-green-500 transition-all border-l-[1px] border-r-[1px]`}
+            className={`${typeParam === 'SALE' ? 'text-white bg-green-500' : 'bg-green-300'} w-1/3 md:w-40 text-center py-3 md:py-4 md:px-10 rounded-tl-lg rounded-bl-lg font-semibold cursor-pointer hover:bg-green-500 transition-all `}
             onClick={() => setDataFilter({ ...dataFilter, type: 'SALE' })}
           >
             ON SALE
+          </div>
+          <div
+            className={`${typeParam === 'RECOMMEND' ? 'text-white bg-green-500' : 'bg-green-300'} text-center py-3 md:py-4 md:px-10 font-semibold cursor-pointer hover:bg-green-500 transition-all border-l-[1px] border-r-[1px]`}
+            onClick={() => setDataFilter({ ...dataFilter, type: 'RECOMMEND' })}
+          >
+            RECOMMEND
           </div>
           <div
             className={`${typeParam === 'POPULAR' ? 'text-white bg-green-500' : 'bg-green-300'} w-1/3 md:w-40 text-center py-3 md:py-4 md:px-10 rounded-tr-lg rounded-br-lg font-semibold cursor-pointer hover:bg-green-500 transition-all`}
@@ -62,7 +62,8 @@ const PromotionPage: React.FC = () => {
         ) : (
           <>
             <div className='grid grid-cols-1 gap-4 p-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 mb-3'>
-              {promotionList?.length > 0 &&
+              {typeParam === 'SALE' ? (
+                promotionList?.length > 0 &&
                 promotionList?.map((promotion: Promotion, index: number) => (
                   <BookCard
                     key={index}
@@ -80,9 +81,32 @@ const PromotionPage: React.FC = () => {
                     categories={promotion.book.categories}
                     thumbnail={promotion.book.thumbnail}
                   />
-                ))}
+                ))
+              ) : (
+                <>
+                  {promotionList?.length > 0 &&
+                    promotionList?.map((promotion: any, index: number) => (
+                      <BookCard
+                        key={index}
+                        id={promotion.id}
+                        tag={typeParam}
+                        title={promotion.title}
+                        soldNumber={promotion.soldNumber}
+                        amount={promotion.amount}
+                        slug={promotion.slug}
+                        author={promotion.author?.name || 'No Author'}
+                        description={promotion.description}
+                        curPrice={promotion.price}
+                        oldPrice={Math.round(promotion.price / (1 - promotion.discount / 100))}
+                        discount={promotion.discount}
+                        categories={promotion.categories}
+                        thumbnail={promotion.thumbnail}
+                      />
+                    ))}
+                </>
+              )}
             </div>
-            <Pagination totalPage={totalPage} handleChangePage={handleChangePage} />
+            {totalPage > 1 && <Pagination totalPage={totalPage} handleChangePage={handleChangePage} />}
           </>
         )}
       </div>

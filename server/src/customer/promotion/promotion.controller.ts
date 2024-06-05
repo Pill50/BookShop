@@ -4,11 +4,9 @@ import {
   HttpCode,
   HttpStatus,
   Query,
-  Render,
   UseInterceptors,
 } from '@nestjs/common';
 import { PromotionService } from './promotion.service';
-import { PromotionType } from '@prisma/client';
 import { FilterPromotionDto } from './dto/filterPromotion.dto';
 import { ResTransformInterceptor } from 'src/common/interceptors/response.interceptor';
 import { ResponseMessage } from 'src/common/decorators';
@@ -25,10 +23,28 @@ export class PromotionController {
     const pageIndex: number | 1 = filter.page
       ? parseInt(filter.page as string, 10)
       : 1;
-    const type: PromotionType | undefined = filter.type
-      ? filter.type
-      : undefined;
+    const type = filter.type ? filter.type : 'SALE';
 
-    return await this.promotionService.filterPromotions(pageIndex, type);
+    if (type === 'SALE') {
+      const onSaleList = await this.promotionService.getAllOnSaleItems(
+        pageIndex,
+        type,
+      );
+
+      const pagination = {
+        totalPage: onSaleList.totalPage,
+        currentPage: pageIndex,
+        nextPage: pageIndex === onSaleList.totalPage ? 1 : pageIndex + 1,
+        previousPage: pageIndex === 1 ? onSaleList.totalPage : pageIndex - 1,
+      };
+
+      return { onSaleList, pagination };
+    } else if (type === 'POPULAR') {
+      const popularList = await this.promotionService.getPopularList();
+      return { popularList, type };
+    } else if (type === 'RECOMMEND') {
+      const recommendList = await this.promotionService.getRecommendList();
+      return { recommendList, type };
+    }
   }
 }

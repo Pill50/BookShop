@@ -22,7 +22,7 @@ export class FeedbackController {
   @HttpCode(HttpStatus.OK)
   @ResponseMessage('Get feedback of books successfully')
   async getTop10Newest(@Param('bookId') bookId: string) {
-    return await this.feedbackService.getBookFbacks(bookId);
+    return await this.feedbackService.getBookFeedbacks(bookId);
   }
 
   @Post('/create')
