@@ -1,15 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ShipperService } from './shipper.service';
+import { PublisherService } from './publisher.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-describe('ShipperService', () => {
-  let service: ShipperService;
+describe('PublisherService', () => {
+  let service: PublisherService;
   let prismaService: PrismaService;
-  let shipper = {
+  let publisher = {
     id: '1',
-    name: 'Shipper 1',
-    companyName: 'Shopee',
-    phone: '012345678',
+    name: 'publisher',
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -17,11 +15,11 @@ describe('ShipperService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ShipperService,
+        PublisherService,
         {
           provide: PrismaService,
           useValue: {
-            shippers: {
+            publishers: {
               findMany: jest.fn(),
             },
           },
@@ -29,7 +27,7 @@ describe('ShipperService', () => {
       ],
     }).compile();
 
-    service = module.get<ShipperService>(ShipperService);
+    service = module.get<PublisherService>(PublisherService);
     prismaService = module.get<PrismaService>(PrismaService);
   });
 
@@ -37,25 +35,25 @@ describe('ShipperService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('getAllShippers', () => {
-    it('should return an array of shippers', async () => {
+  describe('getAllPublishers', () => {
+    it('should return an array of publishers', async () => {
       jest
-        .spyOn(prismaService.shippers, 'findMany')
-        .mockResolvedValueOnce([shipper]);
+        .spyOn(prismaService.publishers, 'findMany')
+        .mockResolvedValueOnce([publisher]);
 
-      const result = await service.getAllShippers();
+      const result = await service.getAllPublishers();
 
-      expect(result).toEqual([shipper]);
-      expect(prismaService.shippers.findMany).toHaveBeenCalled();
+      expect(result).toEqual([publisher]);
+      expect(prismaService.publishers.findMany).toHaveBeenCalled();
     });
 
     it('should handle errors correctly', async () => {
       const error = new Error('Internal Server');
       jest
-        .spyOn(prismaService.shippers, 'findMany')
+        .spyOn(prismaService.publishers, 'findMany')
         .mockRejectedValueOnce(error);
 
-      await expect(service.getAllShippers()).rejects.toMatchObject({
+      await expect(service.getAllPublishers()).rejects.toMatchObject({
         message: 'Internal Server',
       });
     });
