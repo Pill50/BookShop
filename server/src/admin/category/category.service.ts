@@ -83,36 +83,29 @@ export class CategoryService {
     thumbnail: Express.Multer.File,
   ) {
     try {
-      let url = '';
       const isExistedCategory = await this.prismaService.categories.findFirst({
-        where: {
-          id,
-        },
+        where: { id },
       });
 
-      if (thumbnail) {
-        if (thumbnail.size > parseInt(process.env.MAX_FILE_SIZE)) {
-          throw new HttpException(
-            CategoryError.FILE_TOO_LARGE,
-            HttpStatus.BAD_REQUEST,
-          );
-        } else if (thumbnail.size > 0) {
-          const thumbnail_upload =
-            await this.cloudinaryService.uploadFile(thumbnail);
-          url = thumbnail_upload.secure_url;
-        } else {
-          url = process.env.DEFAULT_CATEGORY_IMAGE;
-        }
-      } else if (isExistedCategory && isExistedCategory.thumbnail) {
-        url = isExistedCategory.thumbnail;
-      } else url = process.env.DEFAULT_CATEGORY_IMAGE;
+      if (!isExistedCategory) {
+        throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
+      }
+
+      let url = process.env.DEFAULT_CATEGORY_IMAGE;
+      if (
+        thumbnail &&
+        thumbnail.size > 0 &&
+        thumbnail.size <= parseInt(process.env.MAX_FILE_SIZE)
+      ) {
+        const thumbnail_upload =
+          await this.cloudinaryService.uploadFile(thumbnail);
+        url = thumbnail_upload.secure_url;
+      }
 
       const updatedCategory = await this.prismaService.categories.update({
-        where: {
-          id: id,
-        },
+        where: { id },
         data: {
-          title: title,
+          title,
           thumbnail: url,
         },
       });
