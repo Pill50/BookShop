@@ -12,7 +12,7 @@ export class PromotionService {
     const { type, discountFlashSale } = promotion;
     const { book } = promotion;
 
-    if (type === PromotionType.SALE) {
+    if (type === PromotionType.SALE && book) {
       book.discount = discountFlashSale;
     }
 
