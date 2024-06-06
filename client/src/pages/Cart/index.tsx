@@ -64,7 +64,7 @@ const CartPage: React.FC = () => {
     })
   }
 
-  const handleUpdateItem = (e: React.MouseEvent<HTMLButtonElement>, bookId: string, amount: number) => {
+  const handleUpdateItem = (e: any, bookId: string, amount: number) => {
     e.preventDefault()
     e.stopPropagation()
     const data: UpdateBookInCart = {
@@ -222,9 +222,12 @@ const CartPage: React.FC = () => {
                         >
                           -
                         </button>
-                        <button className='w-10 px-3 py-1 flex items-center justify-center border-t-[1px] border-b-[1px] border-gray-300'>
-                          {item.amount}
-                        </button>
+                        <input
+                          defaultValue={item.amount}
+                          value={item.amount}
+                          onChange={(e) => handleUpdateItem(e, item.id, +e.target.value)}
+                          className='w-10 px-3 py-1 flex items-center justify-center border-t-[1px] border-b-[1px] border-gray-300'
+                        />
                         <button
                           className='w-10 text-md rounded-tr-md rounded-br-md bg-gray-300 px-3 py-1 flex items-center justify-center hover:bg-gray-400 z-10'
                           onClick={(e) => handleUpdateItem(e, item.id, item.amount + 1)}

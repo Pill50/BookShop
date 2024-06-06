@@ -2,11 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CategoryService } from './category.service';
 import { AppModule } from 'src/app.module';
+import { HttpException } from '@nestjs/common';
 
 describe('CategoryService', () => {
   let service: CategoryService;
   let prismaService: PrismaService;
-  let categoryResponse = [
+  const categoryResponse = [
     {
       id: '1',
       title: 'category 1',
@@ -37,13 +38,31 @@ describe('CategoryService', () => {
     prismaService = module.get<PrismaService>(PrismaService);
   });
 
-  it('should get all categories successfully', async () => {
-    jest
-      .spyOn(prismaService.categories, 'findMany')
-      .mockResolvedValueOnce(categoryResponse);
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
 
-    const result = await service.getAllCategories();
+  describe('getAllCategories', () => {
+    it('should get all categories successfully', async () => {
+      jest
+        .spyOn(prismaService.categories, 'findMany')
+        .mockResolvedValueOnce(categoryResponse);
 
-    expect(result).toBe(categoryResponse);
+      const result = await service.getAllCategories();
+
+      expect(result).toBe(categoryResponse);
+      expect(prismaService.categories.findMany).toHaveBeenCalled();
+    });
+
+    it('should return an empty array when no categories exist', async () => {
+      jest
+        .spyOn(prismaService.categories, 'findMany')
+        .mockResolvedValueOnce([]);
+
+      const result = await service.getAllCategories();
+
+      expect(result).toEqual([]);
+      expect(prismaService.categories.findMany).toHaveBeenCalled();
+    });
   });
 });

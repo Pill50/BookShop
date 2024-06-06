@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AppModule } from 'src/app.module';
 import { BookService } from './book.service';
+import { BookError } from 'src/common/errors';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('BookService', () => {
   let service: BookService;
@@ -126,6 +128,146 @@ describe('BookService', () => {
         ]),
         select: expect.any(Object),
       });
+    });
+  });
+
+  describe('getBookById', () => {
+    it('should return formatted book by id', async () => {
+      const bookId = '1';
+
+      jest
+        .spyOn(prismaService.books, 'findFirst')
+        .mockResolvedValueOnce(bookResponse);
+
+      const result = await service.getBookById(bookId);
+
+      expect(result).toHaveProperty('title', 'title');
+      expect(result).toHaveProperty('discount');
+      expect(result.categories).toHaveLength(3);
+      expect(prismaService.books.findFirst).toHaveBeenCalledWith({
+        where: { id: bookId },
+        include: expect.any(Object),
+      });
+    });
+
+    it('should throw BOOK_NOT_FOUND error if book does not exist', async () => {
+      const bookId = '2';
+
+      jest.spyOn(prismaService.books, 'findFirst').mockResolvedValueOnce(null);
+
+      await expect(service.getBookById(bookId)).rejects.toThrow(HttpException);
+    });
+  });
+
+  describe('getBookBySlug', () => {
+    it('should return formatted book by slug', async () => {
+      const slug = 'title-1';
+
+      jest
+        .spyOn(prismaService.books, 'findFirst')
+        .mockResolvedValueOnce(bookResponse);
+      jest
+        .spyOn(prismaService.bookImages, 'findMany')
+        .mockResolvedValueOnce([]);
+
+      const result = await service.getBookBySlug(slug);
+
+      expect(result.book).toHaveProperty('title', 'title');
+      expect(result.book).toHaveProperty('discount');
+      expect(prismaService.books.findFirst).toHaveBeenCalledWith({
+        where: { slug: slug },
+        include: expect.any(Object),
+      });
+    });
+
+    it('should throw BOOK_NOT_FOUND error if book does not exist', async () => {
+      const slug = 'nonexistent-slug';
+
+      jest.spyOn(prismaService.books, 'findFirst').mockResolvedValueOnce(null);
+
+      await expect(service.getBookBySlug(slug)).rejects.toThrow(HttpException);
+    });
+  });
+
+  describe('getTop10BestSeller', () => {
+    it('should return top 10 best seller books', async () => {
+      jest
+        .spyOn(prismaService.books, 'findMany')
+        .mockResolvedValueOnce([bookResponse]);
+
+      const result = await service.getTop10BestSeller();
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toHaveProperty('title', 'title');
+      expect(result[0]).toHaveProperty('discount');
+      expect(prismaService.books.findMany).toHaveBeenCalledWith({
+        where: { isDeleted: false },
+        orderBy: { soldNumber: 'desc' },
+        take: 10,
+        include: expect.any(Object),
+      });
+    });
+  });
+
+  describe('getTop10Newest', () => {
+    it('should return top 10 newest books', async () => {
+      jest
+        .spyOn(prismaService.books, 'findMany')
+        .mockResolvedValueOnce([bookResponse]);
+
+      const result = await service.getTop10Newest();
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toHaveProperty('title', 'title');
+      expect(result[0]).toHaveProperty('discount');
+      expect(prismaService.books.findMany).toHaveBeenCalledWith({
+        where: { isDeleted: false },
+        orderBy: { createdAt: 'desc' },
+        take: 10,
+        include: expect.any(Object),
+      });
+    });
+  });
+
+  describe('getStatistics', () => {
+    it('should return statistics', async () => {
+      const stats = {
+        users: 100,
+        books: 200,
+        feedbacks: 300,
+        categories: 50,
+        shippers: 20,
+        promotions: 10,
+      };
+
+      jest
+        .spyOn(prismaService.users, 'count')
+        .mockResolvedValueOnce(stats.users);
+      jest
+        .spyOn(prismaService.books, 'count')
+        .mockResolvedValueOnce(stats.books);
+      jest
+        .spyOn(prismaService.feedbacks, 'count')
+        .mockResolvedValueOnce(stats.feedbacks);
+      jest
+        .spyOn(prismaService.categories, 'count')
+        .mockResolvedValueOnce(stats.categories);
+      jest
+        .spyOn(prismaService.shippers, 'count')
+        .mockResolvedValueOnce(stats.shippers);
+      jest
+        .spyOn(prismaService.promotions, 'count')
+        .mockResolvedValueOnce(stats.promotions);
+
+      const result = await service.getStatistics();
+
+      expect(result).toEqual(stats);
+      expect(prismaService.users.count).toHaveBeenCalled();
+      expect(prismaService.books.count).toHaveBeenCalled();
+      expect(prismaService.feedbacks.count).toHaveBeenCalled();
+      expect(prismaService.categories.count).toHaveBeenCalled();
+      expect(prismaService.shippers.count).toHaveBeenCalled();
+      expect(prismaService.promotions.count).toHaveBeenCalled();
     });
   });
 });

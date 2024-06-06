@@ -92,125 +92,139 @@ describe('FeedbackService', () => {
       );
     });
 
-    // it('should create new feedback successfully', async () => {
-    //   const createdFeedback = {
-    //     id: '1',
-    //     bookId: '1',
-    //     userId: '1',
-    //     rating: 5,
-    //     content: 'test',
-    //     createdAt: new Date(),
-    //     updatedAt: new Date(),
-    //   };
-    //   const expectedAllFeedbacks = [{ id: 2, rating: 3 }];
+    it('should create new feedback successfully', async () => {
+      const createdFeedback = {
+        id: '1',
+        bookId: '1',
+        userId: '1',
+        rating: 5,
+        content: 'test',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
-    //   jest
-    //     .spyOn(prismaService.feedbacks, 'findFirst')
-    //     .mockResolvedValueOnce(null);
-    //   jest
-    //     .spyOn(prismaService.feedbacks, 'create')
-    //     .mockResolvedValueOnce(createdFeedback);
-    //   jest
-    //     .spyOn(prismaService.feedbacks, 'findMany')
-    //     .mockResolvedValueOnce(createdFeedback);
-    //   jest.spyOn(prismaService.books, 'update').mockResolvedValueOnce({});
+      jest
+        .spyOn(prismaService.feedbacks, 'findFirst')
+        .mockResolvedValueOnce(null);
+      jest
+        .spyOn(prismaService.feedbacks, 'create')
+        .mockResolvedValueOnce(createdFeedback);
+      jest
+        .spyOn(prismaService.feedbacks, 'findMany')
+        .mockResolvedValueOnce([createdFeedback]);
+      // jest.spyOn(prismaService.books, 'update').mockResolvedValueOnce({...createdFeedback, rating: 5});
 
-    //   const result = await service.createFeedback({
-    //     bookId: '1',
-    //     userId: '2',
-    //     content: 'Test feedback',
-    //     rating: 5,
-    //   });
+      const result = await service.createFeedback({
+        bookId: '1',
+        userId: '2',
+        content: 'Test feedback',
+        rating: 5,
+      });
 
-    //   expect(result).toEqual(createdFeedback);
-    //   expect(prismaService.feedbacks.create).toHaveBeenCalledWith({
-    //     data: { bookId: '1', userId: '2', content: 'Test feedback', rating: 5 }, // Verify data passed
-    //   });
-    //   // Verify other function calls as needed (average rating calculation, book update)
-    // });
+      expect(result).toEqual(createdFeedback);
+      expect(prismaService.feedbacks.create).toHaveBeenCalledWith({
+        data: { bookId: '1', userId: '2', content: 'Test feedback', rating: 5 },
+      });
+    });
 
-    // it('should handle errors during feedback creation', async () => {
-    //   const feedbackData = {
-    //     bookId: '1',
-    //     userId: '2',
-    //     content: 'Test feedback',
-    //     rating: 5,
-    //   };
-    //   const errorMessage = 'Prisma error creating feedback';
-    //   jest
-    //     .spyOn(prismaService.feedbacks, 'findFirst')
-    //     .mockResolvedValueOnce(null);
-    //   jest
-    //     .spyOn(prismaService.feedbacks, 'create')
-    //     .mockRejectedValueOnce(new Error(errorMessage));
+    it('should handle errors during feedback creation', async () => {
+      const feedbackData = {
+        bookId: '1',
+        userId: '2',
+        content: 'Test feedback',
+        rating: 5,
+      };
+      const errorMessage = 'Prisma error creating feedback';
+      jest
+        .spyOn(prismaService.feedbacks, 'findFirst')
+        .mockResolvedValueOnce(null);
+      jest
+        .spyOn(prismaService.feedbacks, 'create')
+        .mockRejectedValueOnce(new Error(errorMessage));
 
-    //   try {
-    //     await service.createFeedback(feedbackData);
-    //     fail('Expected an error to be thrown');
-    //   } catch (error) {
-    //     // Expect the appropriate error handling based on exceptionHandler
-    //     expect(error instanceof Error).toBeTruthy(); // Adjust based on actual error type
-    //   }
-    // });
+      try {
+        await service.createFeedback(feedbackData);
+        fail('Expected an error to be thrown');
+      } catch (error) {
+        expect(error instanceof Error).toBeTruthy();
+      }
+    });
 
-    // it('should handle errors during average rating calculation', async () => {
-    //   const feedbackData = {
-    //     bookId: '1',
-    //     userId: '2',
-    //     content: 'Test feedback',
-    //     rating: 5,
-    //   };
-    //   const existingFeedback = [{ id: 2, rating: 3 }];
-    //   jest
-    //     .spyOn(prismaService.feedbacks, 'findFirst')
-    //     .mockResolvedValueOnce(null);
-    //   jest
-    //     .spyOn(prismaService.feedbacks, 'create')
-    //     .mockResolvedValueOnce({ id: 1 });
-    //   jest
-    //     .spyOn(prismaService.feedbacks, 'findMany')
-    //     .mockRejectedValueOnce(new Error('Prisma error finding feedbacks'));
-    //   jest
-    //     .spyOn(prismaService.books, 'update')
-    //     .mockRejectedValueOnce(new Error('Prisma error updating book')); // Mock book update error
+    it('should handle errors during average rating calculation', async () => {
+      const feedbackData = {
+        bookId: '1',
+        userId: '2',
+        content: 'Test feedback',
+        rating: 5,
+      };
 
-    //   try {
-    //     await service.createFeedback(feedbackData);
-    //     fail('Expected an error to be thrown');
-    //   } catch (error) {
-    //     // Expect the appropriate error handling based on exceptionHandler
-    //     expect(error instanceof Error).toBeTruthy(); // Adjust based on actual error type
-    //   }
-    // });
+      const createdFeedback = {
+        id: '1',
+        bookId: '1',
+        userId: '1',
+        rating: 5,
+        content: 'test',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      jest
+        .spyOn(prismaService.feedbacks, 'findFirst')
+        .mockResolvedValueOnce(null);
+      jest
+        .spyOn(prismaService.feedbacks, 'create')
+        .mockResolvedValueOnce(createdFeedback);
+      jest
+        .spyOn(prismaService.feedbacks, 'findMany')
+        .mockRejectedValueOnce(new Error('Prisma error finding feedbacks'));
+      jest
+        .spyOn(prismaService.books, 'update')
+        .mockRejectedValueOnce(new Error('Prisma error updating book'));
 
-    // it('should handle errors during book update', async () => {
-    //   const feedbackData = {
-    //     bookId: '1',
-    //     userId: '2',
-    //     content: 'Test feedback',
-    //     rating: 5,
-    //   };
-    //   const existingFeedback = [{ id: 2, rating: 3 }];
-    //   const createdFeedback = { id: 1, ...feedbackData };
-    //   jest
-    //     .spyOn(prismaService.feedbacks, 'findFirst')
-    //     .mockResolvedValueOnce(null);
-    //   jest
-    //     .spyOn(prismaService.feedbacks, 'create')
-    //     .mockResolvedValueOnce(createdFeedback);
-    //   jest
-    //     .spyOn(prismaService.feedbacks, 'findMany')
-    //     .mockResolvedValueOnce(existingFeedback.concat(createdFeedback));
-    //   jest
-    //     .spyOn(prismaService.books, 'update')
-    //     .mockRejectedValueOnce(new Error('Prisma error updating book'));
+      try {
+        await service.createFeedback(feedbackData);
+        fail('Expected an error to be thrown');
+      } catch (error) {
+        expect(error instanceof Error).toBeTruthy();
+      }
+    });
 
-    //   try {
-    //     await service.createFeedback(feedbackData);
-    //     fail('Expected an error to be thrown');
-    //   } catch (error) {
-    //     expect(error instanceof Error).toBeTruthy();
-    //   }
-    // });
+    it('should handle errors during book update', async () => {
+      const feedbackData = {
+        bookId: '1',
+        userId: '2',
+        content: 'Test feedback',
+        rating: 5,
+      };
+
+      const createdFeedback = {
+        id: '1',
+        bookId: '1',
+        userId: '1',
+        rating: 5,
+        content: 'test',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      jest
+        .spyOn(prismaService.feedbacks, 'findFirst')
+        .mockResolvedValueOnce(null);
+      jest
+        .spyOn(prismaService.feedbacks, 'create')
+        .mockResolvedValueOnce(createdFeedback);
+      jest
+        .spyOn(prismaService.feedbacks, 'findMany')
+        .mockResolvedValueOnce([createdFeedback]);
+      jest
+        .spyOn(prismaService.books, 'update')
+        .mockRejectedValueOnce(new Error('Prisma error updating book'));
+
+      try {
+        await service.createFeedback(feedbackData);
+        fail('Expected an error to be thrown');
+      } catch (error) {
+        expect(error instanceof Error).toBeTruthy();
+      }
+    });
   });
 });

@@ -27,7 +27,7 @@ const SearchPage: React.FC = () => {
 
   const [pageIndex, setPageIndex] = useState<number>(1)
   const [dataFilter, setDataFilter] = useState<FilterBook>({
-    keyword: keyword === null ? keyword : undefined,
+    keyword: keyword !== null ? keyword : undefined,
     pageIndex: Number(pageParam) || 1,
     categories: categoriesParam !== undefined ? [categoriesParam] : undefined,
     publisherId: publisherIdParam !== undefined ? [publisherIdParam] : undefined,
