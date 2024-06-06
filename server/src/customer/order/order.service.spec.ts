@@ -121,13 +121,13 @@ describe('OrderService', () => {
     });
 
     it('should handle errors correctly', async () => {
-      const error = new Error('Database error');
+      const error = new Error('Internal Server');
       jest.spyOn(prismaService.orders, 'create').mockRejectedValueOnce(error);
 
       await expect(
         service.createOrder('user_1', orderDto),
       ).rejects.toMatchObject({
-        response: 'Database error',
+        response: 'Internal Server',
         status: 500,
       });
     });
@@ -169,13 +169,13 @@ describe('OrderService', () => {
       const orderId = 'order_1';
       const status = OrderStatus.SHIPPED;
 
-      const error = new Error('Database error');
+      const error = new Error('Internal Server');
       jest.spyOn(prismaService.orders, 'update').mockRejectedValueOnce(error);
 
       await expect(
         service.updateOrderStatus(orderId, status),
       ).rejects.toMatchObject({
-        response: 'Database error',
+        response: 'Internal Server',
         status: 500,
       });
     });
