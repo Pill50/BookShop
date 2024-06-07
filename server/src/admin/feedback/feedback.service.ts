@@ -15,6 +15,9 @@ export class FeedbackService {
         this.prismaService.feedbacks.findMany({
           skip,
           take,
+          orderBy: {
+            createdAt: 'desc',
+          },
           include: {
             book: {
               select: {
