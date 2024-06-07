@@ -15,6 +15,9 @@ export class AuthorService {
         this.prismaService.authors.findMany({
           skip,
           take,
+          orderBy: {
+            createdAt: 'desc',
+          },
         }),
         this.prismaService.authors.count(),
       ]);

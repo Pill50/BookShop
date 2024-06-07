@@ -20,6 +20,9 @@ export class CategoryService {
         this.prismaService.categories.findMany({
           skip,
           take,
+          orderBy: {
+            createdAt: 'desc',
+          },
         }),
         this.prismaService.categories.count(),
       ]);
